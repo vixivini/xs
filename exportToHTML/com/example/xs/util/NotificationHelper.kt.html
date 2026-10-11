@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>NotificationHelper.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+NotificationHelper.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationChannel</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">PendingIntent</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Intent</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationCompat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationManagerCompat</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">MainActivity</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">R</span>
+
+<span class="s0">class </span><span class="s1">NotificationHelper</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">) {</span>
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s1">const </span><span class="s0">val </span><span class="s1">CHANNEL_ID </span><span class="s2">= </span><span class="s3">&quot;sync_updates&quot;</span>
+        <span class="s1">const </span><span class="s0">val </span><span class="s1">NOTIFICATION_ID </span><span class="s2">= </span><span class="s4">1001</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">createNotificationChannel</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">O</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">name </span><span class="s2">= </span><span class="s3">&quot;Topic Updates&quot;</span>
+            <span class="s0">val </span><span class="s1">descriptionText </span><span class="s2">= </span><span class="s3">&quot;Notifications for new content in favorite topics&quot;</span>
+            <span class="s0">val </span><span class="s1">importance </span><span class="s2">= </span><span class="s1">NotificationManager</span><span class="s2">.</span><span class="s1">IMPORTANCE_DEFAULT</span>
+            <span class="s0">val </span><span class="s1">channel </span><span class="s2">= </span><span class="s1">NotificationChannel</span><span class="s2">(</span><span class="s1">CHANNEL_ID</span><span class="s2">, </span><span class="s1">name</span><span class="s2">, </span><span class="s1">importance</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">description </span><span class="s2">= </span><span class="s1">descriptionText</span>
+            <span class="s2">}</span>
+            <span class="s0">val </span><span class="s1">notificationManager: NotificationManager </span><span class="s2">=</span>
+                <span class="s1">context</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">NOTIFICATION_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">NotificationManager</span>
+            <span class="s1">notificationManager</span><span class="s2">.</span><span class="s1">createNotificationChannel</span><span class="s2">(</span><span class="s1">channel</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">showNotification</span><span class="s2">(</span><span class="s1">title: String</span><span class="s2">, </span><span class="s1">message: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">MainActivity::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+            <span class="s1">flags </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">FLAG_ACTIVITY_NEW_TASK or Intent</span><span class="s2">.</span><span class="s1">FLAG_ACTIVITY_CLEAR_TASK</span>
+        <span class="s2">}</span>
+        <span class="s0">val </span><span class="s1">pendingIntent: PendingIntent </span><span class="s2">= </span><span class="s1">PendingIntent</span><span class="s2">.</span><span class="s1">getActivity</span><span class="s2">(</span>
+            <span class="s1">context</span><span class="s2">, </span><span class="s4">0</span><span class="s2">, </span><span class="s1">intent</span><span class="s2">,</span>
+            <span class="s1">PendingIntent</span><span class="s2">.</span><span class="s1">FLAG_IMMUTABLE or PendingIntent</span><span class="s2">.</span><span class="s1">FLAG_UPDATE_CURRENT</span>
+        <span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">builder </span><span class="s2">= </span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">CHANNEL_ID</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setSmallIcon</span><span class="s2">(</span><span class="s1">android</span><span class="s2">.</span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_menu_myplaces</span><span class="s2">) </span><span class="s5">// Placeholder icon</span>
+            <span class="s2">.</span><span class="s1">setContentTitle</span><span class="s2">(</span><span class="s1">title</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentText</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setPriority</span><span class="s2">(</span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">PRIORITY_DEFAULT</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentIntent</span><span class="s2">(</span><span class="s1">pendingIntent</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setAutoCancel</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+
+        <span class="s1">with</span><span class="s2">(</span><span class="s1">NotificationManagerCompat</span><span class="s2">.</span><span class="s1">from</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)) {</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s1">notify</span><span class="s2">(</span><span class="s1">NOTIFICATION_ID</span><span class="s2">, </span><span class="s1">builder</span><span class="s2">.</span><span class="s1">build</span><span class="s2">())</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: SecurityException</span><span class="s2">) {</span>
+                <span class="s5">// Handle missing permission if necessary, though it should be checked at call site or Manifest</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

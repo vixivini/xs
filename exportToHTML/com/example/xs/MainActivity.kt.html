@@ -1,0 +1,319 @@
+<html>
+<head>
+<title>MainActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">ComponentActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">setContent</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">enableEdgeToEdge</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">background</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Box</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxSize</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">size</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">height</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">PaddingValues</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Home</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Movie</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Person</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Search</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">outlined</span><span class="s2">.</span><span class="s1">Home</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">outlined</span><span class="s2">.</span><span class="s1">Movie</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">outlined</span><span class="s2">.</span><span class="s1">Person</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">outlined</span><span class="s2">.</span><span class="s1">Search</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">input</span><span class="s2">.</span><span class="s1">nestedscroll</span><span class="s2">.</span><span class="s1">nestedScroll</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">font</span><span class="s2">.</span><span class="s1">FontWeight</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">sp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">viewmodel</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">viewModel</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">NavHost</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">currentBackStackEntryAsState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">navigation</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">rememberNavController</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainViewModel</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">FavoritesScreen</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">feed</span><span class="s2">.</span><span class="s1">FeedScreen</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">media</span><span class="s2">.</span><span class="s1">MediaViewerScreen</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">reels</span><span class="s2">.</span><span class="s1">ReelsScreen</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">profile</span><span class="s2">.</span><span class="s1">FollowingListScreen</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">profile</span><span class="s2">.</span><span class="s1">ProfileScreen</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">profile</span><span class="s2">.</span><span class="s1">TopicProfileScreen</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">theme</span><span class="s2">.</span><span class="s1">XsTheme</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">webview</span><span class="s2">.</span><span class="s1">WebViewScreen</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">profile</span><span class="s2">.</span><span class="s1">SettingsScreen</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">URLEncoder</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">nio</span><span class="s2">.</span><span class="s1">charset</span><span class="s2">.</span><span class="s1">StandardCharsets</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Base64</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">WindowCompat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">WindowInsetsCompat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">WindowInsetsControllerCompat</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">WindowManager</span>
+
+<span class="s0">class </span><span class="s1">MainActivity : ComponentActivity</span><span class="s2">() {</span>
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState: Bundle?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">)</span>
+        
+        <span class="s3">// Ativa modo imersivo total (Esconde barra de status e navegação do sistema)</span>
+        <span class="s1">WindowCompat</span><span class="s2">.</span><span class="s1">setDecorFitsSystemWindows</span><span class="s2">(</span><span class="s1">window</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">controller </span><span class="s2">= </span><span class="s1">WindowInsetsControllerCompat</span><span class="s2">(</span><span class="s1">window</span><span class="s2">, </span><span class="s1">window</span><span class="s2">.</span><span class="s1">decorView</span><span class="s2">)</span>
+        <span class="s1">controller</span><span class="s2">.</span><span class="s1">hide</span><span class="s2">(</span><span class="s1">WindowInsetsCompat</span><span class="s2">.</span><span class="s1">Type</span><span class="s2">.</span><span class="s1">systemBars</span><span class="s2">())</span>
+        <span class="s1">controller</span><span class="s2">.</span><span class="s1">systemBarsBehavior </span><span class="s2">= </span><span class="s1">WindowInsetsControllerCompat</span><span class="s2">.</span><span class="s1">BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE</span>
+        
+        <span class="s3">// Garante que a tela use 100% do espaço, inclusive sob o &quot;furo&quot; da câmera</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">P</span><span class="s2">) {</span>
+            <span class="s1">window</span><span class="s2">.</span><span class="s1">attributes</span><span class="s2">.</span><span class="s1">layoutInDisplayCutoutMode </span><span class="s2">= </span><span class="s1">WindowManager</span><span class="s2">.</span><span class="s1">LayoutParams</span><span class="s2">.</span><span class="s1">LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES</span>
+        <span class="s2">}</span>
+        
+        <span class="s1">setContent </span><span class="s2">{</span>
+            <span class="s1">XsTheme </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">viewModel: MainViewModel </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">()</span>
+                <span class="s1">MainScreen</span><span class="s2">(</span><span class="s1">viewModel</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">@OptIn</span><span class="s2">(</span><span class="s1">ExperimentalMaterial3Api::</span><span class="s0">class</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">MainScreen</span><span class="s2">(</span><span class="s1">viewModel: MainViewModel</span><span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">navController </span><span class="s2">= </span><span class="s1">rememberNavController</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">navBackStackEntry by navController</span><span class="s2">.</span><span class="s1">currentBackStackEntryAsState</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">currentDestination </span><span class="s2">= </span><span class="s1">navBackStackEntry?</span><span class="s2">.</span><span class="s1">destination</span>
+    
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">currentDestination</span><span class="s2">) {</span>
+        <span class="s1">currentDestination?</span><span class="s2">.</span><span class="s1">route?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">route </span><span class="s2">-&gt;</span>
+            <span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">AppDiagnosticLogger</span><span class="s2">.</span><span class="s1">log</span><span class="s2">(</span><span class="s4">&quot;NAV&quot;</span><span class="s2">, </span><span class="s4">&quot;Navegação para rota: </span><span class="s0">$</span><span class="s1">route</span><span class="s4">&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Motor de rolagem para o topo sumir</span>
+    <span class="s0">val </span><span class="s1">scrollBehavior </span><span class="s2">= </span><span class="s1">TopAppBarDefaults</span><span class="s2">.</span><span class="s1">enterAlwaysScrollBehavior</span><span class="s2">()</span>
+
+    <span class="s1">Scaffold</span><span class="s2">(</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+            <span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">background</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">nestedScroll</span><span class="s2">(</span><span class="s1">scrollBehavior</span><span class="s2">.</span><span class="s1">nestedScrollConnection</span><span class="s2">), </span><span class="s3">// Conecta o scroll ao TopBar</span>
+        <span class="s1">topBar </span><span class="s2">= {</span>
+            <span class="s0">val </span><span class="s1">route </span><span class="s2">= </span><span class="s1">currentDestination?</span><span class="s2">.</span><span class="s1">route ?: </span><span class="s4">&quot;&quot;</span>
+            <span class="s3">// Mostra o topo apenas se não estiver no visualizador ou reels</span>
+            <span class="s0">if </span><span class="s2">(!</span><span class="s1">route</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;media_viewer&quot;</span><span class="s2">) &amp;&amp; !</span><span class="s1">route</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;reels&quot;</span><span class="s2">) &amp;&amp; !</span><span class="s1">route</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;topic_profile&quot;</span><span class="s2">)) {</span>
+                <span class="s1">CenterAlignedTopAppBar</span><span class="s2">(</span>
+                    <span class="s1">title </span><span class="s2">= {</span>
+                        <span class="s1">Text</span><span class="s2">(</span>
+                            <span class="s1">text </span><span class="s2">= </span><span class="s4">&quot;XS&quot;</span><span class="s2">,</span>
+                            <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">headlineMedium</span><span class="s2">,</span>
+                            <span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">ExtraBold</span><span class="s2">,</span>
+                            <span class="s1">letterSpacing </span><span class="s2">= </span><span class="s5">1</span><span class="s2">.</span><span class="s1">sp</span>
+                        <span class="s2">)</span>
+                    <span class="s2">},</span>
+                    <span class="s1">scrollBehavior </span><span class="s2">= </span><span class="s1">scrollBehavior</span><span class="s2">,</span>
+                    <span class="s1">colors </span><span class="s2">= </span><span class="s1">TopAppBarDefaults</span><span class="s2">.</span><span class="s1">centerAlignedTopAppBarColors</span><span class="s2">(</span>
+                        <span class="s1">containerColor </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Transparent</span><span class="s2">,</span>
+                        <span class="s1">scrolledContainerColor </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Transparent</span><span class="s2">,</span>
+                        <span class="s1">titleContentColor </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onBackground</span>
+                    <span class="s2">)</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">},</span>
+        <span class="s1">bottomBar </span><span class="s2">= {</span>
+            <span class="s0">val </span><span class="s1">route </span><span class="s2">= </span><span class="s1">currentDestination?</span><span class="s2">.</span><span class="s1">route ?: </span><span class="s4">&quot;&quot;</span>
+            <span class="s0">if </span><span class="s2">(!</span><span class="s1">route</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;media_viewer&quot;</span><span class="s2">)) {</span>
+                <span class="s3">// Barra Inferior Compacta (Estilo Instagram)</span>
+                <span class="s1">Surface</span><span class="s2">(</span>
+                    <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">background</span><span class="s2">,</span>
+                    <span class="s1">tonalElevation </span><span class="s2">= </span><span class="s5">0</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">,</span>
+                    <span class="s1">shadowElevation </span><span class="s2">= </span><span class="s5">8</span><span class="s2">.</span><span class="s1">dp</span>
+                <span class="s2">) {</span>
+                    <span class="s1">NavigationBar</span><span class="s2">(</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s5">56</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">), </span><span class="s3">// Reduzido de 80dp para 56dp</span>
+                        <span class="s1">containerColor </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Transparent</span><span class="s2">,</span>
+                        <span class="s1">tonalElevation </span><span class="s2">= </span><span class="s5">0</span><span class="s2">.</span><span class="s1">dp</span>
+                    <span class="s2">) {</span>
+                        <span class="s0">val </span><span class="s1">items </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span>
+                            <span class="s1">Triple</span><span class="s2">(</span><span class="s4">&quot;feed&quot;</span><span class="s2">, </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Outlined</span><span class="s2">.</span><span class="s1">Home</span><span class="s2">, </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Home</span><span class="s2">),</span>
+                            <span class="s1">Triple</span><span class="s2">(</span><span class="s4">&quot;explore&quot;</span><span class="s2">, </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Outlined</span><span class="s2">.</span><span class="s1">Search</span><span class="s2">, </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Search</span><span class="s2">),</span>
+                            <span class="s1">Triple</span><span class="s2">(</span><span class="s4">&quot;reels&quot;</span><span class="s2">, </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Outlined</span><span class="s2">.</span><span class="s1">Movie</span><span class="s2">, </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Movie</span><span class="s2">),</span>
+                            <span class="s1">Triple</span><span class="s2">(</span><span class="s4">&quot;profile&quot;</span><span class="s2">, </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Outlined</span><span class="s2">.</span><span class="s1">Person</span><span class="s2">, </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Person</span><span class="s2">)</span>
+                        <span class="s2">)</span>
+                        
+                        <span class="s1">items</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ (</span><span class="s1">route</span><span class="s2">, </span><span class="s1">icon</span><span class="s2">, </span><span class="s1">selectedIcon</span><span class="s2">) -&gt;</span>
+                            <span class="s0">val </span><span class="s1">isSelected </span><span class="s2">= </span><span class="s1">currentDestination?</span><span class="s2">.</span><span class="s1">route </span><span class="s2">== </span><span class="s1">route</span>
+                            <span class="s1">NavigationBarItem</span><span class="s2">(</span>
+                                <span class="s1">icon </span><span class="s2">= { </span>
+                                    <span class="s1">Icon</span><span class="s2">(</span>
+                                        <span class="s1">imageVector </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">isSelected</span><span class="s2">) </span><span class="s1">selectedIcon </span><span class="s0">else </span><span class="s1">icon</span><span class="s2">,</span>
+                                        <span class="s1">contentDescription </span><span class="s2">= </span><span class="s1">route</span><span class="s2">,</span>
+                                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(</span><span class="s5">24</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                                    <span class="s2">)</span>
+                                <span class="s2">},</span>
+                                <span class="s1">selected </span><span class="s2">= </span><span class="s1">isSelected</span><span class="s2">,</span>
+                                <span class="s1">onClick </span><span class="s2">= { </span>
+                                    <span class="s0">if </span><span class="s2">(</span><span class="s1">isSelected </span><span class="s2">&amp;&amp; </span><span class="s1">route </span><span class="s2">== </span><span class="s4">&quot;feed&quot;</span><span class="s2">) {</span>
+                                        <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">refreshFeed</span><span class="s2">()</span>
+                                        <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">triggerScrollToTop</span><span class="s2">()</span>
+                                    <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s1">route</span><span class="s2">) {</span>
+                                            <span class="s1">popUpTo</span><span class="s2">(</span><span class="s1">navController</span><span class="s2">.</span><span class="s1">graph</span><span class="s2">.</span><span class="s1">startDestinationId</span><span class="s2">)</span>
+                                            <span class="s1">launchSingleTop </span><span class="s2">= </span><span class="s0">true</span>
+                                        <span class="s2">}</span>
+                                    <span class="s2">}</span>
+                                <span class="s2">},</span>
+                                <span class="s1">colors </span><span class="s2">= </span><span class="s1">NavigationBarItemDefaults</span><span class="s2">.</span><span class="s1">colors</span><span class="s2">(</span>
+                                    <span class="s1">indicatorColor </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Transparent</span><span class="s2">,</span>
+                                    <span class="s1">selectedIconColor </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onBackground</span><span class="s2">,</span>
+                                    <span class="s1">unselectedIconColor </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onBackground</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s5">0.5f</span><span class="s2">)</span>
+                                <span class="s2">)</span>
+                            <span class="s2">)</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">) { </span><span class="s1">innerPadding </span><span class="s2">-&gt;</span>
+        <span class="s3">// No Reels e Explore, usamos o padding zero para preencher a tela toda</span>
+        <span class="s0">val </span><span class="s1">route </span><span class="s2">= </span><span class="s1">currentDestination?</span><span class="s2">.</span><span class="s1">route ?: </span><span class="s4">&quot;&quot;</span>
+        <span class="s0">val </span><span class="s1">adjustedPadding </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">route </span><span class="s2">== </span><span class="s4">&quot;reels&quot; </span><span class="s2">|| </span><span class="s1">route</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;media_viewer&quot;</span><span class="s2">)) </span><span class="s1">PaddingValues</span><span class="s2">(</span><span class="s5">0</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">) </span><span class="s0">else </span><span class="s1">innerPadding</span>
+
+        <span class="s1">NavHost</span><span class="s2">(</span>
+            <span class="s1">navController </span><span class="s2">= </span><span class="s1">navController</span><span class="s2">,</span>
+            <span class="s1">startDestination </span><span class="s2">= </span><span class="s4">&quot;feed&quot;</span><span class="s2">,</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">adjustedPadding</span><span class="s2">)</span>
+        <span class="s2">) {</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;feed&quot;</span><span class="s2">) {</span>
+                <span class="s1">FeedScreen</span><span class="s2">(</span>
+                    <span class="s1">viewModel </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">, </span>
+                    <span class="s1">onMediaClick </span><span class="s2">= { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">index </span><span class="s2">-&gt;</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;media_viewer/</span><span class="s0">$</span><span class="s1">index</span><span class="s4">&quot;</span><span class="s2">)</span>
+                    <span class="s2">},</span>
+                    <span class="s1">onProfileClick </span><span class="s2">= { </span><span class="s1">url</span><span class="s2">, </span><span class="s1">title </span><span class="s2">-&gt;</span>
+                        <span class="s0">val </span><span class="s1">encodedUrl </span><span class="s2">= </span><span class="s1">URLEncoder</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">url</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                        <span class="s0">val </span><span class="s1">encodedTitle </span><span class="s2">= </span><span class="s1">URLEncoder</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">title</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;topic_profile/</span><span class="s0">$</span><span class="s1">encodedUrl</span><span class="s4">/</span><span class="s0">$</span><span class="s1">encodedTitle</span><span class="s4">&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;web_add&quot;</span><span class="s2">) {</span>
+                <span class="s1">WebViewScreen</span><span class="s2">(</span>
+                    <span class="s1">onFavoriteClick </span><span class="s2">= { </span><span class="s1">url</span><span class="s2">, </span><span class="s1">title </span><span class="s2">-&gt;</span>
+                        <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">toggleFavorite</span><span class="s2">(</span><span class="s1">url</span><span class="s2">, </span><span class="s1">title</span><span class="s2">)</span>
+                    <span class="s2">},</span>
+                    <span class="s1">onLikeClick </span><span class="s2">= { </span><span class="s1">url</span><span class="s2">, </span><span class="s1">title </span><span class="s2">-&gt;</span>
+                        <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">toggleBlogLike</span><span class="s2">(</span><span class="s1">url</span><span class="s2">, </span><span class="s1">title</span><span class="s2">)</span>
+                    <span class="s2">},</span>
+                    <span class="s1">isFavorite </span><span class="s2">= { </span><span class="s1">url </span><span class="s2">-&gt;</span>
+                        <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">isFavorite</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+                    <span class="s2">},</span>
+                    <span class="s1">isLiked </span><span class="s2">= { </span><span class="s1">url </span><span class="s2">-&gt;</span>
+                        <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">isBlogLiked</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;explore&quot;</span><span class="s2">) {</span>
+                <span class="s1">FeedScreen</span><span class="s2">(</span>
+                    <span class="s1">viewModel </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">, </span>
+                    <span class="s1">isExplore </span><span class="s2">= </span><span class="s0">true</span><span class="s2">,</span>
+                    <span class="s1">onMediaClick </span><span class="s2">= { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">index </span><span class="s2">-&gt;</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;media_viewer/</span><span class="s0">$</span><span class="s1">index</span><span class="s4">&quot;</span><span class="s2">)</span>
+                    <span class="s2">},</span>
+                    <span class="s1">onProfileClick </span><span class="s2">= { </span><span class="s1">url</span><span class="s2">, </span><span class="s1">title </span><span class="s2">-&gt;</span>
+                        <span class="s0">val </span><span class="s1">encodedUrl </span><span class="s2">= </span><span class="s1">URLEncoder</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">url</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                        <span class="s0">val </span><span class="s1">encodedTitle </span><span class="s2">= </span><span class="s1">URLEncoder</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">title</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;topic_profile/</span><span class="s0">$</span><span class="s1">encodedUrl</span><span class="s4">/</span><span class="s0">$</span><span class="s1">encodedTitle</span><span class="s4">&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;settings&quot;</span><span class="s2">) {</span>
+                <span class="s1">SettingsScreen</span><span class="s2">(</span>
+                    <span class="s1">onWebAddClick </span><span class="s2">= { </span><span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;web_add&quot;</span><span class="s2">) }</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;favorites&quot;</span><span class="s2">) {</span>
+                <span class="s1">FavoritesScreen</span><span class="s2">(</span><span class="s1">viewModel</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;reels&quot;</span><span class="s2">) {</span>
+                <span class="s1">ReelsScreen</span><span class="s2">(</span>
+                    <span class="s1">viewModel </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">,</span>
+                    <span class="s1">onProfileClick </span><span class="s2">= { </span><span class="s1">url</span><span class="s2">, </span><span class="s1">title </span><span class="s2">-&gt;</span>
+                        <span class="s0">val </span><span class="s1">encodedUrl </span><span class="s2">= </span><span class="s1">URLEncoder</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">url</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                        <span class="s0">val </span><span class="s1">encodedTitle </span><span class="s2">= </span><span class="s1">URLEncoder</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">title</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;topic_profile/</span><span class="s0">$</span><span class="s1">encodedUrl</span><span class="s4">/</span><span class="s0">$</span><span class="s1">encodedTitle</span><span class="s4">&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;profile&quot;</span><span class="s2">) {</span>
+                <span class="s1">ProfileScreen</span><span class="s2">(</span>
+                    <span class="s1">viewModel </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">,</span>
+                    <span class="s1">onPostClick </span><span class="s2">= { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">index </span><span class="s2">-&gt;</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;media_viewer/</span><span class="s0">$</span><span class="s1">index</span><span class="s4">&quot;</span><span class="s2">)</span>
+                    <span class="s2">},</span>
+                    <span class="s1">onFollowingClick </span><span class="s2">= {</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;following_list&quot;</span><span class="s2">)</span>
+                    <span class="s2">},</span>
+                    <span class="s1">onSettingsClick </span><span class="s2">= {</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;settings&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;following_list&quot;</span><span class="s2">) {</span>
+                <span class="s1">FollowingListScreen</span><span class="s2">(</span>
+                    <span class="s1">viewModel </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">,</span>
+                    <span class="s1">onBack </span><span class="s2">= { </span><span class="s1">navController</span><span class="s2">.</span><span class="s1">popBackStack</span><span class="s2">() },</span>
+                    <span class="s1">onTopicClick </span><span class="s2">= { </span><span class="s1">topic </span><span class="s2">-&gt;</span>
+                        <span class="s0">val </span><span class="s1">encodedUrl </span><span class="s2">= </span><span class="s1">URLEncoder</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">.</span><span class="s1">url</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                        <span class="s0">val </span><span class="s1">encodedTitle </span><span class="s2">= </span><span class="s1">URLEncoder</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">.</span><span class="s1">title</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;topic_profile/</span><span class="s0">$</span><span class="s1">encodedUrl</span><span class="s4">/</span><span class="s0">$</span><span class="s1">encodedTitle</span><span class="s4">&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;topic_profile/{url}/{title}&quot;</span><span class="s2">) { </span><span class="s1">backStackEntry </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">url </span><span class="s2">= </span><span class="s1">java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">URLDecoder</span><span class="s2">.</span><span class="s1">decode</span><span class="s2">(</span><span class="s1">backStackEntry</span><span class="s2">.</span><span class="s1">arguments?</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s4">&quot;url&quot;</span><span class="s2">) </span><span class="s1">?: </span><span class="s4">&quot;&quot;</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                <span class="s0">val </span><span class="s1">title </span><span class="s2">= </span><span class="s1">java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">URLDecoder</span><span class="s2">.</span><span class="s1">decode</span><span class="s2">(</span><span class="s1">backStackEntry</span><span class="s2">.</span><span class="s1">arguments?</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s4">&quot;title&quot;</span><span class="s2">) </span><span class="s1">?: </span><span class="s4">&quot;&quot;</span><span class="s2">, </span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                <span class="s1">TopicProfileScreen</span><span class="s2">(</span>
+                    <span class="s1">viewModel </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">,</span>
+                    <span class="s1">topicUrl </span><span class="s2">= </span><span class="s1">url</span><span class="s2">,</span>
+                    <span class="s1">topicTitle </span><span class="s2">= </span><span class="s1">title</span><span class="s2">,</span>
+                    <span class="s1">onBack </span><span class="s2">= { </span><span class="s1">navController</span><span class="s2">.</span><span class="s1">popBackStack</span><span class="s2">() },</span>
+                    <span class="s1">onPostClick </span><span class="s2">= { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">index </span><span class="s2">-&gt;</span>
+                        <span class="s1">navController</span><span class="s2">.</span><span class="s1">navigate</span><span class="s2">(</span><span class="s4">&quot;media_viewer/</span><span class="s0">$</span><span class="s1">index</span><span class="s4">&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">composable</span><span class="s2">(</span><span class="s4">&quot;media_viewer/{index}&quot;</span><span class="s2">) { </span><span class="s1">backStackEntry </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">index </span><span class="s2">= </span><span class="s1">backStackEntry</span><span class="s2">.</span><span class="s1">arguments?</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s4">&quot;index&quot;</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">toIntOrNull</span><span class="s2">() </span><span class="s1">?: </span><span class="s5">0</span>
+                <span class="s1">MediaViewerScreen</span><span class="s2">(</span>
+                    <span class="s1">viewModel </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">,</span>
+                    <span class="s1">initialIndex </span><span class="s2">= </span><span class="s1">index</span><span class="s2">,</span>
+                    <span class="s1">onBack </span><span class="s2">= { </span><span class="s1">navController</span><span class="s2">.</span><span class="s1">popBackStack</span><span class="s2">() }</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

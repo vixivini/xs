@@ -1,0 +1,114 @@
+<html>
+<head>
+<title>VideoDownloaderManager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #7a7e85;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+VideoDownloaderManager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.*</span>
+<span class="s1">import okhttp3</span><span class="s2">.</span><span class="s1">OkHttpClient</span>
+<span class="s1">import okhttp3</span><span class="s2">.</span><span class="s1">Request</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">File</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">FileOutputStream</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">InputStream</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">UUID</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">concurrent</span><span class="s2">.</span><span class="s1">ConcurrentHashMap</span>
+
+<span class="s0">object </span><span class="s1">VideoDownloaderManager </span><span class="s2">{</span>
+    
+    <span class="s1">private const </span><span class="s0">val </span><span class="s1">TEMP_DIR </span><span class="s2">= </span><span class="s3">&quot;temp_videos&quot;</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">downloadingJobs </span><span class="s2">= </span><span class="s1">ConcurrentHashMap</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">Deferred</span><span class="s2">&lt;</span><span class="s1">Uri?</span><span class="s2">&gt;&gt;()</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Faz o download do vídeo para um arquivo temporário e retorna a URI local.</span>
+     <span class="s4">* Estilo JDownloader: Baixa o conteúdo bruto para evitar problemas de streaming.</span>
+     <span class="s4">*/</span>
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">downloadToTempFile</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">okHttpClient: OkHttpClient</span><span class="s2">)</span><span class="s1">: Uri? </span><span class="s2">= </span><span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+        <span class="s5">// Se já existe um trabalho de download para esta URL, apenas espera ele</span>
+        <span class="s0">val </span><span class="s1">existingJob </span><span class="s2">= </span><span class="s1">downloadingJobs</span><span class="s2">[</span><span class="s1">url</span><span class="s2">]</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">existingJob </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">return</span><span class="s1">@withContext existingJob</span><span class="s2">.</span><span class="s1">await</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">job </span><span class="s2">= </span><span class="s1">async </span><span class="s2">{</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">tempDir </span><span class="s2">= </span><span class="s1">File</span><span class="s2">(</span><span class="s1">context</span><span class="s2">.</span><span class="s1">cacheDir</span><span class="s2">, </span><span class="s1">TEMP_DIR</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(!</span><span class="s1">tempDir</span><span class="s2">.</span><span class="s1">exists</span><span class="s2">()) </span><span class="s1">tempDir</span><span class="s2">.</span><span class="s1">mkdirs</span><span class="s2">()</span>
+
+                <span class="s0">val </span><span class="s1">fileName </span><span class="s2">= </span><span class="s1">UUID</span><span class="s2">.</span><span class="s1">nameUUIDFromBytes</span><span class="s2">(</span><span class="s1">url</span><span class="s2">.</span><span class="s1">toByteArray</span><span class="s2">()).</span><span class="s1">toString</span><span class="s2">() + </span><span class="s3">&quot;.mp4&quot;</span>
+                <span class="s0">val </span><span class="s1">file </span><span class="s2">= </span><span class="s1">File</span><span class="s2">(</span><span class="s1">tempDir</span><span class="s2">, </span><span class="s1">fileName</span><span class="s2">)</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">file</span><span class="s2">.</span><span class="s1">exists</span><span class="s2">() &amp;&amp; </span><span class="s1">file</span><span class="s2">.</span><span class="s1">length</span><span class="s2">() &gt; </span><span class="s6">0</span><span class="s2">) </span><span class="s0">return</span><span class="s1">@async Uri</span><span class="s2">.</span><span class="s1">fromFile</span><span class="s2">(</span><span class="s1">file</span><span class="s2">)</span>
+
+                <span class="s0">val </span><span class="s1">request </span><span class="s2">= </span><span class="s1">Request</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">()</span>
+                    <span class="s2">.</span><span class="s1">url</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s3">&quot;User-Agent&quot;</span><span class="s2">, </span><span class="s1">Constants</span><span class="s2">.</span><span class="s1">USER_AGENT</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s3">&quot;Referer&quot;</span><span class="s2">, </span><span class="s1">MediaUtils</span><span class="s2">.</span><span class="s1">getReferer</span><span class="s2">(</span><span class="s1">url</span><span class="s2">))</span>
+                    <span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s3">&quot;Origin&quot;</span><span class="s2">, </span><span class="s0">if </span><span class="s2">(</span><span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;turbo.cr&quot;</span><span class="s2">)) </span><span class="s3">&quot;https://turbo.cr&quot; </span><span class="s0">else </span><span class="s3">&quot;https://simpcity.cr&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">build</span><span class="s2">()</span>
+
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;VideoDownloader&quot;</span><span class="s2">, </span><span class="s3">&quot;Iniciando download em massa: </span><span class="s0">$</span><span class="s1">url</span><span class="s3">&quot;</span><span class="s2">)</span>
+                
+                <span class="s1">okHttpClient</span><span class="s2">.</span><span class="s1">newCall</span><span class="s2">(</span><span class="s1">request</span><span class="s2">).</span><span class="s1">execute</span><span class="s2">().</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">response </span><span class="s2">-&gt;</span>
+                    <span class="s0">if </span><span class="s2">(!</span><span class="s1">response</span><span class="s2">.</span><span class="s1">isSuccessful</span><span class="s2">) </span><span class="s0">return</span><span class="s1">@async </span><span class="s0">null</span>
+                    
+                    <span class="s0">val </span><span class="s1">contentType </span><span class="s2">= </span><span class="s1">response</span><span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s3">&quot;Content-Type&quot;</span><span class="s2">) </span><span class="s1">?: </span><span class="s3">&quot;&quot;</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">contentType</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;text/html&quot;</span><span class="s2">)) </span><span class="s0">return</span><span class="s1">@async </span><span class="s0">null</span>
+                    
+                    <span class="s0">val </span><span class="s1">body </span><span class="s2">= </span><span class="s1">response</span><span class="s2">.</span><span class="s1">body ?: </span><span class="s0">return</span><span class="s1">@async </span><span class="s0">null</span>
+                    <span class="s1">FileOutputStream</span><span class="s2">(</span><span class="s1">file</span><span class="s2">).</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">outputStream </span><span class="s2">-&gt;</span>
+                        <span class="s0">val </span><span class="s1">inputStream: InputStream </span><span class="s2">= </span><span class="s1">body</span><span class="s2">.</span><span class="s1">byteStream</span><span class="s2">()</span>
+                        <span class="s0">val </span><span class="s1">buffer </span><span class="s2">= </span><span class="s1">ByteArray</span><span class="s2">(</span><span class="s6">8192</span><span class="s2">)</span>
+                        <span class="s0">var </span><span class="s1">bytesRead: Int</span>
+                        <span class="s0">while </span><span class="s2">(</span><span class="s1">inputStream</span><span class="s2">.</span><span class="s1">read</span><span class="s2">(</span><span class="s1">buffer</span><span class="s2">).</span><span class="s1">also </span><span class="s2">{ </span><span class="s1">bytesRead </span><span class="s2">= </span><span class="s1">it </span><span class="s2">} != -</span><span class="s6">1</span><span class="s2">) {</span>
+                            <span class="s1">outputStream</span><span class="s2">.</span><span class="s1">write</span><span class="s2">(</span><span class="s1">buffer</span><span class="s2">, </span><span class="s6">0</span><span class="s2">, </span><span class="s1">bytesRead</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                    
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;VideoDownloader&quot;</span><span class="s2">, </span><span class="s3">&quot;Download concluído: </span><span class="s0">$</span><span class="s1">url</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s1">Uri</span><span class="s2">.</span><span class="s1">fromFile</span><span class="s2">(</span><span class="s1">file</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+                <span class="s0">null</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        
+        <span class="s1">downloadingJobs</span><span class="s2">[</span><span class="s1">url</span><span class="s2">] = </span><span class="s1">job</span>
+        <span class="s0">val </span><span class="s1">result </span><span class="s2">= </span><span class="s1">job</span><span class="s2">.</span><span class="s1">await</span><span class="s2">()</span>
+        <span class="s5">// Removemos do mapa apenas após a conclusão para servir de cache de job para outros chamadores</span>
+        <span class="s0">return</span><span class="s1">@withContext result</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">deleteFile</span><span class="s2">(</span><span class="s1">uri: Uri</span><span class="s2">) {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">file </span><span class="s2">= </span><span class="s1">File</span><span class="s2">(</span><span class="s1">uri</span><span class="s2">.</span><span class="s1">path ?: </span><span class="s0">return</span><span class="s2">)</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">file</span><span class="s2">.</span><span class="s1">exists</span><span class="s2">() &amp;&amp; </span><span class="s1">file</span><span class="s2">.</span><span class="s1">absolutePath</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">TEMP_DIR</span><span class="s2">)) {</span>
+                <span class="s1">file</span><span class="s2">.</span><span class="s1">delete</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

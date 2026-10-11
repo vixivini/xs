@@ -1,0 +1,79 @@
+<html>
+<head>
+<title>Theme.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Theme.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">theme</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">Activity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">isSystemInDarkTheme</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">MaterialTheme</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">darkColorScheme</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">lightColorScheme</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">SideEffect</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">toArgb</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">platform</span><span class="s2">.</span><span class="s1">LocalView</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">WindowCompat</span>
+
+<span class="s1">private </span><span class="s0">val </span><span class="s1">DarkColorScheme </span><span class="s2">= </span><span class="s1">darkColorScheme</span><span class="s2">(</span>
+    <span class="s1">primary </span><span class="s2">= </span><span class="s1">InstagramBlue</span><span class="s2">,</span>
+    <span class="s1">secondary </span><span class="s2">= </span><span class="s1">InstagramSecondaryText</span><span class="s2">,</span>
+    <span class="s1">tertiary </span><span class="s2">= </span><span class="s1">InstagramBlue</span><span class="s2">,</span>
+    <span class="s1">background </span><span class="s2">= </span><span class="s1">InstagramBlack</span><span class="s2">,</span>
+    <span class="s1">surface </span><span class="s2">= </span><span class="s1">InstagramBlack</span><span class="s2">,</span>
+    <span class="s1">onPrimary </span><span class="s2">= </span><span class="s1">InstagramWhite</span><span class="s2">,</span>
+    <span class="s1">onSecondary </span><span class="s2">= </span><span class="s1">InstagramWhite</span><span class="s2">,</span>
+    <span class="s1">onBackground </span><span class="s2">= </span><span class="s1">InstagramWhite</span><span class="s2">,</span>
+    <span class="s1">onSurface </span><span class="s2">= </span><span class="s1">InstagramWhite</span>
+<span class="s2">)</span>
+
+<span class="s1">private </span><span class="s0">val </span><span class="s1">LightColorScheme </span><span class="s2">= </span><span class="s1">lightColorScheme</span><span class="s2">(</span>
+    <span class="s1">primary </span><span class="s2">= </span><span class="s1">InstagramBlue</span><span class="s2">,</span>
+    <span class="s1">secondary </span><span class="s2">= </span><span class="s1">InstagramSecondaryText</span><span class="s2">,</span>
+    <span class="s1">tertiary </span><span class="s2">= </span><span class="s1">InstagramBlue</span><span class="s2">,</span>
+    <span class="s1">background </span><span class="s2">= </span><span class="s1">InstagramWhite</span><span class="s2">,</span>
+    <span class="s1">surface </span><span class="s2">= </span><span class="s1">InstagramWhite</span><span class="s2">,</span>
+    <span class="s1">onPrimary </span><span class="s2">= </span><span class="s1">InstagramWhite</span><span class="s2">,</span>
+    <span class="s1">onSecondary </span><span class="s2">= </span><span class="s1">InstagramBlack</span><span class="s2">,</span>
+    <span class="s1">onBackground </span><span class="s2">= </span><span class="s1">InstagramBlack</span><span class="s2">,</span>
+    <span class="s1">onSurface </span><span class="s2">= </span><span class="s1">InstagramBlack</span>
+<span class="s2">)</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">XsTheme</span><span class="s2">(</span>
+    <span class="s1">darkTheme: Boolean </span><span class="s2">= </span><span class="s1">isSystemInDarkTheme</span><span class="s2">(),</span>
+    <span class="s1">content: @Composable </span><span class="s2">() -&gt; </span><span class="s1">Unit</span>
+<span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">colorScheme </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">darkTheme</span><span class="s2">) </span><span class="s1">DarkColorScheme </span><span class="s0">else </span><span class="s1">LightColorScheme</span>
+    <span class="s0">val </span><span class="s1">view </span><span class="s2">= </span><span class="s1">LocalView</span><span class="s2">.</span><span class="s1">current</span>
+    
+    <span class="s0">if </span><span class="s2">(!</span><span class="s1">view</span><span class="s2">.</span><span class="s1">isInEditMode</span><span class="s2">) {</span>
+        <span class="s1">SideEffect </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">window </span><span class="s2">= (</span><span class="s1">view</span><span class="s2">.</span><span class="s1">context </span><span class="s0">as </span><span class="s1">Activity</span><span class="s2">).</span><span class="s1">window</span>
+            <span class="s1">window</span><span class="s2">.</span><span class="s1">statusBarColor </span><span class="s2">= </span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">background</span><span class="s2">.</span><span class="s1">toArgb</span><span class="s2">()</span>
+            <span class="s1">WindowCompat</span><span class="s2">.</span><span class="s1">getInsetsController</span><span class="s2">(</span><span class="s1">window</span><span class="s2">, </span><span class="s1">view</span><span class="s2">).</span><span class="s1">isAppearanceLightStatusBars </span><span class="s2">= !</span><span class="s1">darkTheme</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">MaterialTheme</span><span class="s2">(</span>
+        <span class="s1">colorScheme </span><span class="s2">= </span><span class="s1">colorScheme</span><span class="s2">,</span>
+        <span class="s1">typography </span><span class="s2">= </span><span class="s1">Typography</span><span class="s2">,</span>
+        <span class="s1">content </span><span class="s2">= </span><span class="s1">content</span>
+    <span class="s2">)</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

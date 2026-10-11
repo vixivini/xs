@@ -1,0 +1,77 @@
+<html>
+<head>
+<title>SettingsManager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SettingsManager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">ConnectivityManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">NetworkCapabilities</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">datastore</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">DataStore</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">datastore</span><span class="s2">.</span><span class="s1">preferences</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">Preferences</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">datastore</span><span class="s2">.</span><span class="s1">preferences</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">booleanPreferencesKey</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">datastore</span><span class="s2">.</span><span class="s1">preferences</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">edit</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">datastore</span><span class="s2">.</span><span class="s1">preferences</span><span class="s2">.</span><span class="s1">preferencesDataStore</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">flow</span><span class="s2">.</span><span class="s1">Flow</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">flow</span><span class="s2">.</span><span class="s1">map</span>
+
+<span class="s1">private </span><span class="s0">val </span><span class="s1">Context</span><span class="s2">.</span><span class="s1">dataStore: DataStore</span><span class="s2">&lt;</span><span class="s1">Preferences</span><span class="s2">&gt; </span><span class="s1">by preferencesDataStore</span><span class="s2">(</span><span class="s1">name </span><span class="s2">= </span><span class="s3">&quot;settings&quot;</span><span class="s2">)</span>
+
+<span class="s0">class </span><span class="s1">SettingsManager</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">) {</span>
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">WIFI_ONLY_PRELOAD </span><span class="s2">= </span><span class="s1">booleanPreferencesKey</span><span class="s2">(</span><span class="s3">&quot;wifi_only_preload&quot;</span><span class="s2">)</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">PROFILE_PICTURE_URI </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">datastore</span><span class="s2">.</span><span class="s1">preferences</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">stringPreferencesKey</span><span class="s2">(</span><span class="s3">&quot;profile_picture_uri&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">wifiOnlyPreload: Flow</span><span class="s2">&lt;</span><span class="s1">Boolean</span><span class="s2">&gt; = </span><span class="s1">context</span><span class="s2">.</span><span class="s1">dataStore</span><span class="s2">.</span><span class="s1">data</span>
+        <span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">preferences </span><span class="s2">-&gt;</span>
+            <span class="s1">preferences</span><span class="s2">[</span><span class="s1">WIFI_ONLY_PRELOAD</span><span class="s2">] </span><span class="s1">?: </span><span class="s0">false</span>
+        <span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">profilePictureUri: Flow</span><span class="s2">&lt;</span><span class="s1">String?</span><span class="s2">&gt; = </span><span class="s1">context</span><span class="s2">.</span><span class="s1">dataStore</span><span class="s2">.</span><span class="s1">data</span>
+        <span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">preferences </span><span class="s2">-&gt;</span>
+            <span class="s1">preferences</span><span class="s2">[</span><span class="s1">PROFILE_PICTURE_URI</span><span class="s2">]</span>
+        <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">setProfilePictureUri</span><span class="s2">(</span><span class="s1">uri: String?</span><span class="s2">) {</span>
+        <span class="s1">context</span><span class="s2">.</span><span class="s1">dataStore</span><span class="s2">.</span><span class="s1">edit </span><span class="s2">{ </span><span class="s1">preferences </span><span class="s2">-&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">uri </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">preferences</span><span class="s2">.</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">PROFILE_PICTURE_URI</span><span class="s2">)</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">preferences</span><span class="s2">[</span><span class="s1">PROFILE_PICTURE_URI</span><span class="s2">] = </span><span class="s1">uri</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">setWifiOnlyPreload</span><span class="s2">(</span><span class="s1">enabled: Boolean</span><span class="s2">) {</span>
+        <span class="s1">context</span><span class="s2">.</span><span class="s1">dataStore</span><span class="s2">.</span><span class="s1">edit </span><span class="s2">{ </span><span class="s1">preferences </span><span class="s2">-&gt;</span>
+            <span class="s1">preferences</span><span class="s2">[</span><span class="s1">WIFI_ONLY_PRELOAD</span><span class="s2">] = </span><span class="s1">enabled</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">shouldPreload</span><span class="s2">(</span><span class="s1">isWifiOnly: Boolean</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">isWifiOnly</span><span class="s2">) </span><span class="s0">return true</span>
+        
+        <span class="s0">val </span><span class="s1">connectivityManager </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">CONNECTIVITY_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">ConnectivityManager</span>
+        <span class="s0">val </span><span class="s1">network </span><span class="s2">= </span><span class="s1">connectivityManager</span><span class="s2">.</span><span class="s1">activeNetwork ?: </span><span class="s0">return false</span>
+        <span class="s0">val </span><span class="s1">capabilities </span><span class="s2">= </span><span class="s1">connectivityManager</span><span class="s2">.</span><span class="s1">getNetworkCapabilities</span><span class="s2">(</span><span class="s1">network</span><span class="s2">) </span><span class="s1">?: </span><span class="s0">return false</span>
+        
+        <span class="s0">return </span><span class="s1">capabilities</span><span class="s2">.</span><span class="s1">hasTransport</span><span class="s2">(</span><span class="s1">NetworkCapabilities</span><span class="s2">.</span><span class="s1">TRANSPORT_WIFI</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

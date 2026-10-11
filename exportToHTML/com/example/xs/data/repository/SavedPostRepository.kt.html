@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>SavedPostRepository.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SavedPostRepository.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">repository</span>
+
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">local</span><span class="s2">.</span><span class="s1">SavedPostDao</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">MediaPost</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">SavedPost</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">flow</span><span class="s2">.</span><span class="s1">Flow</span>
+
+<span class="s0">class </span><span class="s1">SavedPostRepository</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">savedPostDao: SavedPostDao</span><span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">allSavedPosts: Flow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">SavedPost</span><span class="s2">&gt;&gt; = </span><span class="s1">savedPostDao</span><span class="s2">.</span><span class="s1">getAllSavedPosts</span><span class="s2">()</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">savePost</span><span class="s2">(</span><span class="s1">post: MediaPost</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">savedPost </span><span class="s2">= </span><span class="s1">SavedPost</span><span class="s2">(</span>
+            <span class="s1">id </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">id</span><span class="s2">,</span>
+            <span class="s1">author </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">author</span><span class="s2">,</span>
+            <span class="s1">contentHtml </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">contentHtml</span><span class="s2">,</span>
+            <span class="s1">mediaUrls </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">,</span>
+            <span class="s1">externalLinks </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">externalLinks</span><span class="s2">,</span>
+            <span class="s1">timestamp </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">timestamp</span><span class="s2">,</span>
+            <span class="s1">topicTitle </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">topicTitle</span><span class="s2">,</span>
+            <span class="s1">postUrl </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span>
+        <span class="s2">)</span>
+        <span class="s1">insertSavedPost</span><span class="s2">(</span><span class="s1">savedPost</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">insertSavedPost</span><span class="s2">(</span><span class="s1">post: SavedPost</span><span class="s2">) {</span>
+        <span class="s1">savedPostDao</span><span class="s2">.</span><span class="s1">insertSavedPost</span><span class="s2">(</span><span class="s1">post</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">unsavePost</span><span class="s2">(</span><span class="s1">postId: String</span><span class="s2">) {</span>
+        <span class="s3">// We need the object to delete it, or we can add a deleteById in DAO</span>
+        <span class="s3">// For simplicity, let's assume we handle deletion by object in ViewModel</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">deleteSavedPost</span><span class="s2">(</span><span class="s1">post: SavedPost</span><span class="s2">) {</span>
+        <span class="s1">savedPostDao</span><span class="s2">.</span><span class="s1">deleteSavedPost</span><span class="s2">(</span><span class="s1">post</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">isSaved</span><span class="s2">(</span><span class="s1">postId: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">savedPostDao</span><span class="s2">.</span><span class="s1">isSaved</span><span class="s2">(</span><span class="s1">postId</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

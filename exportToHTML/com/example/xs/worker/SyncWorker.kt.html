@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>SyncWorker.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SyncWorker.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">worker</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">work</span><span class="s2">.</span><span class="s1">CoroutineWorker</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">work</span><span class="s2">.</span><span class="s1">WorkerParameters</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">XsApplication</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">local</span><span class="s2">.</span><span class="s1">AppDatabase</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">FavoriteRepository</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">MediaScraperRepository</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">ScrapeResult</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">NotificationHelper</span>
+
+<span class="s0">class </span><span class="s1">SyncWorker</span><span class="s2">(</span>
+    <span class="s1">context: Context</span><span class="s2">,</span>
+    <span class="s1">workerParams: WorkerParameters</span>
+<span class="s2">) </span><span class="s1">: CoroutineWorker</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">workerParams</span><span class="s2">) {</span>
+
+    <span class="s1">override suspend </span><span class="s0">fun </span><span class="s1">doWork</span><span class="s2">()</span><span class="s1">: Result </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">database </span><span class="s2">= </span><span class="s1">AppDatabase</span><span class="s2">.</span><span class="s1">getDatabase</span><span class="s2">(</span><span class="s1">applicationContext</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">favoriteRepository </span><span class="s2">= </span><span class="s1">FavoriteRepository</span><span class="s2">(</span><span class="s1">database</span><span class="s2">.</span><span class="s1">favoriteTopicDao</span><span class="s2">())</span>
+        <span class="s0">val </span><span class="s1">okHttpClient </span><span class="s2">= (</span><span class="s1">applicationContext </span><span class="s0">as </span><span class="s1">XsApplication</span><span class="s2">).</span><span class="s1">okHttpClient</span>
+        <span class="s0">val </span><span class="s1">scraperRepository </span><span class="s2">= </span><span class="s1">MediaScraperRepository</span><span class="s2">(</span><span class="s1">okHttpClient</span><span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">favorites </span><span class="s2">= </span><span class="s1">database</span><span class="s2">.</span><span class="s1">favoriteTopicDao</span><span class="s2">().</span><span class="s1">getAllFavoritesOnce</span><span class="s2">()</span>
+        <span class="s0">var </span><span class="s1">hasNewContent </span><span class="s2">= </span><span class="s0">false</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">topic </span><span class="s0">in </span><span class="s1">favorites</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">result </span><span class="s2">= </span><span class="s1">scraperRepository</span><span class="s2">.</span><span class="s1">fetchMediaFromTopic</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">.</span><span class="s1">url</span><span class="s2">, </span><span class="s1">topic</span><span class="s2">.</span><span class="s1">title</span><span class="s2">)</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">result </span><span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">Success</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">latestPost </span><span class="s2">= </span><span class="s1">result</span><span class="s2">.</span><span class="s1">posts</span><span class="s2">.</span><span class="s1">maxByOrNull </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">timestamp </span><span class="s2">}</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">latestPost </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">latestPost</span><span class="s2">.</span><span class="s1">id </span><span class="s2">!= </span><span class="s1">topic</span><span class="s2">.</span><span class="s1">lastPostId</span><span class="s2">) {</span>
+                    <span class="s1">favoriteRepository</span><span class="s2">.</span><span class="s1">updateLastPostId</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">.</span><span class="s1">url</span><span class="s2">, </span><span class="s1">latestPost</span><span class="s2">.</span><span class="s1">id</span><span class="s2">)</span>
+                    <span class="s1">hasNewContent </span><span class="s2">= </span><span class="s0">true</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Trigger notification if hasNewContent is true</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">hasNewContent</span><span class="s2">) {</span>
+            <span class="s1">NotificationHelper</span><span class="s2">(</span><span class="s1">applicationContext</span><span class="s2">).</span><span class="s1">showNotification</span><span class="s2">(</span>
+                <span class="s4">&quot;Novas atualizações&quot;</span><span class="s2">,</span>
+                <span class="s4">&quot;Há novos conteúdos nos seus tópicos favoritos!&quot;</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">Result</span><span class="s2">.</span><span class="s1">success</span><span class="s2">()</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

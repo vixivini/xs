@@ -1,0 +1,98 @@
+<html>
+<head>
+<title>VideoPreloader.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #7a7e85;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+VideoPreloader.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">OptIn</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">common</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">UnstableApi</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">datasource</span><span class="s2">.</span><span class="s1">DefaultHttpDataSource</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">datasource</span><span class="s2">.</span><span class="s1">cache</span><span class="s2">.</span><span class="s1">CacheDataSource</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">datasource</span><span class="s2">.</span><span class="s1">cache</span><span class="s2">.</span><span class="s1">CacheWriter</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">exoplayer</span><span class="s2">.</span><span class="s1">offline</span><span class="s2">.</span><span class="s1">DownloadHelper</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">XsApplication</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">GlobalScope</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Job</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">concurrent</span><span class="s2">.</span><span class="s1">ConcurrentHashMap</span>
+
+<span class="s1">@OptIn</span><span class="s2">(</span><span class="s1">UnstableApi::</span><span class="s0">class</span><span class="s2">)</span>
+<span class="s0">object </span><span class="s1">VideoPreloader </span><span class="s2">{</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">activeJobs </span><span class="s2">= </span><span class="s1">ConcurrentHashMap</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">Job</span><span class="s2">&gt;()</span>
+    <span class="s1">private const </span><span class="s0">val </span><span class="s1">PRELOAD_SIZE </span><span class="s2">= </span><span class="s3">2 </span><span class="s2">* </span><span class="s3">1024 </span><span class="s2">* </span><span class="s3">1024L </span><span class="s4">// 2MB por vídeo para início instantâneo</span>
+
+    <span class="s0">fun </span><span class="s1">preload</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">url: String</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">activeJobs</span><span class="s2">.</span><span class="s1">containsKey</span><span class="s2">(</span><span class="s1">url</span><span class="s2">) || </span><span class="s1">isVideoCached</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">url</span><span class="s2">)) </span><span class="s0">return</span>
+
+        <span class="s0">val </span><span class="s1">job </span><span class="s2">= </span><span class="s1">GlobalScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">cache </span><span class="s2">= </span><span class="s1">VideoCache</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">upstreamDataSource </span><span class="s2">= </span><span class="s1">DefaultHttpDataSource</span><span class="s2">.</span><span class="s1">Factory</span><span class="s2">()</span>
+                    <span class="s2">.</span><span class="s1">setUserAgent</span><span class="s2">(</span><span class="s1">Constants</span><span class="s2">.</span><span class="s1">USER_AGENT</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">setDefaultRequestProperties</span><span class="s2">(</span><span class="s1">mapOf</span><span class="s2">(</span><span class="s5">&quot;Referer&quot; </span><span class="s1">to getReferer</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)))</span>
+                    <span class="s2">.</span><span class="s1">createDataSource</span><span class="s2">()</span>
+
+                <span class="s0">val </span><span class="s1">dataSource </span><span class="s2">= </span><span class="s1">CacheDataSource</span><span class="s2">.</span><span class="s1">Factory</span><span class="s2">()</span>
+                    <span class="s2">.</span><span class="s1">setCache</span><span class="s2">(</span><span class="s1">cache</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">setUpstreamDataSourceFactory </span><span class="s2">{ </span><span class="s1">upstreamDataSource </span><span class="s2">}</span>
+                    <span class="s2">.</span><span class="s1">createDataSource</span><span class="s2">()</span>
+
+                <span class="s0">val </span><span class="s1">dataSpec </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">datasource</span><span class="s2">.</span><span class="s1">DataSpec</span><span class="s2">(</span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s1">url</span><span class="s2">), </span><span class="s3">0</span><span class="s2">, </span><span class="s1">PRELOAD_SIZE</span><span class="s2">)</span>
+                
+                <span class="s1">CacheWriter</span><span class="s2">(</span>
+                    <span class="s1">dataSource</span><span class="s2">,</span>
+                    <span class="s1">dataSpec</span><span class="s2">,</span>
+                    <span class="s0">null</span>
+                <span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt; </span>
+                    <span class="s4">// Progresso opcional</span>
+                <span class="s2">}.</span><span class="s1">cache</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s1">finally </span><span class="s2">{</span>
+                <span class="s1">activeJobs</span><span class="s2">.</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">activeJobs</span><span class="s2">[</span><span class="s1">url</span><span class="s2">] = </span><span class="s1">job</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">isVideoCached</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">cache </span><span class="s2">= </span><span class="s1">VideoCache</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">cache</span><span class="s2">.</span><span class="s1">isCached</span><span class="s2">(</span><span class="s1">url</span><span class="s2">, </span><span class="s3">0</span><span class="s2">, </span><span class="s1">PRELOAD_SIZE</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">getReferer</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">return when </span><span class="s2">{</span>
+            <span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s5">&quot;bunkr&quot;</span><span class="s2">) || </span><span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s5">&quot;b-cdn.net&quot;</span><span class="s2">) -&gt; </span><span class="s5">&quot;https://bunkr.is/&quot;</span>
+            <span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s5">&quot;gofile&quot;</span><span class="s2">) -&gt; </span><span class="s5">&quot;https://gofile.io/&quot;</span>
+            <span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s5">&quot;pixeldrain&quot;</span><span class="s2">) -&gt; </span><span class="s5">&quot;https://pixeldrain.com/&quot;</span>
+            <span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s5">&quot;turbo.cr&quot;</span><span class="s2">) -&gt; </span><span class="s5">&quot;https://simpcity.cr/&quot;</span>
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s5">&quot;https://simpcity.cr/&quot;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+    
+    <span class="s0">fun </span><span class="s1">cancelAll</span><span class="s2">() {</span>
+        <span class="s1">activeJobs</span><span class="s2">.</span><span class="s1">values</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">cancel</span><span class="s2">() }</span>
+        <span class="s1">activeJobs</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

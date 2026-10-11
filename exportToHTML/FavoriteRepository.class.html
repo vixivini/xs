@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>FavoriteRepository.class</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FavoriteRepository.class</font>
+</center></td></tr></table>
+<pre><span class="s0">// IntelliJ API Decompiler stub source generated from a class file</span>
+<span class="s0">// Implementation of methods is not available</span>
+
+<span class="s2">package </span><span class="s1">com</span><span class="s3">.</span><span class="s1">example</span><span class="s3">.</span><span class="s1">xs</span><span class="s3">.</span><span class="s1">data</span><span class="s3">.</span><span class="s1">repository</span>
+
+<span class="s1">@androidx</span><span class="s3">.</span><span class="s1">compose</span><span class="s3">.</span><span class="s1">runtime</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">StabilityInferred public final </span><span class="s2">class </span><span class="s1">FavoriteRepository public constructor</span><span class="s3">(</span><span class="s1">favoriteTopicDao: com</span><span class="s3">.</span><span class="s1">example</span><span class="s3">.</span><span class="s1">xs</span><span class="s3">.</span><span class="s1">data</span><span class="s3">.</span><span class="s1">local</span><span class="s3">.</span><span class="s1">FavoriteTopicDao</span><span class="s3">) {</span>
+    <span class="s1">private final </span><span class="s2">val </span><span class="s1">favoriteTopicDao: com</span><span class="s3">.</span><span class="s1">example</span><span class="s3">.</span><span class="s1">xs</span><span class="s3">.</span><span class="s1">data</span><span class="s3">.</span><span class="s1">local</span><span class="s3">.</span><span class="s1">FavoriteTopicDao </span><span class="s0">/* compiled code */</span>
+
+    <span class="s1">public final </span><span class="s2">val </span><span class="s1">allFavorites: kotlinx</span><span class="s3">.</span><span class="s1">coroutines</span><span class="s3">.</span><span class="s1">flow</span><span class="s3">.</span><span class="s1">Flow</span><span class="s3">&lt;</span><span class="s1">kotlin</span><span class="s3">.</span><span class="s1">collections</span><span class="s3">.</span><span class="s1">List</span><span class="s3">&lt;</span><span class="s1">com</span><span class="s3">.</span><span class="s1">example</span><span class="s3">.</span><span class="s1">xs</span><span class="s3">.</span><span class="s1">data</span><span class="s3">.</span><span class="s1">model</span><span class="s3">.</span><span class="s1">FavoriteTopic</span><span class="s3">&gt;&gt; </span><span class="s0">/* compiled code */</span>
+
+    <span class="s1">public final </span><span class="s2">val </span><span class="s1">followedFavorites: kotlinx</span><span class="s3">.</span><span class="s1">coroutines</span><span class="s3">.</span><span class="s1">flow</span><span class="s3">.</span><span class="s1">Flow</span><span class="s3">&lt;</span><span class="s1">kotlin</span><span class="s3">.</span><span class="s1">collections</span><span class="s3">.</span><span class="s1">List</span><span class="s3">&lt;</span><span class="s1">com</span><span class="s3">.</span><span class="s1">example</span><span class="s3">.</span><span class="s1">xs</span><span class="s3">.</span><span class="s1">data</span><span class="s3">.</span><span class="s1">model</span><span class="s3">.</span><span class="s1">FavoriteTopic</span><span class="s3">&gt;&gt; </span><span class="s0">/* compiled code */</span>
+
+    <span class="s1">public final </span><span class="s2">val </span><span class="s1">exploreFavorites: kotlinx</span><span class="s3">.</span><span class="s1">coroutines</span><span class="s3">.</span><span class="s1">flow</span><span class="s3">.</span><span class="s1">Flow</span><span class="s3">&lt;</span><span class="s1">kotlin</span><span class="s3">.</span><span class="s1">collections</span><span class="s3">.</span><span class="s1">List</span><span class="s3">&lt;</span><span class="s1">com</span><span class="s3">.</span><span class="s1">example</span><span class="s3">.</span><span class="s1">xs</span><span class="s3">.</span><span class="s1">data</span><span class="s3">.</span><span class="s1">model</span><span class="s3">.</span><span class="s1">FavoriteTopic</span><span class="s3">&gt;&gt; </span><span class="s0">/* compiled code */</span>
+
+    <span class="s1">public final suspend </span><span class="s2">fun </span><span class="s1">addFavorite</span><span class="s3">(</span><span class="s1">url: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">, </span><span class="s1">title: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Unit </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final suspend </span><span class="s2">fun </span><span class="s1">insertFavorite</span><span class="s3">(</span><span class="s1">topic: com</span><span class="s3">.</span><span class="s1">example</span><span class="s3">.</span><span class="s1">xs</span><span class="s3">.</span><span class="s1">data</span><span class="s3">.</span><span class="s1">model</span><span class="s3">.</span><span class="s1">FavoriteTopic</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Unit </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final suspend </span><span class="s2">fun </span><span class="s1">removeFavorite</span><span class="s3">(</span><span class="s1">topic: com</span><span class="s3">.</span><span class="s1">example</span><span class="s3">.</span><span class="s1">xs</span><span class="s3">.</span><span class="s1">data</span><span class="s3">.</span><span class="s1">model</span><span class="s3">.</span><span class="s1">FavoriteTopic</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Unit </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final suspend </span><span class="s2">fun </span><span class="s1">isFavorite</span><span class="s3">(</span><span class="s1">url: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Boolean </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final suspend </span><span class="s2">fun </span><span class="s1">updateLastPostId</span><span class="s3">(</span><span class="s1">url: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">, </span><span class="s1">lastPostId: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Unit </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

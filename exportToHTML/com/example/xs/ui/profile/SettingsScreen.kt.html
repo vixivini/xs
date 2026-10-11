@@ -1,0 +1,99 @@
+<html>
+<head>
+<title>SettingsScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SettingsScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">profile</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">background</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">clickable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Language</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">font</span><span class="s2">.</span><span class="s1">FontWeight</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">sp</span>
+
+<span class="s1">@OptIn</span><span class="s2">(</span><span class="s1">ExperimentalMaterial3Api::</span><span class="s0">class</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">SettingsScreen</span><span class="s2">(</span>
+    <span class="s1">onWebAddClick: </span><span class="s2">() -&gt; </span><span class="s1">Unit</span>
+<span class="s2">) {</span>
+    <span class="s1">Scaffold</span><span class="s2">(</span>
+        <span class="s1">topBar </span><span class="s2">= {</span>
+            <span class="s1">CenterAlignedTopAppBar</span><span class="s2">(</span>
+                <span class="s1">title </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Configurações&quot;</span><span class="s2">, </span><span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">titleMedium</span><span class="s2">, </span><span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">Bold</span><span class="s2">) },</span>
+                <span class="s1">colors </span><span class="s2">= </span><span class="s1">TopAppBarDefaults</span><span class="s2">.</span><span class="s1">centerAlignedTopAppBarColors</span><span class="s2">(</span>
+                    <span class="s1">containerColor </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">background</span>
+                <span class="s2">)</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">) { </span><span class="s1">innerPadding </span><span class="s2">-&gt;</span>
+        <span class="s1">Column</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                <span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">innerPadding</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">background</span><span class="s2">)</span>
+        <span class="s2">) {</span>
+            <span class="s4">// Opção &quot;Web Add&quot; (O antigo Pesquisar/Explore escondido)</span>
+            <span class="s1">SettingsItem</span><span class="s2">(</span>
+                <span class="s1">title </span><span class="s2">= </span><span class="s3">&quot;Web Add&quot;</span><span class="s2">,</span>
+                <span class="s1">subtitle </span><span class="s2">= </span><span class="s3">&quot;Adicionar novos blogs via web&quot;</span><span class="s2">,</span>
+                <span class="s1">icon </span><span class="s2">= </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Language</span><span class="s2">,</span>
+                <span class="s1">onClick </span><span class="s2">= </span><span class="s1">onWebAddClick</span>
+            <span class="s2">)</span>
+            
+            <span class="s1">HorizontalDivider</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">horizontal </span><span class="s2">= </span><span class="s5">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">), </span><span class="s1">thickness </span><span class="s2">= </span><span class="s5">0.5</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">, </span><span class="s1">color </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">LightGray</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s5">0.3f</span><span class="s2">))</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">SettingsItem</span><span class="s2">(</span>
+    <span class="s1">title: String</span><span class="s2">,</span>
+    <span class="s1">subtitle: String</span><span class="s2">,</span>
+    <span class="s1">icon: androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">vector</span><span class="s2">.</span><span class="s1">ImageVector</span><span class="s2">,</span>
+    <span class="s1">onClick: </span><span class="s2">() -&gt; </span><span class="s1">Unit</span>
+<span class="s2">) {</span>
+    <span class="s1">Row</span><span class="s2">(</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+            <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">clickable </span><span class="s2">{ </span><span class="s1">onClick</span><span class="s2">() }</span>
+            <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s5">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+        <span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterVertically</span>
+    <span class="s2">) {</span>
+        <span class="s1">Icon</span><span class="s2">(</span>
+            <span class="s1">imageVector </span><span class="s2">= </span><span class="s1">icon</span><span class="s2">,</span>
+            <span class="s1">contentDescription </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(</span><span class="s5">24</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+            <span class="s1">tint </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onBackground</span>
+        <span class="s2">)</span>
+        <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">width</span><span class="s2">(</span><span class="s5">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+        <span class="s1">Column </span><span class="s2">{</span>
+            <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s1">title</span><span class="s2">, </span><span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodyLarge</span><span class="s2">, </span><span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">SemiBold</span><span class="s2">)</span>
+            <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s1">subtitle</span><span class="s2">, </span><span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodySmall</span><span class="s2">, </span><span class="s1">color </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Gray</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

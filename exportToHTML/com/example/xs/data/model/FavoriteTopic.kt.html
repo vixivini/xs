@@ -1,0 +1,36 @@
+<html>
+<head>
+<title>FavoriteTopic.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FavoriteTopic.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">room</span><span class="s2">.</span><span class="s1">Entity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">room</span><span class="s2">.</span><span class="s1">PrimaryKey</span>
+
+<span class="s1">@Entity</span><span class="s2">(</span><span class="s1">tableName </span><span class="s2">= </span><span class="s3">&quot;favorite_topics&quot;</span><span class="s2">)</span>
+<span class="s1">data </span><span class="s0">class </span><span class="s1">FavoriteTopic</span><span class="s2">(</span>
+    <span class="s1">@PrimaryKey </span><span class="s0">val </span><span class="s1">url: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">title: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">addedAt: Long </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">(),</span>
+    <span class="s0">val </span><span class="s1">lastPostId: String? </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">avatarUrl: String? </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">isFollowed: Boolean </span><span class="s2">= </span><span class="s0">true</span><span class="s2">,  </span><span class="s4">// Favorito/Seguindo (TELA HOME)</span>
+    <span class="s0">val </span><span class="s1">isLiked: Boolean </span><span class="s2">= </span><span class="s0">false     </span><span class="s4">// Gostei (TELA PESQUISAR / EXPLORAR)</span>
+<span class="s2">)</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>WebViewPool.class</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #7a7e85;}
+.s1 { color: #bcbec4;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+WebViewPool.class</font>
+</center></td></tr></table>
+<pre><span class="s0">// IntelliJ API Decompiler stub source generated from a class file</span>
+<span class="s0">// Implementation of methods is not available</span>
+
+<span class="s2">package </span><span class="s1">com</span><span class="s3">.</span><span class="s1">example</span><span class="s3">.</span><span class="s1">xs</span><span class="s3">.</span><span class="s1">util</span>
+
+<span class="s1">@androidx</span><span class="s3">.</span><span class="s1">compose</span><span class="s3">.</span><span class="s1">runtime</span><span class="s3">.</span><span class="s1">internal</span><span class="s3">.</span><span class="s1">StabilityInferred public </span><span class="s2">object </span><span class="s1">WebViewPool </span><span class="s3">{</span>
+    <span class="s1">private final </span><span class="s2">val </span><span class="s1">pool: kotlin</span><span class="s3">.</span><span class="s1">collections</span><span class="s3">.</span><span class="s1">MutableMap</span><span class="s3">&lt;</span><span class="s1">kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">, </span><span class="s1">android</span><span class="s3">.</span><span class="s1">webkit</span><span class="s3">.</span><span class="s1">WebView</span><span class="s3">&gt; </span><span class="s0">/* compiled code */</span>
+
+    <span class="s1">private const </span><span class="s2">val </span><span class="s1">MAX_POOL_SIZE: kotlin</span><span class="s3">.</span><span class="s1">Int </span><span class="s3">= </span><span class="s1">COMPILED_CODE </span><span class="s0">/* compiled code */</span>
+
+    <span class="s1">private const </span><span class="s2">val </span><span class="s1">TAG: kotlin</span><span class="s3">.</span><span class="s1">String </span><span class="s3">= </span><span class="s1">COMPILED_CODE </span><span class="s0">/* compiled code */</span>
+
+    <span class="s1">public final </span><span class="s2">fun </span><span class="s1">preload</span><span class="s3">(</span><span class="s1">context: android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">Context</span><span class="s3">, </span><span class="s1">url: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Unit </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final </span><span class="s2">fun </span><span class="s1">acquire</span><span class="s3">(</span><span class="s1">context: android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">Context</span><span class="s3">, </span><span class="s1">url: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Pair</span><span class="s3">&lt;</span><span class="s1">android</span><span class="s3">.</span><span class="s1">webkit</span><span class="s3">.</span><span class="s1">WebView</span><span class="s3">, </span><span class="s1">kotlin</span><span class="s3">.</span><span class="s1">Boolean</span><span class="s3">&gt; { </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final </span><span class="s2">fun </span><span class="s1">release</span><span class="s3">(</span><span class="s1">url: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">, </span><span class="s1">webView: android</span><span class="s3">.</span><span class="s1">webkit</span><span class="s3">.</span><span class="s1">WebView</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Unit </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">private final </span><span class="s2">fun </span><span class="s1">createWebView</span><span class="s3">(</span><span class="s1">context: android</span><span class="s3">.</span><span class="s1">content</span><span class="s3">.</span><span class="s1">Context</span><span class="s3">)</span><span class="s1">: android</span><span class="s3">.</span><span class="s1">webkit</span><span class="s3">.</span><span class="s1">WebView </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final </span><span class="s2">fun </span><span class="s1">setupWebView</span><span class="s3">(</span><span class="s1">webView: android</span><span class="s3">.</span><span class="s1">webkit</span><span class="s3">.</span><span class="s1">WebView</span><span class="s3">, </span><span class="s1">isMuted: kotlin</span><span class="s3">.</span><span class="s1">Boolean</span><span class="s3">, </span><span class="s1">shouldPlay: kotlin</span><span class="s3">.</span><span class="s1">Boolean</span><span class="s3">, </span><span class="s1">embedUrl: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Unit </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final </span><span class="s2">fun </span><span class="s1">applyPlaybackState</span><span class="s3">(</span><span class="s1">webView: android</span><span class="s3">.</span><span class="s1">webkit</span><span class="s3">.</span><span class="s1">WebView?</span><span class="s3">, </span><span class="s1">isMuted: kotlin</span><span class="s3">.</span><span class="s1">Boolean</span><span class="s3">, </span><span class="s1">shouldPlay: kotlin</span><span class="s3">.</span><span class="s1">Boolean</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Unit </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final </span><span class="s2">fun </span><span class="s1">getEmbedUrl</span><span class="s3">(</span><span class="s1">url: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">String </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+
+    <span class="s1">public final </span><span class="s2">fun </span><span class="s1">isWebViewVideo</span><span class="s3">(</span><span class="s1">url: kotlin</span><span class="s3">.</span><span class="s1">String</span><span class="s3">)</span><span class="s1">: kotlin</span><span class="s3">.</span><span class="s1">Boolean </span><span class="s3">{ </span><span class="s0">/* compiled code */ </span><span class="s3">}</span>
+<span class="s3">}</span>
+</pre>
+</body>
+</html>

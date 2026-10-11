@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>SavedPostDao.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SavedPostDao.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">local</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">room</span><span class="s2">.*</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">SavedPost</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">flow</span><span class="s2">.</span><span class="s1">Flow</span>
+
+<span class="s1">@Dao</span>
+<span class="s0">interface </span><span class="s1">SavedPostDao </span><span class="s2">{</span>
+    <span class="s1">@Query</span><span class="s2">(</span><span class="s3">&quot;SELECT * FROM saved_posts ORDER BY savedAt DESC&quot;</span><span class="s2">)</span>
+    <span class="s0">fun </span><span class="s1">getAllSavedPosts</span><span class="s2">()</span><span class="s1">: Flow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">SavedPost</span><span class="s2">&gt;&gt;</span>
+
+    <span class="s1">@Insert</span><span class="s2">(</span><span class="s1">onConflict </span><span class="s2">= </span><span class="s1">OnConflictStrategy</span><span class="s2">.</span><span class="s1">REPLACE</span><span class="s2">)</span>
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">insertSavedPost</span><span class="s2">(</span><span class="s1">post: SavedPost</span><span class="s2">)</span>
+
+    <span class="s1">@Insert</span><span class="s2">(</span><span class="s1">onConflict </span><span class="s2">= </span><span class="s1">OnConflictStrategy</span><span class="s2">.</span><span class="s1">REPLACE</span><span class="s2">)</span>
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">insertAll</span><span class="s2">(</span><span class="s1">posts: List</span><span class="s2">&lt;</span><span class="s1">SavedPost</span><span class="s2">&gt;)</span>
+
+    <span class="s1">@Delete</span>
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">deleteSavedPost</span><span class="s2">(</span><span class="s1">post: SavedPost</span><span class="s2">)</span>
+
+    <span class="s1">@Query</span><span class="s2">(</span><span class="s3">&quot;SELECT EXISTS(SELECT 1 FROM saved_posts WHERE id = :postId)&quot;</span><span class="s2">)</span>
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">isSaved</span><span class="s2">(</span><span class="s1">postId: String</span><span class="s2">)</span><span class="s1">: Boolean</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<html>
+<head>
+<title>FeedScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #7a7e85;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FeedScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">feed</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Box</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxSize</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fillMaxWidth</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">padding</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">LazyColumn</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">items</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">rememberLazyListState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">CircularProgressIndicator</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">ExperimentalMaterial3Api</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">MaterialTheme</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">Text</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">pulltorefresh</span><span class="s2">.</span><span class="s1">PullToRefreshBox</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">LaunchedEffect</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">collectAsState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">derivedStateOf</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">getValue</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">remember</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainViewModel</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">components</span><span class="s2">.</span><span class="s1">MediaPostCard</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">MediaUtils</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">VideoPreloader</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">WebViewPool</span>
+
+<span class="s1">@OptIn</span><span class="s2">(</span><span class="s1">ExperimentalMaterial3Api::</span><span class="s0">class</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">FeedScreen</span><span class="s2">(</span>
+    <span class="s1">viewModel: MainViewModel</span><span class="s2">, </span>
+    <span class="s1">isExplore: Boolean </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+    <span class="s1">onMediaClick: </span><span class="s2">(</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;, </span><span class="s1">Int</span><span class="s2">) -&gt; </span><span class="s1">Unit</span><span class="s2">,</span>
+    <span class="s1">onProfileClick: </span><span class="s2">(</span><span class="s1">String</span><span class="s2">, </span><span class="s1">String</span><span class="s2">) -&gt; </span><span class="s1">Unit</span>
+<span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">context </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">platform</span><span class="s2">.</span><span class="s1">LocalContext</span><span class="s2">.</span><span class="s1">current</span>
+    <span class="s0">val </span><span class="s1">posts by </span><span class="s2">(</span><span class="s0">if </span><span class="s2">(</span><span class="s1">isExplore</span><span class="s2">) </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">explorePosts </span><span class="s0">else </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">feedPosts</span><span class="s2">).</span><span class="s1">collectAsState</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">favorites by viewModel</span><span class="s2">.</span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">savedPosts by viewModel</span><span class="s2">.</span><span class="s1">savedPosts</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">isRefreshing by viewModel</span><span class="s2">.</span><span class="s1">isRefreshing</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">isLoadingMore by viewModel</span><span class="s2">.</span><span class="s1">isLoadingMore</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">listState </span><span class="s2">= </span><span class="s1">rememberLazyListState</span><span class="s2">()</span>
+
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">Unit</span><span class="s2">) {</span>
+        <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">scrollToTopEvent</span><span class="s2">.</span><span class="s1">collect </span><span class="s2">{</span>
+            <span class="s1">listState</span><span class="s2">.</span><span class="s1">animateScrollToItem</span><span class="s2">(</span><span class="s3">0</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Lógica de Pre-load</span>
+    <span class="s0">val </span><span class="s1">lastVisibleIndex by remember </span><span class="s2">{</span>
+        <span class="s1">derivedStateOf </span><span class="s2">{ </span><span class="s1">listState</span><span class="s2">.</span><span class="s1">layoutInfo</span><span class="s2">.</span><span class="s1">visibleItemsInfo</span><span class="s2">.</span><span class="s1">lastOrNull</span><span class="s2">()</span><span class="s1">?</span><span class="s2">.</span><span class="s1">index ?: </span><span class="s3">0 </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">posts</span><span class="s2">, </span><span class="s1">lastVisibleIndex</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">shouldPreload</span><span class="s2">()) </span><span class="s0">return</span><span class="s1">@LaunchedEffect</span>
+
+        <span class="s4">// Pré-carrega os próximos 10 posts que contêm vídeos</span>
+        <span class="s0">val </span><span class="s1">preloadRange </span><span class="s2">= (</span><span class="s1">lastVisibleIndex </span><span class="s2">+ </span><span class="s3">1</span><span class="s2">)..(</span><span class="s1">lastVisibleIndex </span><span class="s2">+ </span><span class="s3">10</span><span class="s2">)</span>
+        <span class="s1">preloadRange</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">index </span><span class="s2">-&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">index </span><span class="s2">&lt; </span><span class="s1">posts</span><span class="s2">.</span><span class="s1">size</span><span class="s2">) {</span>
+                <span class="s1">posts</span><span class="s2">[</span><span class="s1">index</span><span class="s2">].</span><span class="s1">mediaUrls</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">url </span><span class="s2">-&gt;</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">MediaUtils</span><span class="s2">.</span><span class="s1">isVideoUrl</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)) {</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">MediaUtils</span><span class="s2">.</span><span class="s1">isWebViewVideo</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)) {</span>
+                            <span class="s1">WebViewPool</span><span class="s2">.</span><span class="s1">preload</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">url</span><span class="s2">)</span>
+                        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                            <span class="s1">VideoPreloader</span><span class="s2">.</span><span class="s1">preload</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">url</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Detect when scrolling near the bottom - trigger earlier (15 items before end)</span>
+    <span class="s0">val </span><span class="s1">shouldLoadMore </span><span class="s2">= </span><span class="s1">remember </span><span class="s2">{</span>
+        <span class="s1">derivedStateOf </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">totalItemsCount </span><span class="s2">= </span><span class="s1">listState</span><span class="s2">.</span><span class="s1">layoutInfo</span><span class="s2">.</span><span class="s1">totalItemsCount</span>
+            <span class="s0">val </span><span class="s1">lastVisibleItemIndex </span><span class="s2">= </span><span class="s1">listState</span><span class="s2">.</span><span class="s1">layoutInfo</span><span class="s2">.</span><span class="s1">visibleItemsInfo</span><span class="s2">.</span><span class="s1">lastOrNull</span><span class="s2">()</span><span class="s1">?</span><span class="s2">.</span><span class="s1">index ?: </span><span class="s3">0</span>
+            <span class="s1">totalItemsCount </span><span class="s2">&gt; </span><span class="s3">0 </span><span class="s2">&amp;&amp; </span><span class="s1">lastVisibleItemIndex </span><span class="s2">&gt;= </span><span class="s1">totalItemsCount </span><span class="s2">- </span><span class="s3">15</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">shouldLoadMore</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">shouldLoadMore</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) {</span>
+            <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">loadMore</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">PullToRefreshBox</span><span class="s2">(</span>
+        <span class="s1">isRefreshing </span><span class="s2">= </span><span class="s1">isRefreshing</span><span class="s2">,</span>
+        <span class="s1">onRefresh </span><span class="s2">= { </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">refreshFeed</span><span class="s2">() },</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()</span>
+    <span class="s2">) {</span>
+        <span class="s1">LazyColumn</span><span class="s2">(</span>
+            <span class="s1">state </span><span class="s2">= </span><span class="s1">listState</span><span class="s2">,</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()</span>
+        <span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">posts</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() &amp;&amp; !</span><span class="s1">isRefreshing</span><span class="s2">) {</span>
+                <span class="s1">item </span><span class="s2">{</span>
+                    <span class="s1">Box</span><span class="s2">(</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                            <span class="s2">.</span><span class="s1">fillParentMaxSize</span><span class="s2">()</span>
+                            <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s3">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                        <span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span>
+                    <span class="s2">) {</span>
+                        <span class="s1">Text</span><span class="s2">(</span>
+                            <span class="s1">text </span><span class="s2">= </span><span class="s5">&quot;Nenhum conteúdo de mídia encontrado nos seus favoritos.</span><span class="s0">\n</span><span class="s5">Arraste para baixo para recarregar.&quot;</span><span class="s2">,</span>
+                            <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodyMedium</span><span class="s2">,</span>
+                            <span class="s1">textAlign </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">style</span><span class="s2">.</span><span class="s1">TextAlign</span><span class="s2">.</span><span class="s1">Center</span>
+                        <span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">items</span><span class="s2">(</span>
+                    <span class="s1">items </span><span class="s2">= </span><span class="s1">posts</span><span class="s2">,</span>
+                    <span class="s1">key </span><span class="s2">= { </span><span class="s1">post </span><span class="s2">-&gt; </span><span class="s1">post</span><span class="s2">.</span><span class="s1">id </span><span class="s2">},</span>
+                    <span class="s1">contentType </span><span class="s2">= { </span><span class="s1">post </span><span class="s2">-&gt; </span><span class="s0">if </span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">MediaUtils</span><span class="s2">.</span><span class="s1">isVideoUrl</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) }) </span><span class="s5">&quot;video&quot; </span><span class="s0">else </span><span class="s5">&quot;image&quot; </span><span class="s2">}</span>
+                <span class="s2">) { </span><span class="s1">post </span><span class="s2">-&gt;</span>
+                    <span class="s0">val </span><span class="s1">isFirstVisible </span><span class="s2">= </span><span class="s1">remember</span><span class="s2">(</span><span class="s1">listState</span><span class="s2">) {</span>
+                        <span class="s1">derivedStateOf </span><span class="s2">{</span>
+                            <span class="s0">val </span><span class="s1">visibleItems </span><span class="s2">= </span><span class="s1">listState</span><span class="s2">.</span><span class="s1">layoutInfo</span><span class="s2">.</span><span class="s1">visibleItemsInfo</span>
+                            <span class="s0">if </span><span class="s2">(</span><span class="s1">visibleItems</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) </span><span class="s0">false</span>
+                            <span class="s0">else </span><span class="s2">{</span>
+                                <span class="s4">// Find the item that is most centered</span>
+                                <span class="s0">val </span><span class="s1">viewportCenter </span><span class="s2">= (</span><span class="s1">listState</span><span class="s2">.</span><span class="s1">layoutInfo</span><span class="s2">.</span><span class="s1">viewportStartOffset </span><span class="s2">+ </span><span class="s1">listState</span><span class="s2">.</span><span class="s1">layoutInfo</span><span class="s2">.</span><span class="s1">viewportEndOffset</span><span class="s2">) / </span><span class="s3">2</span>
+                                <span class="s0">val </span><span class="s1">closestItem </span><span class="s2">= </span><span class="s1">visibleItems</span><span class="s2">.</span><span class="s1">minByOrNull </span><span class="s2">{ </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">abs</span><span class="s2">((</span><span class="s1">it</span><span class="s2">.</span><span class="s1">offset </span><span class="s2">+ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">size </span><span class="s2">/ </span><span class="s3">2</span><span class="s2">) - </span><span class="s1">viewportCenter</span><span class="s2">) }</span>
+                                <span class="s1">closestItem?</span><span class="s2">.</span><span class="s1">key </span><span class="s2">== </span><span class="s1">post</span><span class="s2">.</span><span class="s1">id</span>
+                            <span class="s2">}</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+
+                    <span class="s0">val </span><span class="s1">isSaved </span><span class="s2">= </span><span class="s1">remember</span><span class="s2">(</span><span class="s1">savedPosts</span><span class="s2">) { </span><span class="s1">savedPosts</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">== </span><span class="s1">post</span><span class="s2">.</span><span class="s1">id </span><span class="s2">} }</span>
+                    
+                    <span class="s4">// Busca informações do Blog/Tópico para uniformidade (Independência total)</span>
+                    <span class="s0">val </span><span class="s1">blogInfo </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">getFavoriteTopic</span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">)</span>
+                    
+                    <span class="s1">MediaPostCard</span><span class="s2">(</span>
+                        <span class="s1">post </span><span class="s2">= </span><span class="s1">post</span><span class="s2">, </span>
+                        <span class="s1">shouldPlay </span><span class="s2">= </span><span class="s1">isFirstVisible</span><span class="s2">.</span><span class="s1">value</span><span class="s2">,</span>
+                        <span class="s1">isSaved </span><span class="s2">= </span><span class="s1">isSaved</span><span class="s2">,</span>
+                        <span class="s1">isFavorite </span><span class="s2">= </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">isFollowed ?: </span><span class="s0">false</span><span class="s2">,</span>
+                        <span class="s1">isLiked </span><span class="s2">= </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">isLiked ?: </span><span class="s0">false</span><span class="s2">,</span>
+                        <span class="s1">showLikeIcon </span><span class="s2">= </span><span class="s1">isExplore</span><span class="s2">, </span><span class="s4">// SÓ MOSTRA O CORAÇÃO NO PESQUISAR</span>
+                        <span class="s1">blogName </span><span class="s2">= </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">title ?: post</span><span class="s2">.</span><span class="s1">topicTitle</span><span class="s2">,</span>
+                        <span class="s1">blogAvatar </span><span class="s2">= </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">avatarUrl</span><span class="s2">,</span>
+                        <span class="s1">onSaveClick </span><span class="s2">= { </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">toggleSavePost</span><span class="s2">(</span><span class="s1">post</span><span class="s2">) },</span>
+                        <span class="s1">onFollowClick </span><span class="s2">= {</span>
+                            <span class="s0">val </span><span class="s1">targetUrl </span><span class="s2">= </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">url ?: post</span><span class="s2">.</span><span class="s1">postUrl</span>
+                            <span class="s0">val </span><span class="s1">targetTitle </span><span class="s2">= </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">title ?: post</span><span class="s2">.</span><span class="s1">topicTitle</span>
+                            <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">toggleFavorite</span><span class="s2">(</span><span class="s1">targetUrl</span><span class="s2">, </span><span class="s1">targetTitle</span><span class="s2">)</span>
+                        <span class="s2">},</span>
+                        <span class="s1">onProfileClick </span><span class="s2">= { </span><span class="s1">onProfileClick</span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">, </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">title ?: post</span><span class="s2">.</span><span class="s1">topicTitle</span><span class="s2">) },</span>
+                        <span class="s1">onMediaClick </span><span class="s2">= { </span><span class="s1">urls</span><span class="s2">, </span><span class="s1">index </span><span class="s2">-&gt;</span>
+                            <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">setViewingMedia</span><span class="s2">(</span><span class="s1">urls</span><span class="s2">, </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">url ?: post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">)</span>
+                            <span class="s1">onMediaClick</span><span class="s2">(</span><span class="s1">urls</span><span class="s2">, </span><span class="s1">index</span><span class="s2">)</span>
+                        <span class="s2">},</span>
+                        <span class="s1">onPostUpdated </span><span class="s2">= { </span><span class="s1">id</span><span class="s2">, </span><span class="s1">urls </span><span class="s2">-&gt; </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">updateSavedPostMedia</span><span class="s2">(</span><span class="s1">id</span><span class="s2">, </span><span class="s1">urls</span><span class="s2">) }</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+                
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">isLoadingMore</span><span class="s2">) {</span>
+                    <span class="s1">item </span><span class="s2">{</span>
+                        <span class="s1">Box</span><span class="s2">(</span>
+                            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                                <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s3">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                            <span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span>
+                        <span class="s2">) {</span>
+                            <span class="s1">CircularProgressIndicator</span><span class="s2">()</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

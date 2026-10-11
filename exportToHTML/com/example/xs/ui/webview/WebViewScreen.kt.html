@@ -1,0 +1,221 @@
+<html>
+<head>
+<title>WebViewScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+WebViewScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">webview</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">SuppressLint</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Bitmap</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">webkit</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Favorite</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">FavoriteBorder</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Star</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">StarBorder</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">outlined</span><span class="s2">.</span><span class="s1">Star</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">viewinterop</span><span class="s2">.</span><span class="s1">AndroidView</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Constants</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">delay</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+
+<span class="s1">@OptIn</span><span class="s2">(</span><span class="s1">ExperimentalMaterial3Api::</span><span class="s0">class</span><span class="s2">)</span>
+<span class="s1">@SuppressLint</span><span class="s2">(</span><span class="s3">&quot;SetJavaScriptEnabled&quot;</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">WebViewScreen</span><span class="s2">(</span>
+    <span class="s1">onFavoriteClick: </span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">title: String</span><span class="s2">) -&gt; </span><span class="s1">Unit</span><span class="s2">,</span>
+    <span class="s1">onLikeClick: </span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">title: String</span><span class="s2">) -&gt; </span><span class="s1">Unit</span><span class="s2">,</span>
+    <span class="s1">isFavorite: suspend </span><span class="s2">(</span><span class="s1">String</span><span class="s2">) -&gt; </span><span class="s1">Boolean</span><span class="s2">,</span>
+    <span class="s1">isLiked: suspend </span><span class="s2">(</span><span class="s1">String</span><span class="s2">) -&gt; </span><span class="s1">Boolean</span>
+<span class="s2">) {</span>
+    <span class="s0">var </span><span class="s1">currentUrlState by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s1">Constants</span><span class="s2">.</span><span class="s1">BASE_URL</span><span class="s2">) }</span>
+    <span class="s0">var </span><span class="s1">titleState by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s3">&quot;Browser&quot;</span><span class="s2">) }</span>
+    <span class="s0">var </span><span class="s1">webView: WebView? by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">null</span><span class="s2">) }</span>
+    <span class="s0">var </span><span class="s1">currentIsFavorite by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+    <span class="s0">var </span><span class="s1">currentIsLiked by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+    <span class="s0">var </span><span class="s1">progress by remember </span><span class="s2">{ </span><span class="s1">mutableIntStateOf</span><span class="s2">(</span><span class="s4">0</span><span class="s2">) }</span>
+    <span class="s0">val </span><span class="s1">scope </span><span class="s2">= </span><span class="s1">rememberCoroutineScope</span><span class="s2">()</span>
+
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">currentUrlState</span><span class="s2">) {</span>
+        <span class="s1">currentIsFavorite </span><span class="s2">= </span><span class="s1">isFavorite</span><span class="s2">(</span><span class="s1">currentUrlState</span><span class="s2">)</span>
+        <span class="s1">currentIsLiked </span><span class="s2">= </span><span class="s1">isLiked</span><span class="s2">(</span><span class="s1">currentUrlState</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">Scaffold</span><span class="s2">(</span>
+        <span class="s1">topBar </span><span class="s2">= {</span>
+            <span class="s1">Column </span><span class="s2">{</span>
+                <span class="s1">TopAppBar</span><span class="s2">(</span>
+                    <span class="s1">title </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s1">titleState</span><span class="s2">, </span><span class="s1">maxLines </span><span class="s2">= </span><span class="s4">1</span><span class="s2">) },</span>
+                    <span class="s1">actions </span><span class="s2">= {</span>
+                        <span class="s5">// Botão de GOSTO (Coração)</span>
+                        <span class="s1">IconButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= {</span>
+                            <span class="s1">webView?</span><span class="s2">.</span><span class="s1">url?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">currentUrl </span><span class="s2">-&gt;</span>
+                                <span class="s0">val </span><span class="s1">currentTitle </span><span class="s2">= </span><span class="s1">webView?</span><span class="s2">.</span><span class="s1">title ?: </span><span class="s3">&quot;No Title&quot;</span>
+                                <span class="s1">onLikeClick</span><span class="s2">(</span><span class="s1">currentUrl</span><span class="s2">, </span><span class="s1">currentTitle</span><span class="s2">)</span>
+                                <span class="s1">scope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+                                    <span class="s1">delay</span><span class="s2">(</span><span class="s4">200</span><span class="s2">)</span>
+                                    <span class="s1">currentIsLiked </span><span class="s2">= </span><span class="s1">isLiked</span><span class="s2">(</span><span class="s1">currentUrl</span><span class="s2">)</span>
+                                <span class="s2">}</span>
+                            <span class="s2">}</span>
+                        <span class="s2">}) {</span>
+                            <span class="s1">Icon</span><span class="s2">(</span>
+                                <span class="s1">imageVector </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">currentIsLiked</span><span class="s2">) </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Favorite </span><span class="s0">else </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">FavoriteBorder</span><span class="s2">,</span>
+                                <span class="s1">contentDescription </span><span class="s2">= </span><span class="s3">&quot;Gosto&quot;</span><span class="s2">,</span>
+                                <span class="s1">tint </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">currentIsLiked</span><span class="s2">) </span><span class="s1">Color</span><span class="s2">(</span><span class="s4">0xFFE91E63</span><span class="s2">) </span><span class="s0">else </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onSurface</span>
+                            <span class="s2">)</span>
+                        <span class="s2">}</span>
+
+                        <span class="s5">// Botão de SEGUIR/FAVORITO (Estrela)</span>
+                        <span class="s1">IconButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= {</span>
+                            <span class="s1">webView?</span><span class="s2">.</span><span class="s1">url?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">currentUrl </span><span class="s2">-&gt;</span>
+                                <span class="s0">val </span><span class="s1">currentTitle </span><span class="s2">= </span><span class="s1">webView?</span><span class="s2">.</span><span class="s1">title ?: </span><span class="s3">&quot;No Title&quot;</span>
+                                <span class="s1">onFavoriteClick</span><span class="s2">(</span><span class="s1">currentUrl</span><span class="s2">, </span><span class="s1">currentTitle</span><span class="s2">)</span>
+                                <span class="s1">scope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+                                    <span class="s1">delay</span><span class="s2">(</span><span class="s4">200</span><span class="s2">)</span>
+                                    <span class="s1">currentIsFavorite </span><span class="s2">= </span><span class="s1">isFavorite</span><span class="s2">(</span><span class="s1">currentUrl</span><span class="s2">)</span>
+                                <span class="s2">}</span>
+                            <span class="s2">}</span>
+                        <span class="s2">}) {</span>
+                            <span class="s1">Icon</span><span class="s2">(</span>
+                                <span class="s1">imageVector </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">currentIsFavorite</span><span class="s2">) </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Star </span><span class="s0">else </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">StarBorder</span><span class="s2">,</span>
+                                <span class="s1">contentDescription </span><span class="s2">= </span><span class="s3">&quot;Seguir&quot;</span><span class="s2">,</span>
+                                <span class="s1">tint </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">currentIsFavorite</span><span class="s2">) </span><span class="s1">Color</span><span class="s2">(</span><span class="s4">0xFFFFD700</span><span class="s2">) </span><span class="s0">else </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onSurface</span>
+                            <span class="s2">)</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">progress </span><span class="s2">&lt; </span><span class="s4">100</span><span class="s2">) {</span>
+                    <span class="s1">LinearProgressIndicator</span><span class="s2">(</span>
+                        <span class="s1">progress </span><span class="s2">= { </span><span class="s1">progress </span><span class="s2">/ </span><span class="s4">100f </span><span class="s2">},</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">(),</span>
+                        <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">primary</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">) { </span><span class="s1">padding </span><span class="s2">-&gt;</span>
+        <span class="s1">AndroidView</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                <span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">padding</span><span class="s2">),</span>
+            <span class="s1">factory </span><span class="s2">= { </span><span class="s1">context </span><span class="s2">-&gt;</span>
+                <span class="s1">WebView</span><span class="s2">(</span><span class="s1">context</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                    <span class="s1">settings</span><span class="s2">.</span><span class="s1">apply </span><span class="s2">{</span>
+                        <span class="s1">javaScriptEnabled </span><span class="s2">= </span><span class="s0">true</span>
+                        <span class="s1">domStorageEnabled </span><span class="s2">= </span><span class="s0">true</span>
+                        <span class="s1">databaseEnabled </span><span class="s2">= </span><span class="s0">true</span>
+                        <span class="s1">cacheMode </span><span class="s2">= </span><span class="s1">WebSettings</span><span class="s2">.</span><span class="s1">LOAD_DEFAULT</span>
+                        
+                        <span class="s5">// Configurações críticas para passar pelo Cloudflare</span>
+                        <span class="s1">useWideViewPort </span><span class="s2">= </span><span class="s0">true</span>
+                        <span class="s1">loadWithOverviewMode </span><span class="s2">= </span><span class="s0">true</span>
+                        <span class="s1">allowFileAccess </span><span class="s2">= </span><span class="s0">true</span>
+                        <span class="s1">allowContentAccess </span><span class="s2">= </span><span class="s0">true</span>
+                        <span class="s1">javaScriptCanOpenWindowsAutomatically </span><span class="s2">= </span><span class="s0">true</span>
+                        <span class="s1">setSupportMultipleWindows</span><span class="s2">(</span><span class="s0">false</span><span class="s2">)</span>
+                        <span class="s1">mixedContentMode </span><span class="s2">= </span><span class="s1">WebSettings</span><span class="s2">.</span><span class="s1">MIXED_CONTENT_ALWAYS_ALLOW</span>
+                        
+                        <span class="s5">// User Agent de Chrome Mobile moderno</span>
+                        <span class="s1">userAgentString </span><span class="s2">= </span><span class="s1">Constants</span><span class="s2">.</span><span class="s1">USER_AGENT</span>
+                    <span class="s2">}</span>
+                    
+                    <span class="s0">val </span><span class="s1">cookieManager </span><span class="s2">= </span><span class="s1">CookieManager</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">()</span>
+                    <span class="s1">cookieManager</span><span class="s2">.</span><span class="s1">setAcceptCookie</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+                    <span class="s1">cookieManager</span><span class="s2">.</span><span class="s1">setAcceptThirdPartyCookies</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s0">true</span><span class="s2">)</span>
+
+                    <span class="s1">webViewClient </span><span class="s2">= </span><span class="s0">object </span><span class="s1">: WebViewClient</span><span class="s2">() {</span>
+                        <span class="s1">override </span><span class="s0">fun </span><span class="s1">onPageStarted</span><span class="s2">(</span><span class="s1">view: WebView?</span><span class="s2">, </span><span class="s1">url: String?</span><span class="s2">, </span><span class="s1">favicon: Bitmap?</span><span class="s2">) {</span>
+                            <span class="s0">super</span><span class="s2">.</span><span class="s1">onPageStarted</span><span class="s2">(</span><span class="s1">view</span><span class="s2">, </span><span class="s1">url</span><span class="s2">, </span><span class="s1">favicon</span><span class="s2">)</span>
+                            <span class="s5">// Injeta script para esconder que é um WebView/Bot</span>
+                            <span class="s1">view?</span><span class="s2">.</span><span class="s1">evaluateJavascript</span><span class="s2">(</span><span class="s3">&quot;&quot;&quot;</span>
+                                <span class="s3">(function() {</span>
+                                    <span class="s3">Object.defineProperty(navigator, 'webdriver', { get: () =&gt; undefined });</span>
+                                    <span class="s3">window.chrome = { runtime: {}, loadTimes: function() {}, csi: function() {}, app: {} };</span>
+                                    <span class="s3">if (!window.navigator.languages) {</span>
+                                        <span class="s3">Object.defineProperty(navigator, 'languages', { get: () =&gt; ['pt-BR', 'pt', 'en-US', 'en'] });</span>
+                                    <span class="s3">}</span>
+                                <span class="s3">})();</span>
+                            <span class="s3">&quot;&quot;&quot;</span><span class="s2">.</span><span class="s1">trimIndent</span><span class="s2">(), </span><span class="s0">null</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+
+                        <span class="s1">override </span><span class="s0">fun </span><span class="s1">onPageFinished</span><span class="s2">(</span><span class="s1">view: WebView?</span><span class="s2">, </span><span class="s1">url: String?</span><span class="s2">) {</span>
+                            <span class="s0">super</span><span class="s2">.</span><span class="s1">onPageFinished</span><span class="s2">(</span><span class="s1">view</span><span class="s2">, </span><span class="s1">url</span><span class="s2">)</span>
+                            <span class="s1">progress </span><span class="s2">= </span><span class="s4">100</span>
+                            <span class="s1">url?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span>
+                                <span class="s1">currentUrlState </span><span class="s2">= </span><span class="s1">it</span>
+                                <span class="s1">titleState </span><span class="s2">= </span><span class="s1">view?</span><span class="s2">.</span><span class="s1">title ?: </span><span class="s3">&quot;Browser&quot;</span>
+                            <span class="s2">}</span>
+                            <span class="s5">// Sincroniza os cookies assim que o desafio é resolvido</span>
+                            <span class="s1">CookieManager</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">().</span><span class="s1">flush</span><span class="s2">()</span>
+                        <span class="s2">}</span>
+
+                        <span class="s1">override </span><span class="s0">fun </span><span class="s1">shouldInterceptRequest</span><span class="s2">(</span><span class="s1">view: WebView?</span><span class="s2">, </span><span class="s1">request: WebResourceRequest?</span><span class="s2">)</span><span class="s1">: WebResourceResponse? </span><span class="s2">{</span>
+                            <span class="s5">// Detecta se é a requisição principal para aplicar o bypass de headers se necessário</span>
+                            <span class="s5">// Mas no Android 7.0+, o WebView costuma enviar o X-Requested-With automaticamente.</span>
+                            <span class="s5">// O truque de passar um Map vazio no loadUrl ajuda na primeira página, </span>
+                            <span class="s5">// mas para recursos internos (AJAX), precisamos ser mais agressivos se o site bloquear.</span>
+                            <span class="s0">return super</span><span class="s2">.</span><span class="s1">shouldInterceptRequest</span><span class="s2">(</span><span class="s1">view</span><span class="s2">, </span><span class="s1">request</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+
+                        <span class="s1">override </span><span class="s0">fun </span><span class="s1">shouldOverrideUrlLoading</span><span class="s2">(</span><span class="s1">view: WebView?</span><span class="s2">, </span><span class="s1">request: WebResourceRequest?</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+                            <span class="s0">val </span><span class="s1">url </span><span class="s2">= </span><span class="s1">request?</span><span class="s2">.</span><span class="s1">url?</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">() </span><span class="s1">?: </span><span class="s0">return false</span>
+                            
+                            <span class="s5">// Mantém a navegação dentro do WebView para o mesmo domínio</span>
+                            <span class="s0">if </span><span class="s2">(</span><span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;simpcity.cr&quot;</span><span class="s2">)) {</span>
+                                <span class="s0">val </span><span class="s1">headers </span><span class="s2">= </span><span class="s1">mutableMapOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">String</span><span class="s2">&gt;()</span>
+                                <span class="s1">headers</span><span class="s2">[</span><span class="s3">&quot;X-Requested-With&quot;</span><span class="s2">] = </span><span class="s3">&quot;&quot;</span>
+                                <span class="s1">view?</span><span class="s2">.</span><span class="s1">loadUrl</span><span class="s2">(</span><span class="s1">url</span><span class="s2">, </span><span class="s1">headers</span><span class="s2">)</span>
+                                <span class="s0">return true</span>
+                            <span class="s2">}</span>
+                            <span class="s0">return false</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                    
+                    <span class="s1">webChromeClient </span><span class="s2">= </span><span class="s0">object </span><span class="s1">: WebChromeClient</span><span class="s2">() {</span>
+                        <span class="s1">override </span><span class="s0">fun </span><span class="s1">onProgressChanged</span><span class="s2">(</span><span class="s1">view: WebView?</span><span class="s2">, </span><span class="s1">newProgress: Int</span><span class="s2">) {</span>
+                            <span class="s1">progress </span><span class="s2">= </span><span class="s1">newProgress</span>
+                        <span class="s2">}</span>
+
+                        <span class="s1">override </span><span class="s0">fun </span><span class="s1">getDefaultVideoPoster</span><span class="s2">()</span><span class="s1">: Bitmap? </span><span class="s2">{</span>
+                            <span class="s5">// Retorna um bitmap vazio para evitar o erro de CORS do android-webview-video-poster</span>
+                            <span class="s5">// e possíveis erros de encode de PNG ao tentar carregar o poster padrão.</span>
+                            <span class="s0">return </span><span class="s1">Bitmap</span><span class="s2">.</span><span class="s1">createBitmap</span><span class="s2">(</span><span class="s4">1</span><span class="s2">, </span><span class="s4">1</span><span class="s2">, </span><span class="s1">Bitmap</span><span class="s2">.</span><span class="s1">Config</span><span class="s2">.</span><span class="s1">ARGB_8888</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+
+                    <span class="s5">// Força a remoção do cabeçalho que identifica o App Android</span>
+                    <span class="s0">val </span><span class="s1">headers </span><span class="s2">= </span><span class="s1">mutableMapOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">String</span><span class="s2">&gt;()</span>
+                    <span class="s1">headers</span><span class="s2">[</span><span class="s3">&quot;X-Requested-With&quot;</span><span class="s2">] = </span><span class="s3">&quot;&quot; </span>
+                    <span class="s1">loadUrl</span><span class="s2">(</span><span class="s1">Constants</span><span class="s2">.</span><span class="s1">BASE_URL</span><span class="s2">, </span><span class="s1">headers</span><span class="s2">)</span>
+                    
+                    <span class="s1">webView </span><span class="s2">= </span><span class="s0">this</span>
+                <span class="s2">}</span>
+            <span class="s2">},</span>
+            <span class="s1">update </span><span class="s2">= { </span>
+                <span class="s1">webView </span><span class="s2">= </span><span class="s1">it</span>
+            <span class="s2">}</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

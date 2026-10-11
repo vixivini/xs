@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>build.gradle.kts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #2aacb8;}
+.s4 { color: #cf8e6d;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+build.gradle.kts</font>
+</center></td></tr></table>
+<pre><span class="s0">plugins </span><span class="s1">{</span>
+    <span class="s0">alias</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">plugins</span><span class="s1">.</span><span class="s0">android</span><span class="s1">.</span><span class="s0">application</span><span class="s1">)</span>
+    <span class="s0">alias</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">plugins</span><span class="s1">.</span><span class="s0">kotlin</span><span class="s1">.</span><span class="s0">android</span><span class="s1">)</span>
+    <span class="s0">alias</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">plugins</span><span class="s1">.</span><span class="s0">kotlin</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">)</span>
+    <span class="s0">alias</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">plugins</span><span class="s1">.</span><span class="s0">ksp</span><span class="s1">)</span>
+<span class="s1">}</span>
+
+<span class="s0">android </span><span class="s1">{</span>
+    <span class="s0">namespace </span><span class="s1">= </span><span class="s2">&quot;com.example.xs&quot;</span>
+    <span class="s0">compileSdk </span><span class="s1">= </span><span class="s3">35</span>
+
+    <span class="s0">defaultConfig </span><span class="s1">{</span>
+        <span class="s0">applicationId </span><span class="s1">= </span><span class="s2">&quot;com.example.xs&quot;</span>
+        <span class="s0">minSdk </span><span class="s1">= </span><span class="s3">26</span>
+        <span class="s0">targetSdk </span><span class="s1">= </span><span class="s3">35</span>
+        <span class="s0">versionCode </span><span class="s1">= </span><span class="s3">1</span>
+        <span class="s0">versionName </span><span class="s1">= </span><span class="s2">&quot;1.0&quot;</span>
+
+        <span class="s0">testInstrumentationRunner </span><span class="s1">= </span><span class="s2">&quot;androidx.test.runner.AndroidJUnitRunner&quot;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">buildTypes </span><span class="s1">{</span>
+        <span class="s0">release </span><span class="s1">{</span>
+            <span class="s0">isMinifyEnabled </span><span class="s1">= </span><span class="s4">false</span>
+            <span class="s0">proguardFiles</span><span class="s1">(</span>
+                <span class="s0">getDefaultProguardFile</span><span class="s1">(</span><span class="s2">&quot;proguard-android-optimize.txt&quot;</span><span class="s1">),</span>
+                <span class="s2">&quot;proguard-rules.pro&quot;</span>
+            <span class="s1">)</span>
+        <span class="s1">}</span>
+    <span class="s1">}</span>
+    <span class="s0">compileOptions </span><span class="s1">{</span>
+        <span class="s0">sourceCompatibility </span><span class="s1">= </span><span class="s0">JavaVersion</span><span class="s1">.</span><span class="s0">VERSION_11</span>
+        <span class="s0">targetCompatibility </span><span class="s1">= </span><span class="s0">JavaVersion</span><span class="s1">.</span><span class="s0">VERSION_11</span>
+    <span class="s1">}</span>
+    <span class="s0">kotlinOptions </span><span class="s1">{</span>
+        <span class="s0">jvmTarget </span><span class="s1">= </span><span class="s2">&quot;11&quot;</span>
+    <span class="s1">}</span>
+    <span class="s0">buildFeatures </span><span class="s1">{</span>
+        <span class="s0">compose </span><span class="s1">= </span><span class="s4">true</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+<span class="s0">dependencies </span><span class="s1">{</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">core</span><span class="s1">.</span><span class="s0">ktx</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">lifecycle</span><span class="s1">.</span><span class="s0">runtime</span><span class="s1">.</span><span class="s0">ktx</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">activity</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">platform</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">bom</span><span class="s1">))</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">graphics</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">tooling</span><span class="s1">.</span><span class="s0">preview</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">material3</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">media3</span><span class="s1">.</span><span class="s0">exoplayer</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">media3</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">media3</span><span class="s1">.</span><span class="s0">hls</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">media3</span><span class="s1">.</span><span class="s0">dash</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">media3</span><span class="s1">.</span><span class="s0">datasource</span><span class="s1">.</span><span class="s0">okhttp</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">material</span><span class="s1">.</span><span class="s0">icons</span><span class="s1">.</span><span class="s0">extended</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">navigation</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">datastore</span><span class="s1">.</span><span class="s0">preferences</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">gson</span><span class="s1">)</span>
+
+    <span class="s5">// Room</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">room</span><span class="s1">.</span><span class="s0">runtime</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">room</span><span class="s1">.</span><span class="s0">ktx</span><span class="s1">)</span>
+    <span class="s0">ksp</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">room</span><span class="s1">.</span><span class="s0">compiler</span><span class="s1">)</span>
+
+    <span class="s5">// Networking &amp; HTML Parsing</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">okhttp</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">okhttp</span><span class="s1">.</span><span class="s0">logging</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">jsoup</span><span class="s1">)</span>
+
+    <span class="s5">// Image Loading</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">coil</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">coil</span><span class="s1">.</span><span class="s0">video</span><span class="s1">)</span>
+
+    <span class="s5">// WorkManager</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">work</span><span class="s1">.</span><span class="s0">runtime</span><span class="s1">.</span><span class="s0">ktx</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s2">&quot;androidx.lifecycle:lifecycle-process:2.8.7&quot;</span><span class="s1">)</span>
+    <span class="s0">implementation</span><span class="s1">(</span><span class="s2">&quot;androidx.browser:browser:1.8.0&quot;</span><span class="s1">)</span>
+
+    <span class="s0">testImplementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">junit</span><span class="s1">)</span>
+    <span class="s0">androidTestImplementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">junit</span><span class="s1">)</span>
+    <span class="s0">androidTestImplementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">espresso</span><span class="s1">.</span><span class="s0">core</span><span class="s1">)</span>
+    <span class="s0">androidTestImplementation</span><span class="s1">(</span><span class="s0">platform</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">bom</span><span class="s1">))</span>
+    <span class="s0">androidTestImplementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">test</span><span class="s1">.</span><span class="s0">junit4</span><span class="s1">)</span>
+    <span class="s0">debugImplementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">tooling</span><span class="s1">)</span>
+    <span class="s0">debugImplementation</span><span class="s1">(</span><span class="s0">libs</span><span class="s1">.</span><span class="s0">androidx</span><span class="s1">.</span><span class="s0">compose</span><span class="s1">.</span><span class="s0">ui</span><span class="s1">.</span><span class="s0">test</span><span class="s1">.</span><span class="s0">manifest</span><span class="s1">)</span>
+<span class="s1">}</span>
+</pre>
+</body>
+</html>

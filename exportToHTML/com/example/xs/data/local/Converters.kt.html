@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Converters.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Converters.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">local</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">room</span><span class="s2">.</span><span class="s1">TypeConverter</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">Gson</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">reflect</span><span class="s2">.</span><span class="s1">TypeToken</span>
+
+<span class="s0">class </span><span class="s1">Converters </span><span class="s2">{</span>
+    <span class="s1">@TypeConverter</span>
+    <span class="s0">fun </span><span class="s1">fromStringList</span><span class="s2">(</span><span class="s1">value: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">Gson</span><span class="s2">().</span><span class="s1">toJson</span><span class="s2">(</span><span class="s1">value</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@TypeConverter</span>
+    <span class="s0">fun </span><span class="s1">toStringList</span><span class="s2">(</span><span class="s1">value: String</span><span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">listType </span><span class="s2">= </span><span class="s0">object </span><span class="s1">: TypeToken</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;&gt;() {}.</span><span class="s1">type</span>
+        <span class="s0">return </span><span class="s1">Gson</span><span class="s2">().</span><span class="s1">fromJson</span><span class="s2">(</span><span class="s1">value</span><span class="s2">, </span><span class="s1">listType</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

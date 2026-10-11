@@ -1,0 +1,137 @@
+<html>
+<head>
+<title>XsApplication.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #6aab73;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+XsApplication.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">Application</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">webkit</span><span class="s2">.</span><span class="s1">WebSettings</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">DefaultLifecycleObserver</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">LifecycleOwner</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">ProcessLifecycleOwner</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">work</span><span class="s2">.*</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">AppDiagnosticLogger</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Constants</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">NotificationHelper</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">WebViewCookieJar</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">worker</span><span class="s2">.</span><span class="s1">SyncWorker</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">NonCancellable</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+<span class="s1">import okhttp3</span><span class="s2">.</span><span class="s1">OkHttpClient</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">concurrent</span><span class="s2">.</span><span class="s1">TimeUnit</span>
+
+<span class="s1">import coil</span><span class="s2">.</span><span class="s1">ImageLoader</span>
+<span class="s1">import coil</span><span class="s2">.</span><span class="s1">ImageLoaderFactory</span>
+<span class="s1">import coil</span><span class="s2">.</span><span class="s1">Coil</span>
+
+<span class="s0">class </span><span class="s1">XsApplication : Application</span><span class="s2">(), </span><span class="s1">ImageLoaderFactory </span><span class="s2">{</span>
+    <span class="s1">lateinit </span><span class="s0">var </span><span class="s1">okHttpClient: OkHttpClient</span>
+        <span class="s1">private set</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">newImageLoader</span><span class="s2">()</span><span class="s1">: ImageLoader </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">customOkHttpClient </span><span class="s2">= </span><span class="s1">OkHttpClient</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">connectTimeout</span><span class="s2">(</span><span class="s3">15</span><span class="s2">, </span><span class="s1">TimeUnit</span><span class="s2">.</span><span class="s1">SECONDS</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">readTimeout</span><span class="s2">(</span><span class="s3">15</span><span class="s2">, </span><span class="s1">TimeUnit</span><span class="s2">.</span><span class="s1">SECONDS</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">cookieJar</span><span class="s2">(</span><span class="s1">WebViewCookieJar</span><span class="s2">())</span>
+            <span class="s2">.</span><span class="s1">addInterceptor </span><span class="s2">{ </span><span class="s1">chain </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">request </span><span class="s2">= </span><span class="s1">chain</span><span class="s2">.</span><span class="s1">request</span><span class="s2">().</span><span class="s1">newBuilder</span><span class="s2">()</span>
+                    <span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s4">&quot;Referer&quot;</span><span class="s2">, </span><span class="s4">&quot;https://simpcity.cr/&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s4">&quot;Origin&quot;</span><span class="s2">, </span><span class="s4">&quot;https://simpcity.cr&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s4">&quot;User-Agent&quot;</span><span class="s2">, </span><span class="s4">&quot;Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s4">&quot;Sec-Fetch-Dest&quot;</span><span class="s2">, </span><span class="s4">&quot;image&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s4">&quot;Sec-Fetch-Mode&quot;</span><span class="s2">, </span><span class="s4">&quot;no-cors&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">header</span><span class="s2">(</span><span class="s4">&quot;Sec-Fetch-Site&quot;</span><span class="s2">, </span><span class="s4">&quot;cross-site&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">build</span><span class="s2">()</span>
+                <span class="s1">chain</span><span class="s2">.</span><span class="s1">proceed</span><span class="s2">(</span><span class="s1">request</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s2">.</span><span class="s1">build</span><span class="s2">()</span>
+
+        <span class="s1">okHttpClient </span><span class="s2">= </span><span class="s1">customOkHttpClient</span>
+
+        <span class="s0">return </span><span class="s1">ImageLoader</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">okHttpClient</span><span class="s2">(</span><span class="s1">customOkHttpClient</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">memoryCachePolicy</span><span class="s2">(</span><span class="s1">coil</span><span class="s2">.</span><span class="s1">request</span><span class="s2">.</span><span class="s1">CachePolicy</span><span class="s2">.</span><span class="s1">ENABLED</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">diskCachePolicy</span><span class="s2">(</span><span class="s1">coil</span><span class="s2">.</span><span class="s1">request</span><span class="s2">.</span><span class="s1">CachePolicy</span><span class="s2">.</span><span class="s1">ENABLED</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">crossfade</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">dispatcher</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">eventListener</span><span class="s2">(</span><span class="s0">object </span><span class="s1">: coil</span><span class="s2">.</span><span class="s1">EventListener </span><span class="s2">{</span>
+                <span class="s1">override </span><span class="s0">fun </span><span class="s1">onSuccess</span><span class="s2">(</span><span class="s1">request: coil</span><span class="s2">.</span><span class="s1">request</span><span class="s2">.</span><span class="s1">ImageRequest</span><span class="s2">, </span><span class="s1">result: coil</span><span class="s2">.</span><span class="s1">request</span><span class="s2">.</span><span class="s1">SuccessResult</span><span class="s2">) {</span>
+                    <span class="s1">AppDiagnosticLogger</span><span class="s2">.</span><span class="s1">log</span><span class="s2">(</span><span class="s4">&quot;IMAGE_OK&quot;</span><span class="s2">, </span><span class="s1">request</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+                <span class="s2">}</span>
+                <span class="s1">override </span><span class="s0">fun </span><span class="s1">onError</span><span class="s2">(</span><span class="s1">request: coil</span><span class="s2">.</span><span class="s1">request</span><span class="s2">.</span><span class="s1">ImageRequest</span><span class="s2">, </span><span class="s1">result: coil</span><span class="s2">.</span><span class="s1">request</span><span class="s2">.</span><span class="s1">ErrorResult</span><span class="s2">) {</span>
+                    <span class="s0">val </span><span class="s1">errMsg </span><span class="s2">= </span><span class="s1">result</span><span class="s2">.</span><span class="s1">throwable</span><span class="s2">.</span><span class="s1">message ?: </span><span class="s4">&quot;Desconhecido&quot;</span>
+                    <span class="s1">AppDiagnosticLogger</span><span class="s2">.</span><span class="s1">log</span><span class="s2">(</span><span class="s4">&quot;IMAGE_FAIL&quot;</span><span class="s2">, </span><span class="s4">&quot;</span><span class="s0">${</span><span class="s1">request</span><span class="s2">.</span><span class="s1">data</span><span class="s0">} </span><span class="s4">-&gt; </span><span class="s0">$</span><span class="s1">errMsg</span><span class="s4">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">})</span>
+            <span class="s2">.</span><span class="s1">build</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">() {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">()</span>
+
+        <span class="s5">// Configura explicitamente o ImageLoader global do Coil</span>
+        <span class="s0">val </span><span class="s1">imageLoader </span><span class="s2">= </span><span class="s1">newImageLoader</span><span class="s2">()</span>
+        <span class="s1">Coil</span><span class="s2">.</span><span class="s1">setImageLoader</span><span class="s2">(</span><span class="s1">imageLoader</span><span class="s2">)</span>
+
+        <span class="s5">// 1. Inicialização Imediata do Logger de Diagnóstico</span>
+        <span class="s1">AppDiagnosticLogger</span><span class="s2">.</span><span class="s1">init</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s1">AppDiagnosticLogger</span><span class="s2">.</span><span class="s1">log</span><span class="s2">(</span><span class="s4">&quot;APP&quot;</span><span class="s2">, </span><span class="s4">&quot;XsApplication.onCreate() iniciado.&quot;</span><span class="s2">)</span>
+
+        <span class="s5">// Lifecycle observer para detectar ON_STOP (app em segundo plano / fechando)</span>
+        <span class="s1">ProcessLifecycleOwner</span><span class="s2">.</span><span class="s1">get</span><span class="s2">().</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">addObserver</span><span class="s2">(</span><span class="s0">object </span><span class="s1">: DefaultLifecycleObserver </span><span class="s2">{</span>
+            <span class="s1">override </span><span class="s0">fun </span><span class="s1">onStop</span><span class="s2">(</span><span class="s1">owner: LifecycleOwner</span><span class="s2">) {</span>
+                <span class="s1">AppDiagnosticLogger</span><span class="s2">.</span><span class="s1">log</span><span class="s2">(</span><span class="s4">&quot;LIFECYCLE&quot;</span><span class="s2">, </span><span class="s4">&quot;App entrou em segundo plano (ON_STOP). Salvando logs...&quot;</span><span class="s2">)</span>
+                <span class="s1">kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">runBlocking </span><span class="s2">{</span>
+                    <span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO </span><span class="s2">+ </span><span class="s1">NonCancellable</span><span class="s2">) {</span>
+                        <span class="s1">AppDiagnosticLogger</span><span class="s2">.</span><span class="s1">saveLogsToDownloads</span><span class="s2">(</span><span class="s0">this</span><span class="s1">@XsApplication</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">})</span>
+
+        <span class="s5">// Inicializa o User-Agent padrão do WebView e sincroniza com Constants</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">Constants</span><span class="s2">.</span><span class="s1">USER_AGENT </span><span class="s2">= </span><span class="s1">WebSettings</span><span class="s2">.</span><span class="s1">getDefaultUserAgent</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s5">// Mantém o fallback definido em Constants se falhar</span>
+        <span class="s2">}</span>
+
+        <span class="s1">NotificationHelper</span><span class="s2">(</span><span class="s0">this</span><span class="s2">).</span><span class="s1">createNotificationChannel</span><span class="s2">()</span>
+        <span class="s1">scheduleSync</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">scheduleSync</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">constraints </span><span class="s2">= </span><span class="s1">Constraints</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">setRequiredNetworkType</span><span class="s2">(</span><span class="s1">NetworkType</span><span class="s2">.</span><span class="s1">CONNECTED</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">build</span><span class="s2">()</span>
+
+        <span class="s0">val </span><span class="s1">syncRequest </span><span class="s2">= </span><span class="s1">PeriodicWorkRequestBuilder</span><span class="s2">&lt;</span><span class="s1">SyncWorker</span><span class="s2">&gt;(</span><span class="s3">1</span><span class="s2">, </span><span class="s1">TimeUnit</span><span class="s2">.</span><span class="s1">HOURS</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setConstraints</span><span class="s2">(</span><span class="s1">constraints</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">build</span><span class="s2">()</span>
+
+        <span class="s1">WorkManager</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">(</span><span class="s0">this</span><span class="s2">).</span><span class="s1">enqueueUniquePeriodicWork</span><span class="s2">(</span>
+            <span class="s4">&quot;SyncWorker&quot;</span><span class="s2">,</span>
+            <span class="s1">ExistingPeriodicWorkPolicy</span><span class="s2">.</span><span class="s1">KEEP</span><span class="s2">,</span>
+            <span class="s1">syncRequest</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>MediaExtractorPlugin.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MediaExtractorPlugin.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">extractor</span>
+
+<span class="s0">interface </span><span class="s1">MediaExtractorPlugin </span><span class="s2">{</span>
+    <span class="s3">/**</span>
+     <span class="s3">* Verifica se este plugin sabe lidar com a URL fornecida.</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">canHandle</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean</span>
+    
+    <span class="s3">/**</span>
+     <span class="s3">* Entra na página e devolve a lista de links REAIS brutos (.mp4, .jpg, etc) em alta resolução.</span>
+     <span class="s3">*/</span>
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">extract</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>WebViewCookieJar.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+WebViewCookieJar.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">webkit</span><span class="s2">.</span><span class="s1">CookieManager</span>
+<span class="s1">import okhttp3</span><span class="s2">.</span><span class="s1">Cookie</span>
+<span class="s1">import okhttp3</span><span class="s2">.</span><span class="s1">CookieJar</span>
+<span class="s1">import okhttp3</span><span class="s2">.</span><span class="s1">HttpUrl</span>
+
+<span class="s0">class </span><span class="s1">WebViewCookieJar : CookieJar </span><span class="s2">{</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">cookieManager </span><span class="s2">= </span><span class="s1">CookieManager</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">()</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">saveFromResponse</span><span class="s2">(</span><span class="s1">url: HttpUrl</span><span class="s2">, </span><span class="s1">cookies: List</span><span class="s2">&lt;</span><span class="s1">Cookie</span><span class="s2">&gt;) {</span>
+        <span class="s0">val </span><span class="s1">urlString </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">cookie </span><span class="s0">in </span><span class="s1">cookies</span><span class="s2">) {</span>
+            <span class="s1">cookieManager</span><span class="s2">.</span><span class="s1">setCookie</span><span class="s2">(</span><span class="s1">urlString</span><span class="s2">, </span><span class="s1">cookie</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">loadForRequest</span><span class="s2">(</span><span class="s1">url: HttpUrl</span><span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">Cookie</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">urlString </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">cookiesString </span><span class="s2">= </span><span class="s1">cookieManager</span><span class="s2">.</span><span class="s1">getCookie</span><span class="s2">(</span><span class="s1">urlString</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">cookiesString </span><span class="s2">== </span><span class="s0">null </span><span class="s2">|| </span><span class="s1">cookiesString</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s0">return </span><span class="s1">emptyList</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">cookiesString</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s3">&quot;;&quot;</span><span class="s2">).</span><span class="s1">mapNotNull </span><span class="s2">{</span>
+            <span class="s1">Cookie</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s1">url</span><span class="s2">, </span><span class="s1">it</span><span class="s2">.</span><span class="s1">trim</span><span class="s2">())</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

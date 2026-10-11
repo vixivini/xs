@@ -1,0 +1,225 @@
+<html>
+<head>
+<title>AppDiagnosticLogger.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+AppDiagnosticLogger.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContentValues</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">ConnectivityManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">NetworkCapabilities</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Environment</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">MediaStore</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">File</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">FileOutputStream</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">OutputStreamWriter</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">SimpleDateFormat</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Date</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Locale</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">concurrent</span><span class="s2">.</span><span class="s1">ConcurrentLinkedQueue</span>
+
+<span class="s0">object </span><span class="s1">AppDiagnosticLogger </span><span class="s2">{</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">logQueue </span><span class="s2">= </span><span class="s1">ConcurrentLinkedQueue</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">isInitialized </span><span class="s2">= </span><span class="s0">false</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">appContext: Context? </span><span class="s2">= </span><span class="s0">null</span>
+
+    <span class="s0">fun </span><span class="s1">init</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isInitialized</span><span class="s2">) </span><span class="s0">return</span>
+        <span class="s1">isInitialized </span><span class="s2">= </span><span class="s0">true</span>
+        <span class="s1">appContext </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">applicationContext</span>
+        <span class="s0">val </span><span class="s1">bootTime </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">()</span>
+
+        <span class="s0">val </span><span class="s1">androidVer </span><span class="s2">= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT</span>
+        <span class="s0">val </span><span class="s1">model </span><span class="s2">= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">MODEL</span>
+        <span class="s0">val </span><span class="s1">netState </span><span class="s2">= </span><span class="s1">getNetworkState</span><span class="s2">(</span><span class="s1">appContext</span><span class="s2">!!)</span>
+
+        <span class="s1">log</span><span class="s2">(</span><span class="s3">&quot;BOOT&quot;</span><span class="s2">, </span><span class="s3">&quot;=== INICIALIZAÇÃO DO AUDITOR DIAGNÓSTICO ===&quot;</span><span class="s2">)</span>
+        <span class="s1">log</span><span class="s2">(</span><span class="s3">&quot;BOOT&quot;</span><span class="s2">, </span><span class="s3">&quot;Timestamp: </span><span class="s0">${</span><span class="s1">SimpleDateFormat</span><span class="s2">(</span><span class="s3">&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;</span><span class="s2">, </span><span class="s1">Locale</span><span class="s2">.</span><span class="s1">getDefault</span><span class="s2">()).</span><span class="s1">format</span><span class="s2">(</span><span class="s1">Date</span><span class="s2">(</span><span class="s1">bootTime</span><span class="s2">))</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s1">log</span><span class="s2">(</span><span class="s3">&quot;BOOT&quot;</span><span class="s2">, </span><span class="s3">&quot;Versão Android: </span><span class="s0">$</span><span class="s1">androidVer </span><span class="s3">| Modelo: </span><span class="s0">$</span><span class="s1">model </span><span class="s3">| Rede: </span><span class="s0">$</span><span class="s1">netState</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+        <span class="s4">// Uncaught Exception Handler</span>
+        <span class="s0">val </span><span class="s1">defaultHandler </span><span class="s2">= </span><span class="s1">Thread</span><span class="s2">.</span><span class="s1">getDefaultUncaughtExceptionHandler</span><span class="s2">()</span>
+        <span class="s1">Thread</span><span class="s2">.</span><span class="s1">setDefaultUncaughtExceptionHandler </span><span class="s2">{ </span><span class="s1">thread</span><span class="s2">, </span><span class="s1">throwable </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">sw </span><span class="s2">= </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">StringWriter</span><span class="s2">()</span>
+            <span class="s0">val </span><span class="s1">pw </span><span class="s2">= </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">PrintWriter</span><span class="s2">(</span><span class="s1">sw</span><span class="s2">)</span>
+            <span class="s1">throwable</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">(</span><span class="s1">pw</span><span class="s2">)</span>
+            <span class="s1">log</span><span class="s2">(</span><span class="s3">&quot;CRASH&quot;</span><span class="s2">, </span><span class="s3">&quot;FATAL CRASH em </span><span class="s0">${</span><span class="s1">thread</span><span class="s2">.</span><span class="s1">name</span><span class="s0">}</span><span class="s3">: </span><span class="s0">${</span><span class="s1">throwable</span><span class="s2">.</span><span class="s1">message</span><span class="s0">}\n${</span><span class="s1">sw</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+            
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s1">appContext?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">saveLogsToDownloads</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) }</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+            <span class="s2">}</span>
+
+            <span class="s1">defaultHandler?</span><span class="s2">.</span><span class="s1">uncaughtException</span><span class="s2">(</span><span class="s1">thread</span><span class="s2">, </span><span class="s1">throwable</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">log</span><span class="s2">(</span><span class="s1">category: String</span><span class="s2">, </span><span class="s1">message: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">timestamp </span><span class="s2">= </span><span class="s1">SimpleDateFormat</span><span class="s2">(</span><span class="s3">&quot;HH:mm:ss.SSS&quot;</span><span class="s2">, </span><span class="s1">Locale</span><span class="s2">.</span><span class="s1">getDefault</span><span class="s2">()).</span><span class="s1">format</span><span class="s2">(</span><span class="s1">Date</span><span class="s2">())</span>
+        <span class="s0">val </span><span class="s1">entry </span><span class="s2">= </span><span class="s3">&quot;[</span><span class="s0">$</span><span class="s1">timestamp</span><span class="s3">] [</span><span class="s0">$</span><span class="s1">category</span><span class="s3">] </span><span class="s0">$</span><span class="s1">message</span><span class="s3">&quot;</span>
+        <span class="s1">logQueue</span><span class="s2">.</span><span class="s1">offer</span><span class="s2">(</span><span class="s1">entry</span><span class="s2">)</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;DiagnosticAudit&quot;</span><span class="s2">, </span><span class="s1">entry</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">inline </span><span class="s0">fun </span><span class="s2">&lt;</span><span class="s1">T</span><span class="s2">&gt; </span><span class="s1">benchmark</span><span class="s2">(</span><span class="s1">operationName: String</span><span class="s2">, </span><span class="s1">block: </span><span class="s2">() -&gt; </span><span class="s1">T</span><span class="s2">)</span><span class="s1">: T </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">start </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">result </span><span class="s2">= </span><span class="s1">block</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">duration </span><span class="s2">= </span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">() - </span><span class="s1">start</span>
+        <span class="s1">log</span><span class="s2">(</span><span class="s3">&quot;BENCHMARK&quot;</span><span class="s2">, </span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">operationName </span><span class="s3">demorou </span><span class="s0">${</span><span class="s1">duration</span><span class="s0">}</span><span class="s3">ms&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">duration </span><span class="s2">&gt; </span><span class="s5">100 </span><span class="s2">&amp;&amp; </span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Looper</span><span class="s2">.</span><span class="s1">myLooper</span><span class="s2">() == </span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Looper</span><span class="s2">.</span><span class="s1">getMainLooper</span><span class="s2">()) {</span>
+            <span class="s1">log</span><span class="s2">(</span><span class="s3">&quot;PERF_WARNING&quot;</span><span class="s2">, </span><span class="s3">&quot;JANK_DETECTED: operação </span><span class="s0">$</span><span class="s1">operationName </span><span class="s3">demorou </span><span class="s0">$</span><span class="s1">duration </span><span class="s3">ms na Main Thread&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">result</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">getNetworkState</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">return try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">cm </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">CONNECTIVITY_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">ConnectivityManager</span>
+            <span class="s0">val </span><span class="s1">network </span><span class="s2">= </span><span class="s1">cm</span><span class="s2">.</span><span class="s1">activeNetwork ?: </span><span class="s0">return </span><span class="s3">&quot;Sem Conexão&quot;</span>
+            <span class="s0">val </span><span class="s1">caps </span><span class="s2">= </span><span class="s1">cm</span><span class="s2">.</span><span class="s1">getNetworkCapabilities</span><span class="s2">(</span><span class="s1">network</span><span class="s2">) </span><span class="s1">?: </span><span class="s0">return </span><span class="s3">&quot;Desconhecido&quot;</span>
+            <span class="s0">when </span><span class="s2">{</span>
+                <span class="s1">caps</span><span class="s2">.</span><span class="s1">hasTransport</span><span class="s2">(</span><span class="s1">NetworkCapabilities</span><span class="s2">.</span><span class="s1">TRANSPORT_WIFI</span><span class="s2">) -&gt; </span><span class="s3">&quot;Wi-Fi&quot;</span>
+                <span class="s1">caps</span><span class="s2">.</span><span class="s1">hasTransport</span><span class="s2">(</span><span class="s1">NetworkCapabilities</span><span class="s2">.</span><span class="s1">TRANSPORT_CELLULAR</span><span class="s2">) -&gt; </span><span class="s3">&quot;Celular (Dados)&quot;</span>
+                <span class="s1">caps</span><span class="s2">.</span><span class="s1">hasTransport</span><span class="s2">(</span><span class="s1">NetworkCapabilities</span><span class="s2">.</span><span class="s1">TRANSPORT_ETHERNET</span><span class="s2">) -&gt; </span><span class="s3">&quot;Ethernet&quot;</span>
+                <span class="s0">else </span><span class="s2">-&gt; </span><span class="s3">&quot;Outro&quot;</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s3">&quot;Erro ao checar rede: </span><span class="s0">${</span><span class="s1">e</span><span class="s2">.</span><span class="s1">message</span><span class="s0">}</span><span class="s3">&quot;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">saveLogsToDownloads</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">) {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">sb </span><span class="s2">= </span><span class="s1">StringBuilder</span><span class="s2">()</span>
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;=== RELATÓRIO DE AUDITORIA E DIAGNÓSTICO XS ===</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;Gerado em: </span><span class="s0">${</span><span class="s1">SimpleDateFormat</span><span class="s2">(</span><span class="s3">&quot;yyyy-MM-dd HH:mm:ss&quot;</span><span class="s2">, </span><span class="s1">Locale</span><span class="s2">.</span><span class="s1">getDefault</span><span class="s2">()).</span><span class="s1">format</span><span class="s2">(</span><span class="s1">Date</span><span class="s2">())</span><span class="s0">}\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;--------------------------------------------------</span><span class="s0">\n\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            
+            <span class="s0">while </span><span class="s2">(!</span><span class="s1">logQueue</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s1">logQueue</span><span class="s2">.</span><span class="s1">poll</span><span class="s2">()</span><span class="s1">?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s1">it</span><span class="s2">).</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">) }</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Seção 3: Dump de Código-Fonte Fundamental do Sistema</span>
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n\n</span><span class="s3">=== DUMP DE CÓDIGO FUNDAMENTAL DO SISTEMA ===</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">--- 1. MediaPager.kt (Carrossel / Card) ---</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;&quot;&quot;</span>
+<span class="s3">package com.example.xs.ui.components</span>
+<span class="s3">import androidx.compose.foundation.background</span>
+<span class="s3">import androidx.compose.foundation.clickable</span>
+<span class="s3">import androidx.compose.foundation.layout.*</span>
+<span class="s3">import androidx.compose.foundation.pager.HorizontalPager</span>
+<span class="s3">import androidx.compose.foundation.pager.rememberPagerState</span>
+<span class="s3">import androidx.compose.foundation.shape.CircleShape</span>
+<span class="s3">import androidx.compose.material3.MaterialTheme</span>
+<span class="s3">import androidx.compose.material3.Surface</span>
+<span class="s3">import androidx.compose.material3.Text</span>
+<span class="s3">import androidx.compose.runtime.*</span>
+<span class="s3">import androidx.compose.ui.Alignment</span>
+<span class="s3">import androidx.compose.ui.Modifier</span>
+<span class="s3">import androidx.compose.ui.draw.clip</span>
+<span class="s3">import androidx.compose.ui.graphics.Color</span>
+<span class="s3">import androidx.compose.ui.layout.ContentScale</span>
+<span class="s3">import androidx.compose.ui.platform.LocalContext</span>
+<span class="s3">import androidx.compose.ui.unit.dp</span>
+<span class="s3">import androidx.compose.ui.unit.sp</span>
+<span class="s3">import coil.compose.AsyncImage</span>
+<span class="s3">import coil.decode.VideoFrameDecoder</span>
+<span class="s3">import coil.request.ImageRequest</span>
+<span class="s3">import com.example.xs.util.MediaUtils</span>
+
+<span class="s3">@Composable</span>
+<span class="s3">fun MediaPager(mediaUrls: List&lt;String&gt;, modifier: Modifier = Modifier, shouldPlay: Boolean = true, onMediaClick: (Int) -&gt; Unit = {}) {</span>
+    <span class="s3">val totalItems = mediaUrls.size</span>
+    <span class="s3">val pagerState = rememberPagerState(pageCount = { totalItems })</span>
+    <span class="s3">val currentPage by remember { derivedStateOf { pagerState.currentPage } }</span>
+    <span class="s3">Box(modifier = modifier.background(Color.Black)) {</span>
+        <span class="s3">HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize(), beyondViewportPageCount = 0) { page -&gt;</span>
+            <span class="s3">val mediaUrl = mediaUrls[page]</span>
+            <span class="s3">val isVideo = MediaUtils.isVideoUrl(mediaUrl)</span>
+            <span class="s3">Box(modifier = Modifier.fillMaxSize().clickable { onMediaClick(page) }, contentAlignment = Alignment.Center) {</span>
+                <span class="s3">if (isVideo) {</span>
+                    <span class="s3">VideoPlayer(url = mediaUrl, modifier = Modifier.fillMaxSize(), isMuted = true, showControls = false, shouldPlay = shouldPlay &amp;&amp; currentPage == page)</span>
+                <span class="s3">} else {</span>
+                    <span class="s3">AsyncImage(model = ImageRequest.Builder(LocalContext.current).data(mediaUrl).size(coil.size.Dimension.Pixels(1080), coil.size.Dimension.Pixels(1080)).crossfade(true).build(), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Fit)</span>
+                <span class="s3">}</span>
+            <span class="s3">}</span>
+        <span class="s3">}</span>
+    <span class="s3">}</span>
+<span class="s3">}</span>
+            <span class="s3">&quot;&quot;&quot;</span><span class="s2">.</span><span class="s1">trimIndent</span><span class="s2">())</span>
+
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n\n</span><span class="s3">--- 2. VideoPlayer.kt (ExoPlayer) ---</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;&quot;&quot;</span>
+<span class="s3">// ExoPlayer configurado com DefaultHttpDataSource.Factory, Player.Listener completo e tratamento de fallback</span>
+            <span class="s3">&quot;&quot;&quot;</span><span class="s2">.</span><span class="s1">trimIndent</span><span class="s2">())</span>
+
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n\n</span><span class="s3">--- 3. MediaScraperRepository.kt (Extrator / Resolvedor de Stream) ---</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;&quot;&quot;</span>
+<span class="s3">// Repositório com cache de sessão, concorrência (activeJobs), e resolvedor turbo.cr de segundo nível</span>
+            <span class="s3">&quot;&quot;&quot;</span><span class="s2">.</span><span class="s1">trimIndent</span><span class="s2">())</span>
+
+            <span class="s0">val </span><span class="s1">content </span><span class="s2">= </span><span class="s1">sb</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()</span>
+            <span class="s0">val </span><span class="s1">fileName </span><span class="s2">= </span><span class="s3">&quot;diagnostico_app_auditoria.txt&quot;</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">Q</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">resolver </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">contentResolver</span>
+                <span class="s0">val </span><span class="s1">contentValues </span><span class="s2">= </span><span class="s1">ContentValues</span><span class="s2">().</span><span class="s1">apply </span><span class="s2">{</span>
+                    <span class="s1">put</span><span class="s2">(</span><span class="s1">MediaStore</span><span class="s2">.</span><span class="s1">Downloads</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">, </span><span class="s1">fileName</span><span class="s2">)</span>
+                    <span class="s1">put</span><span class="s2">(</span><span class="s1">MediaStore</span><span class="s2">.</span><span class="s1">Downloads</span><span class="s2">.</span><span class="s1">MIME_TYPE</span><span class="s2">, </span><span class="s3">&quot;text/plain&quot;</span><span class="s2">)</span>
+                    <span class="s1">put</span><span class="s2">(</span><span class="s1">MediaStore</span><span class="s2">.</span><span class="s1">Downloads</span><span class="s2">.</span><span class="s1">RELATIVE_PATH</span><span class="s2">, </span><span class="s1">Environment</span><span class="s2">.</span><span class="s1">DIRECTORY_DOWNLOADS</span><span class="s2">)</span>
+                    <span class="s1">put</span><span class="s2">(</span><span class="s1">MediaStore</span><span class="s2">.</span><span class="s1">Downloads</span><span class="s2">.</span><span class="s1">IS_PENDING</span><span class="s2">, </span><span class="s5">1</span><span class="s2">)</span>
+                <span class="s2">}</span>
+
+                <span class="s0">val </span><span class="s1">uri </span><span class="s2">= </span><span class="s1">resolver</span><span class="s2">.</span><span class="s1">insert</span><span class="s2">(</span><span class="s1">MediaStore</span><span class="s2">.</span><span class="s1">Downloads</span><span class="s2">.</span><span class="s1">EXTERNAL_CONTENT_URI</span><span class="s2">, </span><span class="s1">contentValues</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">uri </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                    <span class="s1">resolver</span><span class="s2">.</span><span class="s1">openOutputStream</span><span class="s2">(</span><span class="s1">uri</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">outputStream </span><span class="s2">-&gt;</span>
+                        <span class="s1">OutputStreamWriter</span><span class="s2">(</span><span class="s1">outputStream</span><span class="s2">).</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">writer </span><span class="s2">-&gt;</span>
+                            <span class="s1">writer</span><span class="s2">.</span><span class="s1">write</span><span class="s2">(</span><span class="s1">content</span><span class="s2">)</span>
+                            <span class="s1">writer</span><span class="s2">.</span><span class="s1">flush</span><span class="s2">()</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                    <span class="s1">contentValues</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+                    <span class="s1">contentValues</span><span class="s2">.</span><span class="s1">put</span><span class="s2">(</span><span class="s1">MediaStore</span><span class="s2">.</span><span class="s1">Downloads</span><span class="s2">.</span><span class="s1">IS_PENDING</span><span class="s2">, </span><span class="s5">0</span><span class="s2">)</span>
+                    <span class="s1">resolver</span><span class="s2">.</span><span class="s1">update</span><span class="s2">(</span><span class="s1">uri</span><span class="s2">, </span><span class="s1">contentValues</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;DiagnosticAudit&quot;</span><span class="s2">, </span><span class="s3">&quot;Relatório salvo com sucesso via MediaStore em Downloads: </span><span class="s0">$</span><span class="s1">uri</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">@Suppress</span><span class="s2">(</span><span class="s3">&quot;DEPRECATION&quot;</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">downloadsDir </span><span class="s2">= </span><span class="s1">Environment</span><span class="s2">.</span><span class="s1">getExternalStoragePublicDirectory</span><span class="s2">(</span><span class="s1">Environment</span><span class="s2">.</span><span class="s1">DIRECTORY_DOWNLOADS</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(!</span><span class="s1">downloadsDir</span><span class="s2">.</span><span class="s1">exists</span><span class="s2">()) </span><span class="s1">downloadsDir</span><span class="s2">.</span><span class="s1">mkdirs</span><span class="s2">()</span>
+                <span class="s0">val </span><span class="s1">file </span><span class="s2">= </span><span class="s1">File</span><span class="s2">(</span><span class="s1">downloadsDir</span><span class="s2">, </span><span class="s1">fileName</span><span class="s2">)</span>
+                <span class="s1">FileOutputStream</span><span class="s2">(</span><span class="s1">file</span><span class="s2">).</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">fos </span><span class="s2">-&gt;</span>
+                    <span class="s1">OutputStreamWriter</span><span class="s2">(</span><span class="s1">fos</span><span class="s2">).</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">writer </span><span class="s2">-&gt;</span>
+                        <span class="s1">writer</span><span class="s2">.</span><span class="s1">write</span><span class="s2">(</span><span class="s1">content</span><span class="s2">)</span>
+                        <span class="s1">writer</span><span class="s2">.</span><span class="s1">flush</span><span class="s2">()</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;DiagnosticAudit&quot;</span><span class="s2">, </span><span class="s3">&quot;Relatório salvo com sucesso em: </span><span class="s0">${</span><span class="s1">file</span><span class="s2">.</span><span class="s1">absolutePath</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s3">&quot;DiagnosticAudit&quot;</span><span class="s2">, </span><span class="s3">&quot;Erro ao salvar relatório de auditoria&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

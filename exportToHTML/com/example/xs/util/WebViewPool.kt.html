@@ -1,0 +1,190 @@
+<html>
+<head>
+<title>WebViewPool.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #6aab73;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+WebViewPool.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">ViewGroup</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">webkit</span><span class="s2">.</span><span class="s1">WebView</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Message</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+
+<span class="s0">object </span><span class="s1">WebViewPool </span><span class="s2">{</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">pool </span><span class="s2">= </span><span class="s1">mutableMapOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">WebView</span><span class="s2">&gt;()</span>
+    <span class="s1">private const </span><span class="s0">val </span><span class="s1">MAX_POOL_SIZE </span><span class="s2">= </span><span class="s3">6</span>
+    <span class="s1">private const </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s4">&quot;WebViewPool&quot;</span>
+
+    <span class="s0">fun </span><span class="s1">preload</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">url: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">embedUrl </span><span class="s2">= </span><span class="s1">getEmbedUrl</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">pool</span><span class="s2">.</span><span class="s1">containsKey</span><span class="s2">(</span><span class="s1">embedUrl</span><span class="s2">)) </span><span class="s0">return</span>
+        
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">pool</span><span class="s2">.</span><span class="s1">size </span><span class="s2">&gt;= </span><span class="s1">MAX_POOL_SIZE</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">oldest </span><span class="s2">= </span><span class="s1">pool</span><span class="s2">.</span><span class="s1">keys</span><span class="s2">.</span><span class="s1">first</span><span class="s2">()</span>
+            <span class="s0">val </span><span class="s1">wv </span><span class="s2">= </span><span class="s1">pool</span><span class="s2">.</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">oldest</span><span class="s2">)</span>
+            <span class="s1">wv?</span><span class="s2">.</span><span class="s1">destroy</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">webView </span><span class="s2">= </span><span class="s1">createWebView</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)</span>
+        <span class="s1">setupWebView</span><span class="s2">(</span><span class="s1">webView</span><span class="s2">, </span><span class="s1">isMuted </span><span class="s2">= </span><span class="s0">true</span><span class="s2">, </span><span class="s1">shouldPlay </span><span class="s2">= </span><span class="s0">false</span><span class="s2">, </span><span class="s1">embedUrl </span><span class="s2">= </span><span class="s1">embedUrl</span><span class="s2">)</span>
+        
+        <span class="s0">val </span><span class="s1">headers </span><span class="s2">= </span><span class="s1">mapOf</span><span class="s2">(</span><span class="s4">&quot;Referer&quot; </span><span class="s1">to </span><span class="s4">&quot;https://simpcity.cr/&quot;</span><span class="s2">)</span>
+        <span class="s1">webView</span><span class="s2">.</span><span class="s1">loadUrl</span><span class="s2">(</span><span class="s1">embedUrl</span><span class="s2">, </span><span class="s1">headers</span><span class="s2">)</span>
+        <span class="s1">pool</span><span class="s2">[</span><span class="s1">embedUrl</span><span class="s2">] = </span><span class="s1">webView</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">acquire</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Pair</span><span class="s2">&lt;</span><span class="s1">WebView</span><span class="s2">, </span><span class="s1">Boolean</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">embedUrl </span><span class="s2">= </span><span class="s1">getEmbedUrl</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">pooled </span><span class="s2">= </span><span class="s1">pool</span><span class="s2">.</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">embedUrl</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">pooled </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s2">(</span><span class="s1">pooled</span><span class="s2">.</span><span class="s1">parent </span><span class="s0">as? </span><span class="s1">ViewGroup</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">removeView</span><span class="s2">(</span><span class="s1">pooled</span><span class="s2">)</span>
+            <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s1">pooled</span><span class="s2">, </span><span class="s0">true</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s1">createWebView</span><span class="s2">(</span><span class="s1">context</span><span class="s2">), </span><span class="s0">false</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">release</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">webView: WebView</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">embedUrl </span><span class="s2">= </span><span class="s1">getEmbedUrl</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+        <span class="s2">(</span><span class="s1">webView</span><span class="s2">.</span><span class="s1">parent </span><span class="s0">as? </span><span class="s1">ViewGroup</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">removeView</span><span class="s2">(</span><span class="s1">webView</span><span class="s2">)</span>
+        <span class="s5">// Mute and pause when releasing</span>
+        <span class="s1">applyPlaybackState</span><span class="s2">(</span><span class="s1">webView</span><span class="s2">, </span><span class="s1">isMuted </span><span class="s2">= </span><span class="s0">true</span><span class="s2">, </span><span class="s1">shouldPlay </span><span class="s2">= </span><span class="s0">false</span><span class="s2">)</span>
+        
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">pool</span><span class="s2">.</span><span class="s1">containsKey</span><span class="s2">(</span><span class="s1">embedUrl</span><span class="s2">) &amp;&amp; </span><span class="s1">pool</span><span class="s2">.</span><span class="s1">size </span><span class="s2">&lt; </span><span class="s1">MAX_POOL_SIZE</span><span class="s2">) {</span>
+            <span class="s1">pool</span><span class="s2">[</span><span class="s1">embedUrl</span><span class="s2">] = </span><span class="s1">webView</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">webView</span><span class="s2">.</span><span class="s1">destroy</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">createWebView</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">)</span><span class="s1">: WebView </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">WebView</span><span class="s2">(</span><span class="s1">context</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+            <span class="s1">layoutParams </span><span class="s2">= </span><span class="s1">ViewGroup</span><span class="s2">.</span><span class="s1">LayoutParams</span><span class="s2">(</span>
+                <span class="s1">ViewGroup</span><span class="s2">.</span><span class="s1">LayoutParams</span><span class="s2">.</span><span class="s1">MATCH_PARENT</span><span class="s2">,</span>
+                <span class="s1">ViewGroup</span><span class="s2">.</span><span class="s1">LayoutParams</span><span class="s2">.</span><span class="s1">MATCH_PARENT</span>
+            <span class="s2">)</span>
+            <span class="s1">setBackgroundColor</span><span class="s2">(</span><span class="s1">android</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">BLACK</span><span class="s2">)</span>
+            <span class="s1">settings</span><span class="s2">.</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">javaScriptEnabled </span><span class="s2">= </span><span class="s0">true</span>
+                <span class="s1">domStorageEnabled </span><span class="s2">= </span><span class="s0">true</span>
+                <span class="s1">mediaPlaybackRequiresUserGesture </span><span class="s2">= </span><span class="s0">false</span>
+                <span class="s1">userAgentString </span><span class="s2">= </span><span class="s1">Constants</span><span class="s2">.</span><span class="s1">USER_AGENT</span>
+                <span class="s1">allowFileAccess </span><span class="s2">= </span><span class="s0">true</span>
+                <span class="s1">allowContentAccess </span><span class="s2">= </span><span class="s0">true</span>
+                <span class="s1">javaScriptCanOpenWindowsAutomatically </span><span class="s2">= </span><span class="s0">false</span>
+                <span class="s1">setSupportMultipleWindows</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">setupWebView</span><span class="s2">(</span><span class="s1">webView: WebView</span><span class="s2">, </span><span class="s1">isMuted: Boolean</span><span class="s2">, </span><span class="s1">shouldPlay: Boolean</span><span class="s2">, </span><span class="s1">embedUrl: String</span><span class="s2">) {</span>
+        <span class="s1">webView</span><span class="s2">.</span><span class="s1">webViewClient </span><span class="s2">= </span><span class="s0">object </span><span class="s1">: android</span><span class="s2">.</span><span class="s1">webkit</span><span class="s2">.</span><span class="s1">WebViewClient</span><span class="s2">() {</span>
+            <span class="s1">override </span><span class="s0">fun </span><span class="s1">onPageStarted</span><span class="s2">(</span><span class="s1">view: WebView?</span><span class="s2">, </span><span class="s1">url: String?</span><span class="s2">, </span><span class="s1">favicon: android</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Bitmap?</span><span class="s2">) {</span>
+                <span class="s1">view?</span><span class="s2">.</span><span class="s1">evaluateJavascript</span><span class="s2">(</span><span class="s4">&quot;document.body.style.backgroundColor = 'black';&quot;</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s2">}</span>
+
+            <span class="s1">override </span><span class="s0">fun </span><span class="s1">shouldOverrideUrlLoading</span><span class="s2">(</span>
+                <span class="s1">view: WebView?</span><span class="s2">,</span>
+                <span class="s1">request: android</span><span class="s2">.</span><span class="s1">webkit</span><span class="s2">.</span><span class="s1">WebResourceRequest?</span>
+            <span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">newUrl </span><span class="s2">= </span><span class="s1">request?</span><span class="s2">.</span><span class="s1">url?</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">() </span><span class="s1">?: </span><span class="s0">return false</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">newUrl</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;intent://&quot;</span><span class="s2">) || </span><span class="s1">newUrl</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;market://&quot;</span><span class="s2">) || </span><span class="s1">newUrl</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;applinks:&quot;</span><span class="s2">) || </span><span class="s1">newUrl</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;mailto:&quot;</span><span class="s2">)) {</span>
+                    <span class="s0">return true</span>
+                <span class="s2">}</span>
+                <span class="s0">val </span><span class="s1">allowedDomains </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s4">&quot;turbo.cr&quot;</span><span class="s2">, </span><span class="s4">&quot;bunkr&quot;</span><span class="s2">, </span><span class="s4">&quot;b-cdn.net&quot;</span><span class="s2">, </span><span class="s4">&quot;gofile.io&quot;</span><span class="s2">, </span><span class="s4">&quot;pixeldrain.com&quot;</span><span class="s2">, </span><span class="s4">&quot;simpcity.cr&quot;</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">isAllowed </span><span class="s2">= </span><span class="s1">allowedDomains</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">newUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) } || </span>
+                               <span class="s1">newUrl </span><span class="s2">== </span><span class="s1">embedUrl </span><span class="s2">|| </span>
+                               <span class="s1">newUrl</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;blob:&quot;</span><span class="s2">) ||</span>
+                               <span class="s1">newUrl</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;data:&quot;</span><span class="s2">)</span>
+                <span class="s0">return </span><span class="s2">!</span><span class="s1">isAllowed</span>
+            <span class="s2">}</span>
+
+            <span class="s1">override </span><span class="s0">fun </span><span class="s1">onPageFinished</span><span class="s2">(</span><span class="s1">view: WebView?</span><span class="s2">, </span><span class="s1">url: String?</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">js </span><span class="s2">= </span><span class="s4">&quot;&quot;&quot;</span>
+                    <span class="s4">(function() {</span>
+                        <span class="s4">var style = document.createElement('style');</span>
+                        <span class="s4">style.innerHTML = 'body { background-color: black !important; } video { background-color: black !important; }';</span>
+                        <span class="s4">document.head.appendChild(style);</span>
+                    <span class="s4">})();</span>
+                <span class="s4">&quot;&quot;&quot;</span><span class="s2">.</span><span class="s1">trimIndent</span><span class="s2">()</span>
+                <span class="s1">view?</span><span class="s2">.</span><span class="s1">evaluateJavascript</span><span class="s2">(</span><span class="s1">js</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+                <span class="s1">applyPlaybackState</span><span class="s2">(</span><span class="s1">view</span><span class="s2">, </span><span class="s1">isMuted</span><span class="s2">, </span><span class="s1">shouldPlay</span><span class="s2">)</span>
+                <span class="s0">super</span><span class="s2">.</span><span class="s1">onPageFinished</span><span class="s2">(</span><span class="s1">view</span><span class="s2">, </span><span class="s1">url</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">webView</span><span class="s2">.</span><span class="s1">webChromeClient </span><span class="s2">= </span><span class="s0">object </span><span class="s1">: android</span><span class="s2">.</span><span class="s1">webkit</span><span class="s2">.</span><span class="s1">WebChromeClient</span><span class="s2">() {</span>
+            <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreateWindow</span><span class="s2">(</span><span class="s1">view: WebView?</span><span class="s2">, </span><span class="s1">isDialog: Boolean</span><span class="s2">, </span><span class="s1">isUserGesture: Boolean</span><span class="s2">, </span><span class="s1">resultMsg: Message?</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">= </span><span class="s0">false</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">applyPlaybackState</span><span class="s2">(</span><span class="s1">webView: WebView?</span><span class="s2">, </span><span class="s1">isMuted: Boolean</span><span class="s2">, </span><span class="s1">shouldPlay: Boolean</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">js </span><span class="s2">= </span><span class="s4">&quot;&quot;&quot;</span>
+            <span class="s4">(function() {</span>
+                <span class="s4">window.open = function() { return null; };</span>
+                <span class="s4">var links = document.getElementsByTagName('a');</span>
+                <span class="s4">for (var i = 0; i &lt; links.length; i++) {</span>
+                    <span class="s4">links[i].target = '_self';</span>
+                <span class="s4">}</span>
+                <span class="s4">var vids = document.getElementsByTagName('video');</span>
+                <span class="s4">for (var i = 0; i &lt; vids.length; i++) {</span>
+                    <span class="s4">var v = vids[i];</span>
+                    <span class="s4">v.muted = </span><span class="s0">$</span><span class="s1">isMuted</span><span class="s4">;</span>
+                    <span class="s4">if (</span><span class="s0">$</span><span class="s1">shouldPlay</span><span class="s4">) {</span>
+                        <span class="s4">if (v.paused) {</span>
+                            <span class="s4">var p = v.play();</span>
+                            <span class="s4">if (p !== undefined) {</span>
+                                <span class="s4">p.catch(function(error) {</span>
+                                    <span class="s4">if (error.name !== 'AbortError') {</span>
+                                        <span class="s4">console.error('Playback failed:', error);</span>
+                                    <span class="s4">}</span>
+                                <span class="s4">});</span>
+                            <span class="s4">}</span>
+                        <span class="s4">}</span>
+                    <span class="s4">} else {</span>
+                        <span class="s4">if (!v.paused) {</span>
+                            <span class="s4">v.pause();</span>
+                        <span class="s4">}</span>
+                    <span class="s4">}</span>
+                <span class="s4">}</span>
+            <span class="s4">})();</span>
+        <span class="s4">&quot;&quot;&quot;</span><span class="s2">.</span><span class="s1">trimIndent</span><span class="s2">()</span>
+        <span class="s1">webView?</span><span class="s2">.</span><span class="s1">evaluateJavascript</span><span class="s2">(</span><span class="s1">js</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">getEmbedUrl</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">return when </span><span class="s2">{</span>
+            <span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s4">&quot;turbo.cr/v/&quot;</span><span class="s2">) -&gt; </span><span class="s1">url</span><span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot;/v/&quot;</span><span class="s2">, </span><span class="s4">&quot;/embed/&quot;</span><span class="s2">)</span>
+            <span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s4">&quot;turbo.cr/f/&quot;</span><span class="s2">) -&gt; </span><span class="s1">url</span><span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot;/f/&quot;</span><span class="s2">, </span><span class="s4">&quot;/embed/&quot;</span><span class="s2">)</span>
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s1">url</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+    
+    <span class="s0">fun </span><span class="s1">isWebViewVideo</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">path </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">().</span><span class="s1">substringBefore</span><span class="s2">(</span><span class="s4">&quot;?&quot;</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">isDirect </span><span class="s2">= </span><span class="s1">path</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s4">&quot;.mp4&quot;</span><span class="s2">) || </span><span class="s1">path</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s4">&quot;.m3u8&quot;</span><span class="s2">) || </span><span class="s1">path</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s4">&quot;.webm&quot;</span><span class="s2">) || </span>
+                       <span class="s1">path</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s4">&quot;.mov&quot;</span><span class="s2">) || </span><span class="s1">path</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s4">&quot;.mp4?&quot;</span><span class="s2">) || </span><span class="s1">path</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s4">&quot;.m3u8?&quot;</span><span class="s2">)</span>
+        
+        <span class="s0">return </span><span class="s2">!</span><span class="s1">isDirect </span><span class="s2">&amp;&amp; (</span>
+            <span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s4">&quot;turbo.cr&quot;</span><span class="s2">) || </span><span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s4">&quot;bunkr&quot;</span><span class="s2">) || </span>
+            <span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s4">&quot;gofile.io&quot;</span><span class="s2">) || </span><span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s4">&quot;pixeldrain.com&quot;</span><span class="s2">)</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

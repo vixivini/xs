@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>MediaDownloadManager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #7a7e85;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MediaDownloadManager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">DownloadManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Environment</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span>
+
+<span class="s0">object </span><span class="s1">MediaDownloadManager </span><span class="s2">{</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Baixa a mídia em resolução máxima e salva na pasta pública de Downloads/Galeria</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">downloadMedia</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">url: String</span><span class="s2">) {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s4">// Inteligência 2026: Garante que estamos pegando a versão FULL e não a THUMBNAIL</span>
+            <span class="s0">val </span><span class="s1">finalUrl </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s5">&quot;/thumbnails/&quot;</span><span class="s2">)) {</span>
+                <span class="s1">url</span><span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s5">&quot;/thumbnails/&quot;</span><span class="s2">, </span><span class="s5">&quot;/full/&quot;</span><span class="s2">).</span><span class="s1">replace</span><span class="s2">(</span><span class="s5">&quot;.thumb.&quot;</span><span class="s2">, </span><span class="s5">&quot;.&quot;</span><span class="s2">)</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s1">url</span>
+
+            <span class="s0">val </span><span class="s1">request </span><span class="s2">= </span><span class="s1">DownloadManager</span><span class="s2">.</span><span class="s1">Request</span><span class="s2">(</span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s1">finalUrl</span><span class="s2">))</span>
+                <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s5">&quot;Baixando mídia XS&quot;</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setDescription</span><span class="s2">(</span><span class="s5">&quot;Salvando arquivo em alta resolução...&quot;</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setNotificationVisibility</span><span class="s2">(</span><span class="s1">DownloadManager</span><span class="s2">.</span><span class="s1">Request</span><span class="s2">.</span><span class="s1">VISIBILITY_VISIBLE_NOTIFY_COMPLETED</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setAllowedOverMetered</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setAllowedOverRoaming</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">addRequestHeader</span><span class="s2">(</span><span class="s5">&quot;User-Agent&quot;</span><span class="s2">, </span><span class="s1">Constants</span><span class="s2">.</span><span class="s1">USER_AGENT</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">addRequestHeader</span><span class="s2">(</span><span class="s5">&quot;Referer&quot;</span><span class="s2">, </span><span class="s1">MediaUtils</span><span class="s2">.</span><span class="s1">getReferer</span><span class="s2">(</span><span class="s1">url</span><span class="s2">))</span>
+
+            <span class="s4">// Define o nome do arquivo baseado na URL</span>
+            <span class="s0">val </span><span class="s1">fileName </span><span class="s2">= </span><span class="s5">&quot;XS_</span><span class="s0">${</span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">()</span><span class="s0">}</span><span class="s5">_&quot; </span><span class="s2">+ </span><span class="s1">finalUrl</span><span class="s2">.</span><span class="s1">substringAfterLast</span><span class="s2">(</span><span class="s5">&quot;/&quot;</span><span class="s2">).</span><span class="s1">substringBefore</span><span class="s2">(</span><span class="s5">&quot;?&quot;</span><span class="s2">)</span>
+            
+            <span class="s1">request</span><span class="s2">.</span><span class="s1">setDestinationInExternalPublicDir</span><span class="s2">(</span>
+                <span class="s1">Environment</span><span class="s2">.</span><span class="s1">DIRECTORY_DOWNLOADS</span><span class="s2">,</span>
+                <span class="s1">fileName</span>
+            <span class="s2">)</span>
+
+            <span class="s0">val </span><span class="s1">downloadManager </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">DOWNLOAD_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">DownloadManager</span>
+            <span class="s1">downloadManager</span><span class="s2">.</span><span class="s1">enqueue</span><span class="s2">(</span><span class="s1">request</span><span class="s2">)</span>
+            
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s5">&quot;Download iniciado! Verifique suas notificações.&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s5">&quot;Erro ao iniciar download: </span><span class="s0">${</span><span class="s1">e</span><span class="s2">.</span><span class="s1">localizedMessage</span><span class="s0">}</span><span class="s5">&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

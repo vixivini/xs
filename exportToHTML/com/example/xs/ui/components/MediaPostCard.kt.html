@@ -1,0 +1,294 @@
+<html>
+<head>
+<title>MediaPostCard.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #7a7e85;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MediaPostCard.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">components</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">background</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">clickable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">CircleShape</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">automirrored</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Send</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">outlined</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">draw</span><span class="s2">.</span><span class="s1">clip</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">platform</span><span class="s2">.</span><span class="s1">LocalUriHandler</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">font</span><span class="s2">.</span><span class="s1">FontWeight</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">style</span><span class="s2">.</span><span class="s1">TextOverflow</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">sp</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">MediaPost</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">theme</span><span class="s2">.</span><span class="s1">InstagramBlue</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">theme</span><span class="s2">.</span><span class="s1">InstagramSecondaryText</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">MediaPostCard</span><span class="s2">(</span>
+    <span class="s1">post: MediaPost</span><span class="s2">, </span>
+    <span class="s1">shouldPlay: Boolean </span><span class="s2">= </span><span class="s0">true</span><span class="s2">,</span>
+    <span class="s1">isSaved: Boolean </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+    <span class="s1">isFavorite: Boolean </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+    <span class="s1">isLiked: Boolean </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+    <span class="s1">showLikeIcon: Boolean </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+    <span class="s1">blogName: String? </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+    <span class="s1">blogAvatar: String? </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+    <span class="s1">onSaveClick: </span><span class="s2">() -&gt; </span><span class="s1">Unit </span><span class="s2">= {},</span>
+    <span class="s1">onFollowClick: </span><span class="s2">() -&gt; </span><span class="s1">Unit </span><span class="s2">= {},</span>
+    <span class="s1">onProfileClick: </span><span class="s2">() -&gt; </span><span class="s1">Unit </span><span class="s2">= {},</span>
+    <span class="s1">onMediaClick: </span><span class="s2">(</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;, </span><span class="s1">Int</span><span class="s2">) -&gt; </span><span class="s1">Unit</span><span class="s2">,</span>
+    <span class="s1">onPostUpdated: </span><span class="s2">(</span><span class="s1">String</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;) -&gt; </span><span class="s1">Unit </span><span class="s2">= { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt; }</span>
+<span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">uriHandler </span><span class="s2">= </span><span class="s1">LocalUriHandler</span><span class="s2">.</span><span class="s1">current</span>
+    <span class="s0">var </span><span class="s1">linksExpanded by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+    
+    <span class="s0">val </span><span class="s1">displayName </span><span class="s2">= </span><span class="s1">blogName ?: post</span><span class="s2">.</span><span class="s1">author</span>
+
+    <span class="s1">Column</span><span class="s2">(</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+            <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">background</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">vertical </span><span class="s2">= </span><span class="s3">4</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+    <span class="s2">) {</span>
+        <span class="s1">Row</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">horizontal </span><span class="s2">= </span><span class="s3">12</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">, </span><span class="s1">vertical </span><span class="s2">= </span><span class="s3">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+            <span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterVertically</span>
+        <span class="s2">) {</span>
+            <span class="s4">// Avatar (Usa o do Blog se disponível, senão Placeholder)</span>
+            <span class="s1">Box</span><span class="s2">(</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                    <span class="s2">.</span><span class="s1">size</span><span class="s2">(</span><span class="s3">32</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">clip</span><span class="s2">(</span><span class="s1">CircleShape</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">InstagramBlue</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s3">0.2f</span><span class="s2">))</span>
+                    <span class="s2">.</span><span class="s1">clickable </span><span class="s2">{ </span><span class="s1">onProfileClick</span><span class="s2">() },</span>
+                <span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span>
+            <span class="s2">) {</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">blogAvatar </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                    <span class="s1">coil</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">AsyncImage</span><span class="s2">(</span>
+                        <span class="s1">model </span><span class="s2">= </span><span class="s1">blogAvatar</span><span class="s2">,</span>
+                        <span class="s1">contentDescription </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+                        <span class="s1">contentScale </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">ContentScale</span><span class="s2">.</span><span class="s1">Crop</span>
+                    <span class="s2">)</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">Text</span><span class="s2">(</span>
+                        <span class="s1">text </span><span class="s2">= </span><span class="s1">displayName</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s3">1</span><span class="s2">).</span><span class="s1">uppercase</span><span class="s2">(),</span>
+                        <span class="s1">color </span><span class="s2">= </span><span class="s1">InstagramBlue</span><span class="s2">,</span>
+                        <span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">Bold</span><span class="s2">,</span>
+                        <span class="s1">fontSize </span><span class="s2">= </span><span class="s3">12</span><span class="s2">.</span><span class="s1">sp</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            
+            <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">width</span><span class="s2">(</span><span class="s3">10</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+            
+            <span class="s1">Column</span><span class="s2">(</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                    <span class="s2">.</span><span class="s1">weight</span><span class="s2">(</span><span class="s3">1f</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">clickable </span><span class="s2">{ </span><span class="s1">onProfileClick</span><span class="s2">() }</span>
+            <span class="s2">) {</span>
+                <span class="s4">// Nome do Blog</span>
+                <span class="s1">Text</span><span class="s2">(</span>
+                    <span class="s1">text </span><span class="s2">= </span><span class="s1">displayName</span><span class="s2">,</span>
+                    <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">labelLarge</span><span class="s2">,</span>
+                    <span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">Bold</span><span class="s2">,</span>
+                    <span class="s1">maxLines </span><span class="s2">= </span><span class="s3">1</span><span class="s2">,</span>
+                    <span class="s1">overflow </span><span class="s2">= </span><span class="s1">TextOverflow</span><span class="s2">.</span><span class="s1">Ellipsis</span>
+                <span class="s2">)</span>
+                
+                <span class="s4">// Indicadores de Estrela/Coração estilo Insta ao lado do nome</span>
+                <span class="s1">Row</span><span class="s2">(</span><span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterVertically</span><span class="s2">) {</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">isFavorite</span><span class="s2">) {</span>
+                        <span class="s1">Icon</span><span class="s2">(</span>
+                            <span class="s1">imageVector </span><span class="s2">= </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Star</span><span class="s2">,</span>
+                            <span class="s1">contentDescription </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+                            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(</span><span class="s3">14</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                            <span class="s1">tint </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">(</span><span class="s3">0xFFFFD700</span><span class="s2">)</span>
+                        <span class="s2">)</span>
+                        <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">width</span><span class="s2">(</span><span class="s3">4</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                    <span class="s2">}</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">isLiked </span><span class="s2">&amp;&amp; </span><span class="s1">showLikeIcon</span><span class="s2">) {</span>
+                        <span class="s1">Icon</span><span class="s2">(</span>
+                            <span class="s1">imageVector </span><span class="s2">= </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Favorite</span><span class="s2">,</span>
+                            <span class="s1">contentDescription </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+                            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(</span><span class="s3">14</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                            <span class="s1">tint </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">(</span><span class="s3">0xFFE91E63</span><span class="s2">)</span>
+                        <span class="s2">)</span>
+                        <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">width</span><span class="s2">(</span><span class="s3">4</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                    <span class="s2">}</span>
+                    
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">displayName </span><span class="s2">!= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">author</span><span class="s2">) {</span>
+                        <span class="s1">Text</span><span class="s2">(</span>
+                            <span class="s1">text </span><span class="s2">= </span><span class="s5">&quot;por </span><span class="s0">${</span><span class="s1">post</span><span class="s2">.</span><span class="s1">author</span><span class="s0">}</span><span class="s5">&quot;</span><span class="s2">,</span>
+                            <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodySmall</span><span class="s2">,</span>
+                            <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">secondary</span><span class="s2">,</span>
+                            <span class="s1">maxLines </span><span class="s2">= </span><span class="s3">1</span><span class="s2">,</span>
+                            <span class="s1">overflow </span><span class="s2">= </span><span class="s1">TextOverflow</span><span class="s2">.</span><span class="s1">Ellipsis</span>
+                        <span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">isLiked </span><span class="s2">&amp;&amp; !</span><span class="s1">isFavorite</span><span class="s2">) {</span>
+                <span class="s1">TextButton</span><span class="s2">(</span>
+                    <span class="s1">onClick </span><span class="s2">= </span><span class="s1">onFollowClick</span><span class="s2">,</span>
+                    <span class="s1">contentPadding </span><span class="s2">= </span><span class="s1">PaddingValues</span><span class="s2">(</span><span class="s1">horizontal </span><span class="s2">= </span><span class="s3">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">, </span><span class="s1">vertical </span><span class="s2">= </span><span class="s3">2</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                    <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s3">28</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                <span class="s2">) {</span>
+                    <span class="s1">Text</span><span class="s2">(</span><span class="s5">&quot;Seguir&quot;</span><span class="s2">, </span><span class="s1">fontSize </span><span class="s2">= </span><span class="s3">11</span><span class="s2">.</span><span class="s1">sp</span><span class="s2">, </span><span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">Bold</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">width</span><span class="s2">(</span><span class="s3">4</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+            <span class="s2">}</span>
+
+            <span class="s1">Box </span><span class="s2">{</span>
+                <span class="s0">var </span><span class="s1">showMenu by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+                <span class="s0">val </span><span class="s1">context </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">platform</span><span class="s2">.</span><span class="s1">LocalContext</span><span class="s2">.</span><span class="s1">current</span>
+
+                <span class="s1">IconButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">showMenu </span><span class="s2">= </span><span class="s0">true </span><span class="s2">}) {</span>
+                    <span class="s1">Icon</span><span class="s2">(</span>
+                        <span class="s1">imageVector </span><span class="s2">= </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">MoreVert</span><span class="s2">,</span>
+                        <span class="s1">contentDescription </span><span class="s2">= </span><span class="s5">&quot;Mais opções&quot;</span><span class="s2">,</span>
+                        <span class="s1">tint </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onSurface</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+
+                <span class="s1">DropdownMenu</span><span class="s2">(</span>
+                    <span class="s1">expanded </span><span class="s2">= </span><span class="s1">showMenu</span><span class="s2">,</span>
+                    <span class="s1">onDismissRequest </span><span class="s2">= { </span><span class="s1">showMenu </span><span class="s2">= </span><span class="s0">false </span><span class="s2">}</span>
+                <span class="s2">) {</span>
+                    <span class="s1">DropdownMenuItem</span><span class="s2">(</span>
+                        <span class="s1">text </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s5">&quot;Baixar todas as mídias&quot;</span><span class="s2">) },</span>
+                        <span class="s1">onClick </span><span class="s2">= {</span>
+                            <span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">url </span><span class="s2">-&gt;</span>
+                                <span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">MediaDownloadManager</span><span class="s2">.</span><span class="s1">downloadMedia</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">url</span><span class="s2">)</span>
+                            <span class="s2">}</span>
+                            <span class="s1">showMenu </span><span class="s2">= </span><span class="s0">false</span>
+                        <span class="s2">},</span>
+                        <span class="s1">leadingIcon </span><span class="s2">= { </span><span class="s1">Icon</span><span class="s2">(</span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Download</span><span class="s2">, </span><span class="s0">null</span><span class="s2">) }</span>
+                    <span class="s2">)</span>
+                    
+                    <span class="s1">DropdownMenuItem</span><span class="s2">(</span>
+                        <span class="s1">text </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s5">&quot;Ver no Navegador&quot;</span><span class="s2">) },</span>
+                        <span class="s1">onClick </span><span class="s2">= {</span>
+                            <span class="s1">uriHandler</span><span class="s2">.</span><span class="s1">openUri</span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">)</span>
+                            <span class="s1">showMenu </span><span class="s2">= </span><span class="s0">false</span>
+                        <span class="s2">},</span>
+                        <span class="s1">leadingIcon </span><span class="s2">= { </span><span class="s1">Icon</span><span class="s2">(</span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Public</span><span class="s2">, </span><span class="s0">null</span><span class="s2">) }</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Media Content</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+            <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">) {</span>
+                <span class="s1">onPostUpdated</span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">id</span><span class="s2">, </span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">MediaPager</span><span class="s2">(</span>
+                <span class="s1">mediaUrls </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">,</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                    <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                    <span class="s2">.</span><span class="s1">aspectRatio</span><span class="s2">(</span><span class="s3">1f</span><span class="s2">) </span><span class="s4">// Square like Instagram</span>
+                    <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Black</span><span class="s2">),</span>
+                <span class="s1">shouldPlay </span><span class="s2">= </span><span class="s1">shouldPlay</span><span class="s2">,</span>
+                <span class="s1">onMediaClick </span><span class="s2">= { </span><span class="s1">index </span><span class="s2">-&gt; </span><span class="s1">onMediaClick</span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">, </span><span class="s1">index</span><span class="s2">) }</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Barra de Ações (Voltou ao original: apenas salvar)</span>
+        <span class="s1">Row</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">horizontal </span><span class="s2">= </span><span class="s3">4</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">, </span><span class="s1">vertical </span><span class="s2">= </span><span class="s3">2</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+            <span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterVertically</span>
+        <span class="s2">) {</span>
+            <span class="s1">IconButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= { </span><span class="s4">/* Comentar */ </span><span class="s2">}) {</span>
+                <span class="s1">Icon</span><span class="s2">(</span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Outlined</span><span class="s2">.</span><span class="s1">ChatBubbleOutline</span><span class="s2">, </span><span class="s1">contentDescription </span><span class="s2">= </span><span class="s5">&quot;Comentar&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">IconButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= { </span><span class="s4">/* Compartilhar */ </span><span class="s2">}) {</span>
+                <span class="s1">Icon</span><span class="s2">(</span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">AutoMirrored</span><span class="s2">.</span><span class="s1">Filled</span><span class="s2">.</span><span class="s1">Send</span><span class="s2">, </span><span class="s1">contentDescription </span><span class="s2">= </span><span class="s5">&quot;Enviar&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">weight</span><span class="s2">(</span><span class="s3">1f</span><span class="s2">))</span>
+            
+            <span class="s1">IconButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= </span><span class="s1">onSaveClick</span><span class="s2">) {</span>
+                <span class="s1">Icon</span><span class="s2">(</span>
+                    <span class="s1">imageVector </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">isSaved</span><span class="s2">) </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Filled</span><span class="s2">.</span><span class="s1">Bookmark </span><span class="s0">else </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Outlined</span><span class="s2">.</span><span class="s1">BookmarkBorder</span><span class="s2">,</span>
+                    <span class="s1">contentDescription </span><span class="s2">= </span><span class="s5">&quot;Salvar&quot;</span><span class="s2">,</span>
+                    <span class="s1">tint </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">isSaved</span><span class="s2">) </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">primary </span><span class="s0">else </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onSurface</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Info and Links</span>
+        <span class="s1">Column</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">horizontal </span><span class="s2">= </span><span class="s3">14</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+        <span class="s2">) {</span>
+            <span class="s1">Text</span><span class="s2">(</span>
+                <span class="s1">text </span><span class="s2">= </span><span class="s5">&quot;</span><span class="s0">${</span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s5">mídias anexadas&quot;</span><span class="s2">,</span>
+                <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodySmall</span><span class="s2">,</span>
+                <span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">Bold</span>
+            <span class="s2">)</span>
+            
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">externalLinks</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+                <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s3">2</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                <span class="s1">Row</span><span class="s2">(</span>
+                    <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                        <span class="s2">.</span><span class="s1">clickable </span><span class="s2">{ </span><span class="s1">linksExpanded </span><span class="s2">= !</span><span class="s1">linksExpanded </span><span class="s2">}</span>
+                        <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">vertical </span><span class="s2">= </span><span class="s3">2</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                    <span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterVertically</span>
+                <span class="s2">) {</span>
+                    <span class="s1">Text</span><span class="s2">(</span>
+                        <span class="s1">text </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">linksExpanded</span><span class="s2">) </span><span class="s5">&quot;Esconder links&quot; </span><span class="s0">else </span><span class="s5">&quot;Ver todos os </span><span class="s0">${</span><span class="s1">post</span><span class="s2">.</span><span class="s1">externalLinks</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s5">links&quot;</span><span class="s2">,</span>
+                        <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodySmall</span><span class="s2">,</span>
+                        <span class="s1">color </span><span class="s2">= </span><span class="s1">InstagramSecondaryText</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">linksExpanded</span><span class="s2">) {</span>
+                    <span class="s1">post</span><span class="s2">.</span><span class="s1">externalLinks</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">link </span><span class="s2">-&gt;</span>
+                        <span class="s1">Text</span><span class="s2">(</span>
+                            <span class="s1">text </span><span class="s2">= </span><span class="s1">link</span><span class="s2">,</span>
+                            <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodySmall</span><span class="s2">,</span>
+                            <span class="s1">color </span><span class="s2">= </span><span class="s1">InstagramBlue</span><span class="s2">,</span>
+                            <span class="s1">maxLines </span><span class="s2">= </span><span class="s3">1</span><span class="s2">,</span>
+                            <span class="s1">overflow </span><span class="s2">= </span><span class="s1">TextOverflow</span><span class="s2">.</span><span class="s1">Ellipsis</span><span class="s2">,</span>
+                            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                                <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                                <span class="s2">.</span><span class="s1">clickable </span><span class="s2">{ </span><span class="s1">uriHandler</span><span class="s2">.</span><span class="s1">openUri</span><span class="s2">(</span><span class="s1">link</span><span class="s2">) }</span>
+                                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">vertical </span><span class="s2">= </span><span class="s3">2</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                        <span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        
+        <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s3">12</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+        <span class="s1">HorizontalDivider</span><span class="s2">(</span><span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">secondary</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s3">0.1f</span><span class="s2">), </span><span class="s1">thickness </span><span class="s2">= </span><span class="s3">0.5</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

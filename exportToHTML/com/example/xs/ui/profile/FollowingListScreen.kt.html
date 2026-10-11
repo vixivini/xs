@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>FollowingListScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FollowingListScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">profile</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">background</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">clickable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">LazyColumn</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">items</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">CircleShape</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">automirrored</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">ArrowBack</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">draw</span><span class="s2">.</span><span class="s1">clip</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">font</span><span class="s2">.</span><span class="s1">FontWeight</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">sp</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">FavoriteTopic</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainViewModel</span>
+
+<span class="s1">@OptIn</span><span class="s2">(</span><span class="s1">ExperimentalMaterial3Api::</span><span class="s0">class</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">FollowingListScreen</span><span class="s2">(</span>
+    <span class="s1">viewModel: MainViewModel</span><span class="s2">,</span>
+    <span class="s1">onBack: </span><span class="s2">() -&gt; </span><span class="s1">Unit</span><span class="s2">,</span>
+    <span class="s1">onTopicClick: </span><span class="s2">(</span><span class="s1">FavoriteTopic</span><span class="s2">) -&gt; </span><span class="s1">Unit</span>
+<span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">favorites by viewModel</span><span class="s2">.</span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+
+    <span class="s1">Scaffold</span><span class="s2">(</span>
+        <span class="s1">topBar </span><span class="s2">= {</span>
+            <span class="s1">TopAppBar</span><span class="s2">(</span>
+                <span class="s1">title </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Seguindo&quot;</span><span class="s2">, </span><span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">titleMedium</span><span class="s2">) }</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">) { </span><span class="s1">innerPadding </span><span class="s2">-&gt;</span>
+        <span class="s1">LazyColumn</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                <span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">innerPadding</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">background</span><span class="s2">)</span>
+        <span class="s2">) {</span>
+            <span class="s1">items</span><span class="s2">(</span><span class="s1">favorites</span><span class="s2">) { </span><span class="s1">topic </span><span class="s2">-&gt;</span>
+                <span class="s1">Row</span><span class="s2">(</span>
+                    <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                        <span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">()</span>
+                        <span class="s2">.</span><span class="s1">clickable </span><span class="s2">{ </span><span class="s1">onTopicClick</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">) }</span>
+                        <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                    <span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterVertically</span>
+                <span class="s2">) {</span>
+                    <span class="s1">Box</span><span class="s2">(</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                            <span class="s2">.</span><span class="s1">size</span><span class="s2">(</span><span class="s4">50</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                            <span class="s2">.</span><span class="s1">clip</span><span class="s2">(</span><span class="s1">CircleShape</span><span class="s2">)</span>
+                            <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">primary</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s4">0.1f</span><span class="s2">)),</span>
+                        <span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span>
+                    <span class="s2">) {</span>
+                        <span class="s1">Text</span><span class="s2">(</span>
+                            <span class="s1">text </span><span class="s2">= </span><span class="s1">topic</span><span class="s2">.</span><span class="s1">title</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s4">1</span><span class="s2">).</span><span class="s1">uppercase</span><span class="s2">(),</span>
+                            <span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">Bold</span><span class="s2">,</span>
+                            <span class="s1">fontSize </span><span class="s2">= </span><span class="s4">20</span><span class="s2">.</span><span class="s1">sp</span>
+                        <span class="s2">)</span>
+                    <span class="s2">}</span>
+                    
+                    <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">width</span><span class="s2">(</span><span class="s4">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                    
+                    <span class="s1">Column</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">weight</span><span class="s2">(</span><span class="s4">1f</span><span class="s2">)) {</span>
+                        <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s1">topic</span><span class="s2">.</span><span class="s1">title</span><span class="s2">, </span><span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">SemiBold</span><span class="s2">)</span>
+                        <span class="s1">Text</span><span class="s2">(</span>
+                            <span class="s1">text </span><span class="s2">= </span><span class="s1">topic</span><span class="s2">.</span><span class="s1">url</span><span class="s2">,</span>
+                            <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodySmall</span><span class="s2">,</span>
+                            <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">secondary</span><span class="s2">,</span>
+                            <span class="s1">maxLines </span><span class="s2">= </span><span class="s4">1</span>
+                        <span class="s2">)</span>
+                    <span class="s2">}</span>
+                    
+                    <span class="s0">var </span><span class="s1">showUnfollowDialog by remember </span><span class="s2">{ </span><span class="s1">mutableStateOf</span><span class="s2">(</span><span class="s0">false</span><span class="s2">) }</span>
+
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">showUnfollowDialog</span><span class="s2">) {</span>
+                        <span class="s1">AlertDialog</span><span class="s2">(</span>
+                            <span class="s1">onDismissRequest </span><span class="s2">= { </span><span class="s1">showUnfollowDialog </span><span class="s2">= </span><span class="s0">false </span><span class="s2">},</span>
+                            <span class="s1">title </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Parar de seguir?&quot;</span><span class="s2">) },</span>
+                            <span class="s1">text </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Você deixará de ver as atualizações de </span><span class="s0">${</span><span class="s1">topic</span><span class="s2">.</span><span class="s1">title</span><span class="s0">} </span><span class="s3">na sua lista de favoritos.&quot;</span><span class="s2">) },</span>
+                            <span class="s1">confirmButton </span><span class="s2">= {</span>
+                                <span class="s1">TextButton</span><span class="s2">(</span>
+                                    <span class="s1">onClick </span><span class="s2">= {</span>
+                                        <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">removeFavorite</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">)</span>
+                                        <span class="s1">showUnfollowDialog </span><span class="s2">= </span><span class="s0">false</span>
+                                    <span class="s2">}</span>
+                                <span class="s2">) {</span>
+                                    <span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Parar de seguir&quot;</span><span class="s2">, </span><span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">error</span><span class="s2">)</span>
+                                <span class="s2">}</span>
+                            <span class="s2">},</span>
+                            <span class="s1">dismissButton </span><span class="s2">= {</span>
+                                <span class="s1">TextButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= { </span><span class="s1">showUnfollowDialog </span><span class="s2">= </span><span class="s0">false </span><span class="s2">}) {</span>
+                                    <span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Cancelar&quot;</span><span class="s2">)</span>
+                                <span class="s2">}</span>
+                            <span class="s2">}</span>
+                        <span class="s2">)</span>
+                    <span class="s2">}</span>
+
+                    <span class="s1">Button</span><span class="s2">(</span>
+                        <span class="s1">onClick </span><span class="s2">= { </span><span class="s1">showUnfollowDialog </span><span class="s2">= </span><span class="s0">true </span><span class="s2">},</span>
+                        <span class="s1">colors </span><span class="s2">= </span><span class="s1">ButtonDefaults</span><span class="s2">.</span><span class="s1">buttonColors</span><span class="s2">(</span>
+                            <span class="s1">containerColor </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">surfaceVariant</span><span class="s2">,</span>
+                            <span class="s1">contentColor </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onSurfaceVariant</span>
+                        <span class="s2">),</span>
+                        <span class="s1">contentPadding </span><span class="s2">= </span><span class="s1">PaddingValues</span><span class="s2">(</span><span class="s1">horizontal </span><span class="s2">= </span><span class="s4">12</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">, </span><span class="s1">vertical </span><span class="s2">= </span><span class="s4">4</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">),</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s4">32</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                    <span class="s2">) {</span>
+                        <span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Seguindo&quot;</span><span class="s2">, </span><span class="s1">fontSize </span><span class="s2">= </span><span class="s4">12</span><span class="s2">.</span><span class="s1">sp</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<html>
+<head>
+<title>FavoritesScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FavoritesScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">favorites</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">LazyColumn</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">lazy</span><span class="s2">.</span><span class="s1">items</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">Delete</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">Composable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">collectAsState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.</span><span class="s1">getValue</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">style</span><span class="s2">.</span><span class="s1">TextOverflow</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">FavoriteTopic</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainViewModel</span>
+
+<span class="s1">@OptIn</span><span class="s2">(</span><span class="s1">ExperimentalMaterial3Api::</span><span class="s0">class</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">FavoritesScreen</span><span class="s2">(</span><span class="s1">viewModel: MainViewModel</span><span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">favorites by viewModel</span><span class="s2">.</span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">wifiOnlyPreload by viewModel</span><span class="s2">.</span><span class="s1">wifiOnlyPreload</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+
+    <span class="s1">Scaffold</span><span class="s2">(</span>
+        <span class="s1">topBar </span><span class="s2">= {</span>
+            <span class="s1">TopAppBar</span><span class="s2">(</span><span class="s1">title </span><span class="s2">= { </span><span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Configurações e Favoritos&quot;</span><span class="s2">) })</span>
+        <span class="s2">}</span>
+    <span class="s2">) { </span><span class="s1">padding </span><span class="s2">-&gt;</span>
+        <span class="s1">Column</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">padding</span><span class="s2">)) {</span>
+            <span class="s1">SettingsSection</span><span class="s2">(</span>
+                <span class="s1">wifiOnlyPreload </span><span class="s2">= </span><span class="s1">wifiOnlyPreload</span><span class="s2">,</span>
+                <span class="s1">onWifiOnlyPreloadChange </span><span class="s2">= { </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">setWifiOnlyPreload</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) }</span>
+            <span class="s2">)</span>
+            
+            <span class="s1">HorizontalDivider</span><span class="s2">()</span>
+            
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s1">Box</span><span class="s2">(</span>
+                    <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+                    <span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span>
+                <span class="s2">) {</span>
+                    <span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Nenhum tópico favoritado ainda.&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">LazyColumn</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()) {</span>
+                    <span class="s1">items</span><span class="s2">(</span><span class="s1">favorites</span><span class="s2">, </span><span class="s1">key </span><span class="s2">= { </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url </span><span class="s2">}) { </span><span class="s1">topic </span><span class="s2">-&gt;</span>
+                        <span class="s1">FavoriteItem</span><span class="s2">(</span>
+                            <span class="s1">topic </span><span class="s2">= </span><span class="s1">topic</span><span class="s2">,</span>
+                            <span class="s1">onDelete </span><span class="s2">= { </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">removeFavorite</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">) }</span>
+                        <span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">SettingsSection</span><span class="s2">(</span>
+    <span class="s1">wifiOnlyPreload: Boolean</span><span class="s2">,</span>
+    <span class="s1">onWifiOnlyPreloadChange: </span><span class="s2">(</span><span class="s1">Boolean</span><span class="s2">) -&gt; </span><span class="s1">Unit</span>
+<span class="s2">) {</span>
+    <span class="s1">Column</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s4">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)) {</span>
+        <span class="s1">Text</span><span class="s2">(</span>
+            <span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Configurações&quot;</span><span class="s2">,</span>
+            <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">titleMedium</span><span class="s2">,</span>
+            <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">primary</span>
+        <span class="s2">)</span>
+        <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s4">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+        <span class="s1">Row</span><span class="s2">(</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxWidth</span><span class="s2">(),</span>
+            <span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterVertically</span><span class="s2">,</span>
+            <span class="s1">horizontalArrangement </span><span class="s2">= </span><span class="s1">Arrangement</span><span class="s2">.</span><span class="s1">SpaceBetween</span>
+        <span class="s2">) {</span>
+            <span class="s1">Column</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">weight</span><span class="s2">(</span><span class="s4">1f</span><span class="s2">)) {</span>
+                <span class="s1">Text</span><span class="s2">(</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Pré-carregar vídeos apenas no Wi-Fi&quot;</span><span class="s2">)</span>
+                <span class="s1">Text</span><span class="s2">(</span>
+                    <span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Economiza dados móveis ao não carregar vídeos antecipadamente.&quot;</span><span class="s2">,</span>
+                    <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodySmall</span><span class="s2">,</span>
+                    <span class="s1">color </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">onSurfaceVariant</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">Switch</span><span class="s2">(</span>
+                <span class="s1">checked </span><span class="s2">= </span><span class="s1">wifiOnlyPreload</span><span class="s2">,</span>
+                <span class="s1">onCheckedChange </span><span class="s2">= </span><span class="s1">onWifiOnlyPreloadChange</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">FavoriteItem</span><span class="s2">(</span><span class="s1">topic: FavoriteTopic</span><span class="s2">, </span><span class="s1">onDelete: </span><span class="s2">() -&gt; </span><span class="s1">Unit</span><span class="s2">) {</span>
+    <span class="s1">ListItem</span><span class="s2">(</span>
+        <span class="s1">headlineContent </span><span class="s2">= {</span>
+            <span class="s1">Text</span><span class="s2">(</span>
+                <span class="s1">text </span><span class="s2">= </span><span class="s1">topic</span><span class="s2">.</span><span class="s1">title</span><span class="s2">,</span>
+                <span class="s1">maxLines </span><span class="s2">= </span><span class="s4">1</span><span class="s2">,</span>
+                <span class="s1">overflow </span><span class="s2">= </span><span class="s1">TextOverflow</span><span class="s2">.</span><span class="s1">Ellipsis</span>
+            <span class="s2">)</span>
+        <span class="s2">},</span>
+        <span class="s1">supportingContent </span><span class="s2">= {</span>
+            <span class="s1">Text</span><span class="s2">(</span>
+                <span class="s1">text </span><span class="s2">= </span><span class="s1">topic</span><span class="s2">.</span><span class="s1">url</span><span class="s2">,</span>
+                <span class="s1">maxLines </span><span class="s2">= </span><span class="s4">1</span><span class="s2">,</span>
+                <span class="s1">overflow </span><span class="s2">= </span><span class="s1">TextOverflow</span><span class="s2">.</span><span class="s1">Ellipsis</span><span class="s2">,</span>
+                <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">bodySmall</span>
+            <span class="s2">)</span>
+        <span class="s2">},</span>
+        <span class="s1">trailingContent </span><span class="s2">= {</span>
+            <span class="s1">IconButton</span><span class="s2">(</span><span class="s1">onClick </span><span class="s2">= </span><span class="s1">onDelete</span><span class="s2">) {</span>
+                <span class="s1">Icon</span><span class="s2">(</span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">Delete</span><span class="s2">, </span><span class="s1">contentDescription </span><span class="s2">= </span><span class="s3">&quot;Remover&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">)</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

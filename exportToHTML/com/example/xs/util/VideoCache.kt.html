@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>VideoCache.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #7a7e85;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+VideoCache.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">OptIn</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">common</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">UnstableApi</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">database</span><span class="s2">.</span><span class="s1">StandaloneDatabaseProvider</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">datasource</span><span class="s2">.</span><span class="s1">cache</span><span class="s2">.</span><span class="s1">LeastRecentlyUsedCacheEvictor</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">media3</span><span class="s2">.</span><span class="s1">datasource</span><span class="s2">.</span><span class="s1">cache</span><span class="s2">.</span><span class="s1">SimpleCache</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">File</span>
+
+<span class="s1">@OptIn</span><span class="s2">(</span><span class="s1">UnstableApi::</span><span class="s0">class</span><span class="s2">)</span>
+<span class="s0">object </span><span class="s1">VideoCache </span><span class="s2">{</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">cache: SimpleCache? </span><span class="s2">= </span><span class="s0">null</span>
+    <span class="s1">private const </span><span class="s0">val </span><span class="s1">CACHE_SIZE </span><span class="s2">= </span><span class="s3">250 </span><span class="s2">* </span><span class="s3">1024 </span><span class="s2">* </span><span class="s3">1024L </span><span class="s4">// 250 MB</span>
+
+    <span class="s0">fun </span><span class="s1">getInstance</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">)</span><span class="s1">: SimpleCache </span><span class="s2">{</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">cache </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">cacheDir </span><span class="s2">= </span><span class="s1">File</span><span class="s2">(</span><span class="s1">context</span><span class="s2">.</span><span class="s1">cacheDir</span><span class="s2">, </span><span class="s5">&quot;video_cache&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">evictor </span><span class="s2">= </span><span class="s1">LeastRecentlyUsedCacheEvictor</span><span class="s2">(</span><span class="s1">CACHE_SIZE</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">databaseProvider </span><span class="s2">= </span><span class="s1">StandaloneDatabaseProvider</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)</span>
+            <span class="s1">cache </span><span class="s2">= </span><span class="s1">SimpleCache</span><span class="s2">(</span><span class="s1">cacheDir</span><span class="s2">, </span><span class="s1">evictor</span><span class="s2">, </span><span class="s1">databaseProvider</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">cache</span><span class="s2">!!</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

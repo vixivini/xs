@@ -1,0 +1,106 @@
+<html>
+<head>
+<title>MediaUtils.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MediaUtils.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span>
+
+<span class="s0">object </span><span class="s1">MediaUtils </span><span class="s2">{</span>
+    <span class="s0">fun </span><span class="s1">isDirectMedia</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">lowerUrl </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">path </span><span class="s2">= </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">substringBefore</span><span class="s2">(</span><span class="s3">&quot;?&quot;</span><span class="s2">)</span>
+
+        <span class="s4">// Extensões comuns</span>
+        <span class="s0">val </span><span class="s1">videoExtensions </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;.mp4&quot;</span><span class="s2">, </span><span class="s3">&quot;.mov&quot;</span><span class="s2">, </span><span class="s3">&quot;.webm&quot;</span><span class="s2">, </span><span class="s3">&quot;.mkv&quot;</span><span class="s2">, </span><span class="s3">&quot;.avi&quot;</span><span class="s2">, </span><span class="s3">&quot;.m4v&quot;</span><span class="s2">, </span><span class="s3">&quot;.m3u8&quot;</span><span class="s2">, </span><span class="s3">&quot;.mpd&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">videoExtensions</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">path</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">it</span><span class="s3">?&quot;</span><span class="s2">) }) </span><span class="s0">return true</span>
+
+        <span class="s4">// Padrões de links de stream/download direto</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;turbo.cr&quot;</span><span class="s2">) &amp;&amp; (</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;cdn.&quot;</span><span class="s2">) || </span><span class="s1">videoExtensions</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) })) </span><span class="s0">return true</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;b-cdn.net&quot;</span><span class="s2">)) </span><span class="s0">return true</span>
+        <span class="s0">if </span><span class="s2">((</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;bunkr&quot;</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;bunkrr&quot;</span><span class="s2">)) &amp;&amp;</span>
+            <span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;/d/&quot;</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;stream.&quot;</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;cdn&quot;</span><span class="s2">))) </span><span class="s0">return true</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;gofile.io&quot;</span><span class="s2">) &amp;&amp; (</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;/download/&quot;</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;store&quot;</span><span class="s2">))) </span><span class="s0">return true</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;pixeldrain.com/api/file/&quot;</span><span class="s2">)) </span><span class="s0">return true</span>
+
+        <span class="s0">return false</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">isDirectVideo</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">lowerUrl </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">path </span><span class="s2">= </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">substringBefore</span><span class="s2">(</span><span class="s3">&quot;?&quot;</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">videoExtensions </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;.mp4&quot;</span><span class="s2">, </span><span class="s3">&quot;.mov&quot;</span><span class="s2">, </span><span class="s3">&quot;.webm&quot;</span><span class="s2">, </span><span class="s3">&quot;.mkv&quot;</span><span class="s2">, </span><span class="s3">&quot;.avi&quot;</span><span class="s2">, </span><span class="s3">&quot;.m4v&quot;</span><span class="s2">, </span><span class="s3">&quot;.m3u8&quot;</span><span class="s2">, </span><span class="s3">&quot;.mpd&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">videoExtensions</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">path</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">it</span><span class="s3">?&quot;</span><span class="s2">) }) </span><span class="s0">return true</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;turbo.cr&quot;</span><span class="s2">) &amp;&amp; (</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;cdn.&quot;</span><span class="s2">) || </span><span class="s1">videoExtensions</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) })) </span><span class="s0">return true</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;b-cdn.net&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">videoExtensions</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) }) </span><span class="s0">return true</span>
+        <span class="s0">return false</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">isWebViewVideo</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">lowerUrl </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">()</span>
+
+        <span class="s4">// Se conseguimos o link direto (MP4, M3U8, etc), NÃO usa WebView</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isDirectVideo</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)) </span><span class="s0">return false</span>
+
+        <span class="s4">// Turbo.cr só usa WebView como último recurso se não conseguirmos o link direto</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;turbo.cr&quot;</span><span class="s2">) &amp;&amp; (</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;/v/&quot;</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;/f/&quot;</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;/embed/&quot;</span><span class="s2">))) </span><span class="s0">return true</span>
+
+        <span class="s0">return </span><span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;bunkr&quot;</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;bunkrr&quot;</span><span class="s2">) ||</span>
+               <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;gofile.io&quot;</span><span class="s2">) ||</span>
+               <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;pixeldrain.com&quot;</span><span class="s2">))</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">isVideoUrl</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">lowerUrl </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">path </span><span class="s2">= </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">substringBefore</span><span class="s2">(</span><span class="s3">&quot;?&quot;</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">videoExtensions </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;.mp4&quot;</span><span class="s2">, </span><span class="s3">&quot;.webm&quot;</span><span class="s2">, </span><span class="s3">&quot;.mov&quot;</span><span class="s2">, </span><span class="s3">&quot;.m4v&quot;</span><span class="s2">, </span><span class="s3">&quot;.m3u8&quot;</span><span class="s2">, </span><span class="s3">&quot;.mpd&quot;</span><span class="s2">, </span><span class="s3">&quot;.mkv&quot;</span><span class="s2">, </span><span class="s3">&quot;.avi&quot;</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">videoExtensions</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">path</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">it</span><span class="s3">?&quot;</span><span class="s2">) }) </span><span class="s0">return true</span>
+
+        <span class="s0">val </span><span class="s1">videoHosts </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;turbo.cr&quot;</span><span class="s2">, </span><span class="s3">&quot;bunkr&quot;</span><span class="s2">, </span><span class="s3">&quot;bunkrr&quot;</span><span class="s2">, </span><span class="s3">&quot;gofile.io&quot;</span><span class="s2">, </span><span class="s3">&quot;pixeldrain.com&quot;</span><span class="s2">)</span>
+        <span class="s4">// Só considera vídeo pelo host se não for uma extensão de imagem conhecida</span>
+        <span class="s0">val </span><span class="s1">imageExtensions </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;.jpg&quot;</span><span class="s2">, </span><span class="s3">&quot;.jpeg&quot;</span><span class="s2">, </span><span class="s3">&quot;.png&quot;</span><span class="s2">, </span><span class="s3">&quot;.gif&quot;</span><span class="s2">, </span><span class="s3">&quot;.webp&quot;</span><span class="s2">, </span><span class="s3">&quot;.bmp&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">imageExtensions</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">path</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">it</span><span class="s3">?&quot;</span><span class="s2">) }) </span><span class="s0">return false</span>
+
+        <span class="s0">return </span><span class="s1">videoHosts</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) } || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;b-cdn.net/stream&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">getReferer</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">lowerUrl </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">()</span>
+        <span class="s0">return when </span><span class="s2">{</span>
+            <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;bunkr&quot;</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;b-cdn.net&quot;</span><span class="s2">) -&gt; {</span>
+                <span class="s0">when </span><span class="s2">{</span>
+                    <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;bunkr.su&quot;</span><span class="s2">) -&gt; </span><span class="s3">&quot;https://bunkr.su/&quot;</span>
+                    <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;bunkr.si&quot;</span><span class="s2">) -&gt; </span><span class="s3">&quot;https://bunkr.si/&quot;</span>
+                    <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;bunkr.sk&quot;</span><span class="s2">) -&gt; </span><span class="s3">&quot;https://bunkr.sk/&quot;</span>
+                    <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;bunkr.black&quot;</span><span class="s2">) -&gt; </span><span class="s3">&quot;https://bunkr.black/&quot;</span>
+                    <span class="s0">else </span><span class="s2">-&gt; </span><span class="s3">&quot;https://bunkr.is/&quot;</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;gofile.io&quot;</span><span class="s2">) -&gt; </span><span class="s3">&quot;https://gofile.io/&quot;</span>
+            <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;pixeldrain.com&quot;</span><span class="s2">) -&gt; </span><span class="s3">&quot;https://pixeldrain.com/&quot;</span>
+            <span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;turbo.cr&quot;</span><span class="s2">) -&gt; {</span>
+                <span class="s4">// Para Turbo.cr em 2025/2026, o referer ideal é o próprio domínio turbo.cr ou a página de embed</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;.mp4&quot;</span><span class="s2">) || </span><span class="s1">lowerUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;.m3u8&quot;</span><span class="s2">)) </span><span class="s3">&quot;https://turbo.cr/&quot;</span>
+                <span class="s0">else if </span><span class="s2">(</span><span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;/embed/&quot;</span><span class="s2">)) </span><span class="s3">&quot;https://turbo.cr/&quot;</span>
+                <span class="s0">else </span><span class="s3">&quot;https://simpcity.cr/&quot;</span>
+            <span class="s2">}</span>
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s3">&quot;https://simpcity.cr/&quot;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

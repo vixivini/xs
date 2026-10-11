@@ -1,0 +1,463 @@
+<html>
+<head>
+<title>MainViewModel.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainViewModel.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">Application</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">AndroidViewModel</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">viewModelScope</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">XsApplication</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">local</span><span class="s2">.</span><span class="s1">AppDatabase</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">FavoriteTopic</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">MediaPost</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">SavedPost</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">FavoriteRepository</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">MediaScraperRepository</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">SavedPostRepository</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">repository</span><span class="s2">.</span><span class="s1">ScrapeResult</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">async</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">awaitAll</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">coroutineScope</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">flow</span><span class="s2">.*</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+
+<span class="s0">class </span><span class="s1">MainViewModel</span><span class="s2">(</span><span class="s1">application: Application</span><span class="s2">) </span><span class="s1">: AndroidViewModel</span><span class="s2">(</span><span class="s1">application</span><span class="s2">) {</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">favoriteRepository </span><span class="s2">= </span><span class="s1">FavoriteRepository</span><span class="s2">(</span><span class="s1">AppDatabase</span><span class="s2">.</span><span class="s1">getDatabase</span><span class="s2">(</span><span class="s1">application</span><span class="s2">).</span><span class="s1">favoriteTopicDao</span><span class="s2">())</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">savedPostRepository </span><span class="s2">= </span><span class="s1">SavedPostRepository</span><span class="s2">(</span><span class="s1">AppDatabase</span><span class="s2">.</span><span class="s1">getDatabase</span><span class="s2">(</span><span class="s1">application</span><span class="s2">).</span><span class="s1">savedPostDao</span><span class="s2">())</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">likedPostDao </span><span class="s2">= </span><span class="s1">AppDatabase</span><span class="s2">.</span><span class="s1">getDatabase</span><span class="s2">(</span><span class="s1">application</span><span class="s2">).</span><span class="s1">likedPostDao</span><span class="s2">()</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">scraperRepository </span><span class="s2">= </span><span class="s1">MediaScraperRepository</span><span class="s2">((</span><span class="s1">application </span><span class="s0">as </span><span class="s1">XsApplication</span><span class="s2">).</span><span class="s1">okHttpClient</span><span class="s2">)</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_viewingMedia </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;&gt;(</span><span class="s1">emptyList</span><span class="s2">())</span>
+    <span class="s0">val </span><span class="s1">viewingMedia: StateFlow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;&gt; = </span><span class="s1">_viewingMedia</span><span class="s2">.</span><span class="s1">asStateFlow</span><span class="s2">()</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_viewingTopicUrl </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">&lt;</span><span class="s1">String?</span><span class="s2">&gt;(</span><span class="s0">null</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">viewingTopicUrl: StateFlow</span><span class="s2">&lt;</span><span class="s1">String?</span><span class="s2">&gt; = </span><span class="s1">_viewingTopicUrl</span><span class="s2">.</span><span class="s1">asStateFlow</span><span class="s2">()</span>
+
+    <span class="s0">fun </span><span class="s1">setViewingMedia</span><span class="s2">(</span><span class="s1">urls: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;, </span><span class="s1">topicUrl: String? </span><span class="s2">= </span><span class="s0">null</span><span class="s2">) {</span>
+        <span class="s1">_viewingMedia</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">urls</span>
+        <span class="s1">_viewingTopicUrl</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">topicUrl?</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)</span>
+    <span class="s2">}</span>
+    
+    <span class="s0">val </span><span class="s1">savedPosts: StateFlow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">SavedPost</span><span class="s2">&gt;&gt; = </span><span class="s1">savedPostRepository</span><span class="s2">.</span><span class="s1">allSavedPosts</span>
+        <span class="s2">.</span><span class="s1">stateIn</span><span class="s2">(</span><span class="s1">viewModelScope</span><span class="s2">, </span><span class="s1">SharingStarted</span><span class="s2">.</span><span class="s1">WhileSubscribed</span><span class="s2">(</span><span class="s4">5000</span><span class="s2">), </span><span class="s1">emptyList</span><span class="s2">())</span>
+
+    <span class="s0">val </span><span class="s1">likedPosts: StateFlow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">LikedPost</span><span class="s2">&gt;&gt; = </span><span class="s1">likedPostDao</span><span class="s2">.</span><span class="s1">getAllLikedPosts</span><span class="s2">()</span>
+        <span class="s2">.</span><span class="s1">stateIn</span><span class="s2">(</span><span class="s1">viewModelScope</span><span class="s2">, </span><span class="s1">SharingStarted</span><span class="s2">.</span><span class="s1">WhileSubscribed</span><span class="s2">(</span><span class="s4">5000</span><span class="s2">), </span><span class="s1">emptyList</span><span class="s2">())</span>
+
+    <span class="s0">fun </span><span class="s1">toggleSavePost</span><span class="s2">(</span><span class="s1">post: MediaPost</span><span class="s2">) {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">savedPostRepository</span><span class="s2">.</span><span class="s1">isSaved</span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">id</span><span class="s2">)) {</span>
+                <span class="s1">savedPosts</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">== </span><span class="s1">post</span><span class="s2">.</span><span class="s1">id </span><span class="s2">}</span><span class="s1">?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{</span>
+                    <span class="s1">savedPostRepository</span><span class="s2">.</span><span class="s1">deleteSavedPost</span><span class="s2">(</span><span class="s1">it</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">savedPostRepository</span><span class="s2">.</span><span class="s1">savePost</span><span class="s2">(</span><span class="s1">post</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">toggleLikePost</span><span class="s2">(</span><span class="s1">post: MediaPost</span><span class="s2">) {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">likedPostDao</span><span class="s2">.</span><span class="s1">isLiked</span><span class="s2">(</span><span class="s1">post</span><span class="s2">.</span><span class="s1">id</span><span class="s2">)) {</span>
+                <span class="s1">likedPosts</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">== </span><span class="s1">post</span><span class="s2">.</span><span class="s1">id </span><span class="s2">}</span><span class="s1">?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{</span>
+                    <span class="s1">likedPostDao</span><span class="s2">.</span><span class="s1">deleteLikedPost</span><span class="s2">(</span><span class="s1">it</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">liked </span><span class="s2">= </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">model</span><span class="s2">.</span><span class="s1">LikedPost</span><span class="s2">(</span>
+                    <span class="s1">id </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">id</span><span class="s2">,</span>
+                    <span class="s1">author </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">author</span><span class="s2">,</span>
+                    <span class="s1">contentHtml </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">contentHtml</span><span class="s2">,</span>
+                    <span class="s1">mediaUrls </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">,</span>
+                    <span class="s1">externalLinks </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">externalLinks</span><span class="s2">,</span>
+                    <span class="s1">timestamp </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">timestamp</span><span class="s2">,</span>
+                    <span class="s1">topicTitle </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">topicTitle</span><span class="s2">,</span>
+                    <span class="s1">postUrl </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span>
+                <span class="s2">)</span>
+                <span class="s1">likedPostDao</span><span class="s2">.</span><span class="s1">insertLikedPost</span><span class="s2">(</span><span class="s1">liked</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">updateSavedPostMedia</span><span class="s2">(</span><span class="s1">postId: String</span><span class="s2">, </span><span class="s1">mediaUrls: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;) {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">currentSaved </span><span class="s2">= </span><span class="s1">savedPosts</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">== </span><span class="s1">postId </span><span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">currentSaved </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">currentSaved</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">.</span><span class="s1">size </span><span class="s2">&lt; </span><span class="s1">mediaUrls</span><span class="s2">.</span><span class="s1">size</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">updated </span><span class="s2">= </span><span class="s1">currentSaved</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">mediaUrls </span><span class="s2">= </span><span class="s1">mediaUrls</span><span class="s2">)</span>
+                <span class="s1">savedPostRepository</span><span class="s2">.</span><span class="s1">insertSavedPost</span><span class="s2">(</span><span class="s1">updated</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">refreshSavedPost</span><span class="s2">(</span><span class="s1">postId: String</span><span class="s2">, </span><span class="s1">postUrl: String</span><span class="s2">, </span><span class="s1">topicTitle: String</span><span class="s2">) {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">result </span><span class="s2">= </span><span class="s1">scraperRepository</span><span class="s2">.</span><span class="s1">fetchMediaFromTopic</span><span class="s2">(</span><span class="s1">postUrl</span><span class="s2">, </span><span class="s1">topicTitle</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">result </span><span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">Success</span><span class="s2">) {</span>
+                    <span class="s0">val </span><span class="s1">freshPost </span><span class="s2">= </span><span class="s1">result</span><span class="s2">.</span><span class="s1">posts</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">== </span><span class="s1">postId </span><span class="s2">}</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">freshPost </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                        <span class="s1">updateSavedPostMedia</span><span class="s2">(</span><span class="s1">postId</span><span class="s2">, </span><span class="s1">freshPost</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">)</span>
+                        <span class="s1">updateFeedPostMedia</span><span class="s2">(</span><span class="s1">postId</span><span class="s2">, </span><span class="s1">freshPost</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">updateFeedPostMedia</span><span class="s2">(</span><span class="s1">postId: String</span><span class="s2">, </span><span class="s1">mediaUrls: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;) {</span>
+        <span class="s0">val </span><span class="s1">currentFeed </span><span class="s2">= </span><span class="s1">_feedPosts</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">toMutableList</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">index </span><span class="s2">= </span><span class="s1">currentFeed</span><span class="s2">.</span><span class="s1">indexOfFirst </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">== </span><span class="s1">postId </span><span class="s2">}</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">index </span><span class="s2">!= -</span><span class="s4">1</span><span class="s2">) {</span>
+            <span class="s1">currentFeed</span><span class="s2">[</span><span class="s1">index</span><span class="s2">] = </span><span class="s1">currentFeed</span><span class="s2">[</span><span class="s1">index</span><span class="s2">].</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">mediaUrls </span><span class="s2">= </span><span class="s1">mediaUrls</span><span class="s2">)</span>
+            <span class="s1">_feedPosts</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">currentFeed</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">isSaved</span><span class="s2">(</span><span class="s1">postId: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">savedPostRepository</span><span class="s2">.</span><span class="s1">isSaved</span><span class="s2">(</span><span class="s1">postId</span><span class="s2">)</span>
+    <span class="s2">}</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">settingsManager </span><span class="s2">= </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">SettingsManager</span><span class="s2">(</span><span class="s1">application</span><span class="s2">)</span>
+
+    <span class="s0">val </span><span class="s1">favorites: StateFlow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">FavoriteTopic</span><span class="s2">&gt;&gt; = </span><span class="s1">favoriteRepository</span><span class="s2">.</span><span class="s1">allFavorites</span>
+        <span class="s2">.</span><span class="s1">stateIn</span><span class="s2">(</span><span class="s1">viewModelScope</span><span class="s2">, </span><span class="s1">SharingStarted</span><span class="s2">.</span><span class="s1">WhileSubscribed</span><span class="s2">(</span><span class="s4">5000</span><span class="s2">), </span><span class="s1">emptyList</span><span class="s2">())</span>
+
+    <span class="s0">val </span><span class="s1">wifiOnlyPreload </span><span class="s2">= </span><span class="s1">settingsManager</span><span class="s2">.</span><span class="s1">wifiOnlyPreload</span>
+        <span class="s2">.</span><span class="s1">stateIn</span><span class="s2">(</span><span class="s1">viewModelScope</span><span class="s2">, </span><span class="s1">SharingStarted</span><span class="s2">.</span><span class="s1">WhileSubscribed</span><span class="s2">(</span><span class="s4">5000</span><span class="s2">), </span><span class="s0">false</span><span class="s2">)</span>
+
+    <span class="s0">val </span><span class="s1">profilePictureUri </span><span class="s2">= </span><span class="s1">settingsManager</span><span class="s2">.</span><span class="s1">profilePictureUri</span>
+        <span class="s2">.</span><span class="s1">stateIn</span><span class="s2">(</span><span class="s1">viewModelScope</span><span class="s2">, </span><span class="s1">SharingStarted</span><span class="s2">.</span><span class="s1">WhileSubscribed</span><span class="s2">(</span><span class="s4">5000</span><span class="s2">), </span><span class="s0">null</span><span class="s2">)</span>
+
+    <span class="s0">fun </span><span class="s1">setWifiOnlyPreload</span><span class="s2">(</span><span class="s1">enabled: Boolean</span><span class="s2">) {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">settingsManager</span><span class="s2">.</span><span class="s1">setWifiOnlyPreload</span><span class="s2">(</span><span class="s1">enabled</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">setProfilePictureUri</span><span class="s2">(</span><span class="s1">uri: String?</span><span class="s2">) {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">settingsManager</span><span class="s2">.</span><span class="s1">setProfilePictureUri</span><span class="s2">(</span><span class="s1">uri</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">shouldPreload</span><span class="s2">()</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">settingsManager</span><span class="s2">.</span><span class="s1">shouldPreload</span><span class="s2">(</span><span class="s1">wifiOnlyPreload</span><span class="s2">.</span><span class="s1">value</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_feedPosts </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt;&gt;(</span><span class="s1">emptyList</span><span class="s2">())</span>
+    <span class="s0">val </span><span class="s1">feedPosts: StateFlow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt;&gt; = </span><span class="s1">_feedPosts</span><span class="s2">.</span><span class="s1">asStateFlow</span><span class="s2">()</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_explorePosts </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt;&gt;(</span><span class="s1">emptyList</span><span class="s2">())</span>
+    <span class="s0">val </span><span class="s1">explorePosts: StateFlow</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt;&gt; = </span><span class="s1">_explorePosts</span><span class="s2">.</span><span class="s1">asStateFlow</span><span class="s2">()</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_isLoadingMore </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">(</span><span class="s0">false</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">isLoadingMore </span><span class="s2">= </span><span class="s1">_isLoadingMore</span><span class="s2">.</span><span class="s1">asStateFlow</span><span class="s2">()</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_isRefreshing </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">(</span><span class="s0">false</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">isRefreshing </span><span class="s2">= </span><span class="s1">_isRefreshing</span><span class="s2">.</span><span class="s1">asStateFlow</span><span class="s2">()</span>
+
+    <span class="s5">// Armazena a próxima página (anterior no tempo) a ser carregada para cada tópico no FEED</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">feedPaginationMap </span><span class="s2">= </span><span class="s1">mutableMapOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">String?</span><span class="s2">&gt;()</span>
+    
+    <span class="s5">// Armazena a paginação para tópicos visualizados individualmente no PERFIL</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">topicPaginationMap </span><span class="s2">= </span><span class="s1">mutableMapOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">String?</span><span class="s2">&gt;()</span>
+
+    <span class="s5">// Helper para buscar informações do tópico rapidamente</span>
+    <span class="s0">fun </span><span class="s1">getFavoriteTopic</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: FavoriteTopic? </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">clean </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) == </span><span class="s1">clean </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">updateTopicAvatar</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">avatarUrl: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">clean </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">topic </span><span class="s2">= </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) == </span><span class="s1">clean </span><span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">topic </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">favoriteRepository</span><span class="s2">.</span><span class="s1">insertFavorite</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">avatarUrl </span><span class="s2">= </span><span class="s1">avatarUrl</span><span class="s2">))</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">updateTopicAvatarIfNeeded</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">avatarUrl: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">topic </span><span class="s2">= </span><span class="s1">getFavoriteTopic</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">topic </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">topic</span><span class="s2">.</span><span class="s1">avatarUrl </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">updateTopicAvatar</span><span class="s2">(</span><span class="s1">url</span><span class="s2">, </span><span class="s1">avatarUrl</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_authRequiredEvent </span><span class="s2">= </span><span class="s1">MutableSharedFlow</span><span class="s2">&lt;</span><span class="s1">Unit</span><span class="s2">&gt;()</span>
+    <span class="s0">val </span><span class="s1">authRequiredEvent </span><span class="s2">= </span><span class="s1">_authRequiredEvent</span><span class="s2">.</span><span class="s1">asSharedFlow</span><span class="s2">()</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_scrollToTopEvent </span><span class="s2">= </span><span class="s1">MutableSharedFlow</span><span class="s2">&lt;</span><span class="s1">Unit</span><span class="s2">&gt;()</span>
+    <span class="s0">val </span><span class="s1">scrollToTopEvent </span><span class="s2">= </span><span class="s1">_scrollToTopEvent</span><span class="s2">.</span><span class="s1">asSharedFlow</span><span class="s2">()</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_topicPosts </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">&lt;</span><span class="s1">Map</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt;&gt;&gt;(</span><span class="s1">emptyMap</span><span class="s2">())</span>
+    <span class="s0">val </span><span class="s1">topicPosts </span><span class="s2">= </span><span class="s1">_topicPosts</span><span class="s2">.</span><span class="s1">asStateFlow</span><span class="s2">()</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">_isTopicLoading </span><span class="s2">= </span><span class="s1">MutableStateFlow</span><span class="s2">(</span><span class="s0">false</span><span class="s2">)</span>
+    <span class="s0">val </span><span class="s1">isTopicLoading </span><span class="s2">= </span><span class="s1">_isTopicLoading</span><span class="s2">.</span><span class="s1">asStateFlow</span><span class="s2">()</span>
+
+    <span class="s0">fun </span><span class="s1">fetchTopicPosts</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">title: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">cleanUrl </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+            <span class="s1">_isTopicLoading</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;Pagination&quot;</span><span class="s2">, </span><span class="s3">&quot;Buscando inicial independente: </span><span class="s0">$</span><span class="s1">cleanUrl</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">result </span><span class="s2">= </span><span class="s1">scraperRepository</span><span class="s2">.</span><span class="s1">fetchMediaFromTopic</span><span class="s2">(</span><span class="s1">cleanUrl</span><span class="s2">, </span><span class="s1">title</span><span class="s2">)</span>
+                <span class="s0">when </span><span class="s2">(</span><span class="s1">result</span><span class="s2">) {</span>
+                    <span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">Success </span><span class="s2">-&gt; {</span>
+                        <span class="s0">val </span><span class="s1">currentMap </span><span class="s2">= </span><span class="s1">_topicPosts</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">toMutableMap</span><span class="s2">()</span>
+                        <span class="s5">// Organiza rigorosamente por data e ID (mais recente no topo)</span>
+                        <span class="s0">val </span><span class="s1">sortedPosts </span><span class="s2">= </span><span class="s1">result</span><span class="s2">.</span><span class="s1">posts</span><span class="s2">.</span><span class="s1">distinctBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">}</span>
+                            <span class="s2">.</span><span class="s1">sortedWith</span><span class="s2">(</span><span class="s1">compareByDescending</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt; { </span><span class="s1">it</span><span class="s2">.</span><span class="s1">timestamp </span><span class="s2">}</span>
+                                <span class="s2">.</span><span class="s1">thenByDescending </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">toLongOrNull</span><span class="s2">() </span><span class="s1">?: </span><span class="s4">0L </span><span class="s2">})</span>
+                        
+                        <span class="s1">currentMap</span><span class="s2">[</span><span class="s1">cleanUrl</span><span class="s2">] = </span><span class="s1">sortedPosts</span>
+                        <span class="s1">_topicPosts</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">currentMap</span>
+                        <span class="s1">topicPaginationMap</span><span class="s2">[</span><span class="s1">cleanUrl</span><span class="s2">] = </span><span class="s1">result</span><span class="s2">.</span><span class="s1">prevPageUrl</span>
+                        
+                        <span class="s5">// Atualiza o avatar do tópico automaticamente se for descoberto</span>
+                        <span class="s1">result</span><span class="s2">.</span><span class="s1">topicAvatarUrl?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">avatar </span><span class="s2">-&gt;</span>
+                            <span class="s1">updateTopicAvatarIfNeeded</span><span class="s2">(</span><span class="s1">cleanUrl</span><span class="s2">, </span><span class="s1">avatar</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                        
+                        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;Pagination&quot;</span><span class="s2">, </span><span class="s3">&quot;Sucesso! Total: </span><span class="s0">${</span><span class="s1">sortedPosts</span><span class="s2">.</span><span class="s1">size</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                    <span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">NeedsAuthentication </span><span class="s2">-&gt; {</span>
+                        <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s3">&quot;Pagination&quot;</span><span class="s2">, </span><span class="s3">&quot;Necessita Login detectado pelo Perfil&quot;</span><span class="s2">)</span>
+                        <span class="s1">_authRequiredEvent</span><span class="s2">.</span><span class="s1">emit</span><span class="s2">(</span><span class="s1">Unit</span><span class="s2">) </span><span class="s5">// Agora o perfil também pede login!</span>
+                    <span class="s2">}</span>
+                    <span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">Error </span><span class="s2">-&gt; </span><span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s3">&quot;Pagination&quot;</span><span class="s2">, </span><span class="s3">&quot;Erro: </span><span class="s0">${</span><span class="s1">result</span><span class="s2">.</span><span class="s1">message</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s3">&quot;Pagination&quot;</span><span class="s2">, </span><span class="s3">&quot;Falha catastrófica&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s2">} </span><span class="s1">finally </span><span class="s2">{</span>
+                <span class="s1">_isTopicLoading</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">loadMoreForTopic</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">title: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">cleanUrl </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">nextPageUrl </span><span class="s2">= </span><span class="s1">topicPaginationMap</span><span class="s2">[</span><span class="s1">cleanUrl</span><span class="s2">]</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">nextPageUrl </span><span class="s2">== </span><span class="s0">null </span><span class="s2">|| </span><span class="s1">_isTopicLoading</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) </span><span class="s0">return</span><span class="s1">@launch</span>
+
+            <span class="s1">_isTopicLoading</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;Pagination&quot;</span><span class="s2">, </span><span class="s3">&quot;Carregando próxima página: </span><span class="s0">$</span><span class="s1">nextPageUrl</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">result </span><span class="s2">= </span><span class="s1">scraperRepository</span><span class="s2">.</span><span class="s1">fetchMediaFromTopic</span><span class="s2">(</span><span class="s1">nextPageUrl</span><span class="s2">, </span><span class="s1">title</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">result </span><span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">Success</span><span class="s2">) {</span>
+                    <span class="s0">val </span><span class="s1">currentMap </span><span class="s2">= </span><span class="s1">_topicPosts</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">toMutableMap</span><span class="s2">()</span>
+                    <span class="s0">val </span><span class="s1">existingPosts </span><span class="s2">= </span><span class="s1">currentMap</span><span class="s2">[</span><span class="s1">cleanUrl</span><span class="s2">] </span><span class="s1">?: emptyList</span><span class="s2">()</span>
+                    
+                    <span class="s5">// Une e remove duplicados, mantendo a ordem rigorosa por data e ID</span>
+                    <span class="s0">val </span><span class="s1">combined </span><span class="s2">= (</span><span class="s1">existingPosts </span><span class="s2">+ </span><span class="s1">result</span><span class="s2">.</span><span class="s1">posts</span><span class="s2">)</span>
+                        <span class="s2">.</span><span class="s1">distinctBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">}</span>
+                        <span class="s2">.</span><span class="s1">sortedWith</span><span class="s2">(</span><span class="s1">compareByDescending</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt; { </span><span class="s1">it</span><span class="s2">.</span><span class="s1">timestamp </span><span class="s2">}</span>
+                            <span class="s2">.</span><span class="s1">thenByDescending </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">toLongOrNull</span><span class="s2">() </span><span class="s1">?: </span><span class="s4">0L </span><span class="s2">})</span>
+                    
+                    <span class="s1">currentMap</span><span class="s2">[</span><span class="s1">cleanUrl</span><span class="s2">] = </span><span class="s1">combined</span>
+                    <span class="s1">_topicPosts</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">currentMap</span>
+                    
+                    <span class="s1">topicPaginationMap</span><span class="s2">[</span><span class="s1">cleanUrl</span><span class="s2">] = </span><span class="s1">result</span><span class="s2">.</span><span class="s1">prevPageUrl</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;Pagination&quot;</span><span class="s2">, </span><span class="s3">&quot;Página carregada. Total: </span><span class="s0">${</span><span class="s1">combined</span><span class="s2">.</span><span class="s1">size</span><span class="s0">}</span><span class="s3">. Próxima: </span><span class="s0">${</span><span class="s1">result</span><span class="s2">.</span><span class="s1">prevPageUrl</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">topicPaginationMap</span><span class="s2">[</span><span class="s1">cleanUrl</span><span class="s2">] = </span><span class="s0">null</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s3">&quot;Pagination&quot;</span><span class="s2">, </span><span class="s3">&quot;Erro loadMore&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+                <span class="s1">topicPaginationMap</span><span class="s2">[</span><span class="s1">cleanUrl</span><span class="s2">] = </span><span class="s0">null</span>
+            <span class="s2">} </span><span class="s1">finally </span><span class="s2">{</span>
+                <span class="s1">_isTopicLoading</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">triggerScrollToTop</span><span class="s2">() {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">_scrollToTopEvent</span><span class="s2">.</span><span class="s1">emit</span><span class="s2">(</span><span class="s1">Unit</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">init </span><span class="s2">{</span>
+        <span class="s5">// Refresh feed whenever favorites change</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">favorites</span><span class="s2">.</span><span class="s1">collect </span><span class="s2">{</span>
+                <span class="s1">refreshFeed</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">refreshFeed</span><span class="s2">() {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">_isRefreshing</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) </span><span class="s0">return</span><span class="s1">@launch</span>
+            <span class="s1">_isRefreshing</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s1">android</span><span class="s2">.</span><span class="s1">webkit</span><span class="s2">.</span><span class="s1">CookieManager</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">().</span><span class="s1">flush</span><span class="s2">()</span>
+                <span class="s1">feedPaginationMap</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+                
+                <span class="s0">val </span><span class="s1">allPosts </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt;()</span>
+                <span class="s0">var </span><span class="s1">authNeeded </span><span class="s2">= </span><span class="s0">false</span>
+
+                <span class="s1">coroutineScope </span><span class="s2">{</span>
+                    <span class="s0">val </span><span class="s1">deferreds </span><span class="s2">= </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">topic </span><span class="s2">-&gt;</span>
+                        <span class="s1">async </span><span class="s2">{</span>
+                            <span class="s1">scraperRepository</span><span class="s2">.</span><span class="s1">fetchMediaFromTopic</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">.</span><span class="s1">url</span><span class="s2">, </span><span class="s1">topic</span><span class="s2">.</span><span class="s1">title</span><span class="s2">) </span><span class="s1">to topic</span><span class="s2">.</span><span class="s1">url</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                    
+                    <span class="s1">deferreds</span><span class="s2">.</span><span class="s1">awaitAll</span><span class="s2">().</span><span class="s1">forEach </span><span class="s2">{ (</span><span class="s1">result</span><span class="s2">, </span><span class="s1">url</span><span class="s2">) -&gt;</span>
+                        <span class="s0">when </span><span class="s2">(</span><span class="s1">result</span><span class="s2">) {</span>
+                            <span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">Success </span><span class="s2">-&gt; {</span>
+                                <span class="s1">allPosts</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">result</span><span class="s2">.</span><span class="s1">posts</span><span class="s2">)</span>
+                                <span class="s1">feedPaginationMap</span><span class="s2">[</span><span class="s1">url</span><span class="s2">] = </span><span class="s1">result</span><span class="s2">.</span><span class="s1">prevPageUrl</span>
+                            <span class="s2">}</span>
+                            <span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">NeedsAuthentication </span><span class="s2">-&gt; </span><span class="s1">authNeeded </span><span class="s2">= </span><span class="s0">true</span>
+                            <span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">Error </span><span class="s2">-&gt; { </span><span class="s5">/* Log error */ </span><span class="s2">}</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+                
+                <span class="s0">val </span><span class="s1">feedPosts </span><span class="s2">= </span><span class="s1">allPosts</span><span class="s2">.</span><span class="s1">filter </span><span class="s2">{ </span><span class="s1">post </span><span class="s2">-&gt;</span>
+                    <span class="s0">val </span><span class="s1">topic </span><span class="s2">= </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) == </span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) || </span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)) }</span>
+                    <span class="s1">topic?</span><span class="s2">.</span><span class="s1">isFollowed </span><span class="s2">== </span><span class="s0">true</span>
+                <span class="s2">}.</span><span class="s1">distinctBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">}</span>
+                <span class="s2">.</span><span class="s1">sortedWith</span><span class="s2">(</span><span class="s1">compareByDescending</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt; { </span><span class="s1">it</span><span class="s2">.</span><span class="s1">timestamp </span><span class="s2">}</span>
+                    <span class="s2">.</span><span class="s1">thenByDescending </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">toLongOrNull</span><span class="s2">() </span><span class="s1">?: </span><span class="s4">0L </span><span class="s2">})</span>
+
+                <span class="s0">val </span><span class="s1">explorePosts </span><span class="s2">= </span><span class="s1">allPosts</span><span class="s2">.</span><span class="s1">filter </span><span class="s2">{ </span><span class="s1">post </span><span class="s2">-&gt;</span>
+                    <span class="s0">val </span><span class="s1">topic </span><span class="s2">= </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) == </span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) || </span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)) }</span>
+                    <span class="s1">topic?</span><span class="s2">.</span><span class="s1">isLiked </span><span class="s2">== </span><span class="s0">true </span><span class="s2">|| </span><span class="s1">topic?</span><span class="s2">.</span><span class="s1">isFollowed </span><span class="s2">== </span><span class="s0">true</span>
+                <span class="s2">}.</span><span class="s1">distinctBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">}</span>
+                <span class="s2">.</span><span class="s1">sortedWith</span><span class="s2">(</span><span class="s1">compareByDescending</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt; { </span><span class="s1">it</span><span class="s2">.</span><span class="s1">timestamp </span><span class="s2">}</span>
+                    <span class="s2">.</span><span class="s1">thenByDescending </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">toLongOrNull</span><span class="s2">() </span><span class="s1">?: </span><span class="s4">0L </span><span class="s2">})</span>
+
+                <span class="s1">_feedPosts</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">feedPosts</span>
+                <span class="s1">_explorePosts</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">explorePosts</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s1">finally </span><span class="s2">{</span>
+                <span class="s1">_isRefreshing</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">loadMore</span><span class="s2">() {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">_isLoadingMore</span><span class="s2">.</span><span class="s1">value </span><span class="s2">|| </span><span class="s1">_isRefreshing</span><span class="s2">.</span><span class="s1">value</span><span class="s2">) </span><span class="s0">return</span><span class="s1">@launch</span>
+            
+            <span class="s0">val </span><span class="s1">topicsToLoad </span><span class="s2">= </span><span class="s1">feedPaginationMap</span><span class="s2">.</span><span class="s1">filter </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">value </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">}.</span><span class="s1">toList</span><span class="s2">()</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">topicsToLoad</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) </span><span class="s0">return</span><span class="s1">@launch</span>
+
+            <span class="s1">_isLoadingMore</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">true</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">newPosts </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt;()</span>
+                
+                <span class="s1">coroutineScope </span><span class="s2">{</span>
+                    <span class="s0">val </span><span class="s1">deferreds </span><span class="s2">= </span><span class="s1">topicsToLoad</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ (</span><span class="s1">originalUrl</span><span class="s2">, </span><span class="s1">nextUrl</span><span class="s2">) -&gt;</span>
+                        <span class="s1">async </span><span class="s2">{</span>
+                            <span class="s0">val </span><span class="s1">topicTitle </span><span class="s2">= </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url </span><span class="s2">== </span><span class="s1">originalUrl </span><span class="s2">}</span><span class="s1">?</span><span class="s2">.</span><span class="s1">title ?: </span><span class="s3">&quot;Unknown&quot;</span>
+                            <span class="s0">val </span><span class="s1">result </span><span class="s2">= </span><span class="s1">nextUrl?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">scraperRepository</span><span class="s2">.</span><span class="s1">fetchMediaFromTopic</span><span class="s2">(</span><span class="s1">it</span><span class="s2">, </span><span class="s1">topicTitle</span><span class="s2">) }</span>
+                            <span class="s1">originalUrl to result</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                    
+                    <span class="s1">deferreds</span><span class="s2">.</span><span class="s1">awaitAll</span><span class="s2">().</span><span class="s1">forEach </span><span class="s2">{ (</span><span class="s1">originalUrl</span><span class="s2">, </span><span class="s1">result</span><span class="s2">) -&gt;</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">result </span><span class="s0">is </span><span class="s1">ScrapeResult</span><span class="s2">.</span><span class="s1">Success</span><span class="s2">) {</span>
+                            <span class="s1">newPosts</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">result</span><span class="s2">.</span><span class="s1">posts</span><span class="s2">)</span>
+                            <span class="s1">feedPaginationMap</span><span class="s2">[</span><span class="s1">originalUrl</span><span class="s2">] = </span><span class="s1">result</span><span class="s2">.</span><span class="s1">prevPageUrl</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+                
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">newPosts</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+                    <span class="s0">val </span><span class="s1">allCurrent </span><span class="s2">= (</span><span class="s1">_explorePosts</span><span class="s2">.</span><span class="s1">value </span><span class="s2">+ </span><span class="s1">newPosts</span><span class="s2">).</span><span class="s1">distinctBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id </span><span class="s2">}</span>
+                        <span class="s2">.</span><span class="s1">sortedWith</span><span class="s2">(</span><span class="s1">compareByDescending</span><span class="s2">&lt;</span><span class="s1">MediaPost</span><span class="s2">&gt; { </span><span class="s1">it</span><span class="s2">.</span><span class="s1">timestamp </span><span class="s2">}</span>
+                            <span class="s2">.</span><span class="s1">thenByDescending </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">toLongOrNull</span><span class="s2">() </span><span class="s1">?: </span><span class="s4">0L </span><span class="s2">})</span>
+                    
+                    <span class="s0">val </span><span class="s1">feedPosts </span><span class="s2">= </span><span class="s1">allCurrent</span><span class="s2">.</span><span class="s1">filter </span><span class="s2">{ </span><span class="s1">post </span><span class="s2">-&gt;</span>
+                        <span class="s0">val </span><span class="s1">topic </span><span class="s2">= </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) == </span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) || </span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)) }</span>
+                        <span class="s1">topic?</span><span class="s2">.</span><span class="s1">isFollowed </span><span class="s2">== </span><span class="s0">true</span>
+                    <span class="s2">}</span>
+
+                    <span class="s1">_feedPosts</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">feedPosts</span>
+                    <span class="s1">_explorePosts</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s1">allCurrent</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s1">finally </span><span class="s2">{</span>
+                <span class="s1">_isLoadingMore</span><span class="s2">.</span><span class="s1">value </span><span class="s2">= </span><span class="s0">false</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">toggleFavorite</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">title: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">clean </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">existing </span><span class="s2">= </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) == </span><span class="s1">clean </span><span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">existing </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s5">// Se já existe, apenas inverte o estado de seguir</span>
+                <span class="s1">favoriteRepository</span><span class="s2">.</span><span class="s1">insertFavorite</span><span class="s2">(</span><span class="s1">existing</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">isFollowed </span><span class="s2">= !</span><span class="s1">existing</span><span class="s2">.</span><span class="s1">isFollowed</span><span class="s2">))</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s5">// Se não existe, cria um novo seguindo</span>
+                <span class="s1">favoriteRepository</span><span class="s2">.</span><span class="s1">insertFavorite</span><span class="s2">(</span><span class="s1">FavoriteTopic</span><span class="s2">(</span><span class="s1">url </span><span class="s2">= </span><span class="s1">clean</span><span class="s2">, </span><span class="s1">title </span><span class="s2">= </span><span class="s1">title</span><span class="s2">, </span><span class="s1">isFollowed </span><span class="s2">= </span><span class="s0">true</span><span class="s2">))</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">toggleBlogLike</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">, </span><span class="s1">title: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">clean </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">existing </span><span class="s2">= </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) == </span><span class="s1">clean </span><span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">existing </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s5">// Inverte o estado de Like (Coração)</span>
+                <span class="s1">favoriteRepository</span><span class="s2">.</span><span class="s1">insertFavorite</span><span class="s2">(</span><span class="s1">existing</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">isLiked </span><span class="s2">= !</span><span class="s1">existing</span><span class="s2">.</span><span class="s1">isLiked</span><span class="s2">))</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s5">// Adiciona como Liked, mas isFollowed = false (só aparece no Explore)</span>
+                <span class="s1">favoriteRepository</span><span class="s2">.</span><span class="s1">insertFavorite</span><span class="s2">(</span><span class="s1">FavoriteTopic</span><span class="s2">(</span><span class="s1">url </span><span class="s2">= </span><span class="s1">clean</span><span class="s2">, </span><span class="s1">title </span><span class="s2">= </span><span class="s1">title</span><span class="s2">, </span><span class="s1">isFollowed </span><span class="s2">= </span><span class="s0">false</span><span class="s2">, </span><span class="s1">isLiked </span><span class="s2">= </span><span class="s0">true</span><span class="s2">))</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">isBlogFavorite</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">clean </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) == </span><span class="s1">clean </span><span class="s2">&amp;&amp; </span><span class="s1">it</span><span class="s2">.</span><span class="s1">isFollowed </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">isBlogLiked</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">clean </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">favorites</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">url</span><span class="s2">.</span><span class="s1">trimEnd</span><span class="s2">(</span><span class="s3">'/'</span><span class="s2">) == </span><span class="s1">clean </span><span class="s2">&amp;&amp; </span><span class="s1">it</span><span class="s2">.</span><span class="s1">isLiked </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">isFavorite</span><span class="s2">(</span><span class="s1">url: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">favoriteRepository</span><span class="s2">.</span><span class="s1">isFavorite</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">removeFavorite</span><span class="s2">(</span><span class="s1">topic: FavoriteTopic</span><span class="s2">) {</span>
+        <span class="s1">viewModelScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s1">favoriteRepository</span><span class="s2">.</span><span class="s1">removeFavorite</span><span class="s2">(</span><span class="s1">topic</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

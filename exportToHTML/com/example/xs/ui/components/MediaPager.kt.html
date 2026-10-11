@@ -1,0 +1,133 @@
+<html>
+<head>
+<title>MediaPager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #7a7e85;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MediaPager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">components</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">browser</span><span class="s2">.</span><span class="s1">customtabs</span><span class="s2">.</span><span class="s1">CustomTabsIntent</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">background</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">clickable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">pager</span><span class="s2">.</span><span class="s1">HorizontalPager</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">pager</span><span class="s2">.</span><span class="s1">rememberPagerState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">RoundedCornerShape</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">Icons</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">icons</span><span class="s2">.</span><span class="s1">filled</span><span class="s2">.</span><span class="s1">PlayArrow</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">ContentScale</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">platform</span><span class="s2">.</span><span class="s1">LocalContext</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">sp</span>
+<span class="s1">import coil</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">AsyncImage</span>
+<span class="s1">import coil</span><span class="s2">.</span><span class="s1">request</span><span class="s2">.</span><span class="s1">ImageRequest</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">MediaUtils</span>
+
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">MediaPager</span><span class="s2">(</span>
+    <span class="s1">mediaUrls: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;,</span>
+    <span class="s1">modifier: Modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">,</span>
+    <span class="s1">shouldPlay: Boolean </span><span class="s2">= </span><span class="s0">true</span><span class="s2">,</span>
+    <span class="s1">onMediaClick: </span><span class="s2">(</span><span class="s1">Int</span><span class="s2">) -&gt; </span><span class="s1">Unit </span><span class="s2">= {}</span>
+<span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">context </span><span class="s2">= </span><span class="s1">LocalContext</span><span class="s2">.</span><span class="s1">current</span>
+    <span class="s0">val </span><span class="s1">totalItems </span><span class="s2">= </span><span class="s1">mediaUrls</span><span class="s2">.</span><span class="s1">size</span>
+    <span class="s0">val </span><span class="s1">pagerState </span><span class="s2">= </span><span class="s1">rememberPagerState</span><span class="s2">(</span><span class="s1">pageCount </span><span class="s2">= { </span><span class="s1">totalItems </span><span class="s2">})</span>
+    <span class="s0">val </span><span class="s1">currentPage by remember </span><span class="s2">{ </span><span class="s1">derivedStateOf </span><span class="s2">{ </span><span class="s1">pagerState</span><span class="s2">.</span><span class="s1">currentPage </span><span class="s2">} }</span>
+
+    <span class="s1">Box</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">modifier</span><span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Black</span><span class="s2">)) {</span>
+        <span class="s1">HorizontalPager</span><span class="s2">(</span>
+            <span class="s1">state </span><span class="s2">= </span><span class="s1">pagerState</span><span class="s2">,</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+            <span class="s1">beyondViewportPageCount </span><span class="s2">= </span><span class="s3">0 </span><span class="s4">// Evita carregar 40 itens na memória</span>
+        <span class="s2">) { </span><span class="s1">page </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">mediaUrl </span><span class="s2">= </span><span class="s1">mediaUrls</span><span class="s2">[</span><span class="s1">page</span><span class="s2">]</span>
+            <span class="s0">val </span><span class="s1">isVideo </span><span class="s2">= </span><span class="s1">MediaUtils</span><span class="s2">.</span><span class="s1">isVideoUrl</span><span class="s2">(</span><span class="s1">mediaUrl</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">isDirectStream </span><span class="s2">= </span><span class="s1">MediaUtils</span><span class="s2">.</span><span class="s1">isDirectStream</span><span class="s2">(</span><span class="s1">mediaUrl</span><span class="s2">)</span>
+
+            <span class="s1">Box</span><span class="s2">(</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">().</span><span class="s1">clickable </span><span class="s2">{ </span><span class="s1">onMediaClick</span><span class="s2">(</span><span class="s1">page</span><span class="s2">) },</span>
+                <span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span>
+            <span class="s2">) {</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">isVideo</span><span class="s2">) {</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">isDirectStream</span><span class="s2">) {</span>
+                        <span class="s4">// Se for MP4 real, toca no ExoPlayer</span>
+                        <span class="s1">VideoPlayer</span><span class="s2">(</span>
+                            <span class="s1">url </span><span class="s2">= </span><span class="s1">mediaUrl</span><span class="s2">,</span>
+                            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+                            <span class="s1">isMuted </span><span class="s2">= </span><span class="s0">true</span><span class="s2">,</span>
+                            <span class="s1">showControls </span><span class="s2">= </span><span class="s0">true</span><span class="s2">,</span>
+                            <span class="s1">shouldPlay </span><span class="s2">= </span><span class="s1">shouldPlay </span><span class="s2">&amp;&amp; </span><span class="s1">currentPage </span><span class="s2">== </span><span class="s1">page</span>
+                        <span class="s2">)</span>
+                    <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                        <span class="s4">// Se for página HTML (Embed), mostra botão e NÃO manda pro ExoPlayer!</span>
+                        <span class="s1">Column</span><span class="s2">(</span><span class="s1">horizontalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterHorizontally</span><span class="s2">) {</span>
+                            <span class="s1">Icon</span><span class="s2">(</span>
+                                <span class="s1">imageVector </span><span class="s2">= </span><span class="s1">Icons</span><span class="s2">.</span><span class="s1">Default</span><span class="s2">.</span><span class="s1">PlayArrow</span><span class="s2">,</span>
+                                <span class="s1">contentDescription </span><span class="s2">= </span><span class="s5">&quot;Play Vídeo Externo&quot;</span><span class="s2">,</span>
+                                <span class="s1">tint </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">White</span><span class="s2">,</span>
+                                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(</span><span class="s3">64</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                            <span class="s2">)</span>
+                            <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">height</span><span class="s2">(</span><span class="s3">12</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                            <span class="s1">Button</span><span class="s2">(</span>
+                                <span class="s1">onClick </span><span class="s2">= {</span>
+                                    <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">CustomTabsIntent</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">().</span><span class="s1">build</span><span class="s2">()</span>
+                                    <span class="s1">intent</span><span class="s2">.</span><span class="s1">launchUrl</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s1">mediaUrl</span><span class="s2">))</span>
+                                <span class="s2">},</span>
+                                <span class="s1">colors </span><span class="s2">= </span><span class="s1">ButtonDefaults</span><span class="s2">.</span><span class="s1">buttonColors</span><span class="s2">(</span><span class="s1">containerColor </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">colorScheme</span><span class="s2">.</span><span class="s1">primary</span><span class="s2">)</span>
+                            <span class="s2">) {</span>
+                                <span class="s1">Text</span><span class="s2">(</span><span class="s5">&quot;Assistir Vídeo Externo&quot;</span><span class="s2">)</span>
+                            <span class="s2">}</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s4">// MÍDIA IMAGEM: REMOVIDO O TAMANHO FIXO DE 1080px QUE TRAVAVA O APP!</span>
+                    <span class="s1">AsyncImage</span><span class="s2">(</span>
+                        <span class="s1">model </span><span class="s2">= </span><span class="s1">ImageRequest</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)</span>
+                            <span class="s2">.</span><span class="s1">data</span><span class="s2">(</span><span class="s1">mediaUrl</span><span class="s2">)</span>
+                            <span class="s2">.</span><span class="s1">crossfade</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+                            <span class="s2">.</span><span class="s1">build</span><span class="s2">(),</span>
+                        <span class="s1">contentDescription </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+                        <span class="s1">contentScale </span><span class="s2">= </span><span class="s1">ContentScale</span><span class="s2">.</span><span class="s1">Fit</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Contador leve no topo (1/40) em vez de desenhar dezenas de bolinhas</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">totalItems </span><span class="s2">&gt; </span><span class="s3">1</span><span class="s2">) {</span>
+            <span class="s1">Text</span><span class="s2">(</span>
+                <span class="s1">text </span><span class="s2">= </span><span class="s5">&quot;</span><span class="s0">${</span><span class="s1">currentPage </span><span class="s2">+ </span><span class="s3">1</span><span class="s0">}</span><span class="s5">/</span><span class="s0">$</span><span class="s1">totalItems</span><span class="s5">&quot;</span><span class="s2">,</span>
+                <span class="s1">color </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">White</span><span class="s2">,</span>
+                <span class="s1">fontSize </span><span class="s2">= </span><span class="s3">12</span><span class="s2">.</span><span class="s1">sp</span><span class="s2">,</span>
+                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                    <span class="s2">.</span><span class="s1">align</span><span class="s2">(</span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">TopEnd</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s3">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Black</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s3">0.6f</span><span class="s2">), </span><span class="s1">RoundedCornerShape</span><span class="s2">(</span><span class="s3">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                    <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">horizontal </span><span class="s2">= </span><span class="s3">8</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">, </span><span class="s1">vertical </span><span class="s2">= </span><span class="s3">4</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

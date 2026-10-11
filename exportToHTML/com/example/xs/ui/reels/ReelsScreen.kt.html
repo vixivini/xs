@@ -1,0 +1,201 @@
+<html>
+<head>
+<title>ReelsScreen.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ReelsScreen.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">reels</span>
+
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">background</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">clickable</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">pager</span><span class="s2">.</span><span class="s1">VerticalPager</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">pager</span><span class="s2">.</span><span class="s1">rememberPagerState</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">CircleShape</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">material3</span><span class="s2">.</span><span class="s1">pulltorefresh</span><span class="s2">.</span><span class="s1">PullToRefreshBox</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">runtime</span><span class="s2">.*</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Alignment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Modifier</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">draw</span><span class="s2">.</span><span class="s1">clip</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">geometry</span><span class="s2">.</span><span class="s1">Offset</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">platform</span><span class="s2">.</span><span class="s1">LocalContext</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">font</span><span class="s2">.</span><span class="s1">FontWeight</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">unit</span><span class="s2">.</span><span class="s1">dp</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainViewModel</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">components</span><span class="s2">.</span><span class="s1">VideoPlayer</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">MediaUtils</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">VideoDownloaderManager</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">xs</span><span class="s2">.</span><span class="s1">XsApplication</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+
+<span class="s1">@OptIn</span><span class="s2">(</span><span class="s1">ExperimentalMaterial3Api::</span><span class="s0">class</span><span class="s2">)</span>
+<span class="s1">@Composable</span>
+<span class="s0">fun </span><span class="s1">ReelsScreen</span><span class="s2">(</span>
+    <span class="s1">viewModel: MainViewModel</span><span class="s2">,</span>
+    <span class="s1">onProfileClick: </span><span class="s2">(</span><span class="s1">String</span><span class="s2">, </span><span class="s1">String</span><span class="s2">) -&gt; </span><span class="s1">Unit</span>
+<span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">posts by viewModel</span><span class="s2">.</span><span class="s1">feedPosts</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+    <span class="s0">val </span><span class="s1">isRefreshing by viewModel</span><span class="s2">.</span><span class="s1">isRefreshing</span><span class="s2">.</span><span class="s1">collectAsState</span><span class="s2">()</span>
+    
+    <span class="s0">val </span><span class="s1">videoItems </span><span class="s2">= </span><span class="s1">remember</span><span class="s2">(</span><span class="s1">posts</span><span class="s2">) {</span>
+        <span class="s1">posts</span><span class="s2">.</span><span class="s1">flatMap </span><span class="s2">{ </span><span class="s1">post </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">videosInPost </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">mediaUrls</span><span class="s2">.</span><span class="s1">filter </span><span class="s2">{ </span><span class="s1">url </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">isTurbo </span><span class="s2">= </span><span class="s1">url</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;turbo&quot;</span><span class="s2">, </span><span class="s1">ignoreCase </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">isDirect </span><span class="s2">= </span><span class="s1">MediaUtils</span><span class="s2">.</span><span class="s1">isDirectVideo</span><span class="s2">(</span><span class="s1">url</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">isTurbo </span><span class="s2">|| </span><span class="s1">isDirect</span><span class="s2">) {</span>
+                    <span class="s1">android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s3">&quot;ReelsFilter&quot;</span><span class="s2">, </span><span class="s3">&quot;Incluindo: </span><span class="s0">$</span><span class="s1">url </span><span class="s3">(Turbo: </span><span class="s0">$</span><span class="s1">isTurbo</span><span class="s3">, Direct: </span><span class="s0">$</span><span class="s1">isDirect</span><span class="s3">)&quot;</span><span class="s2">)</span>
+                    <span class="s0">true</span>
+                <span class="s2">} </span><span class="s0">else false</span>
+            <span class="s2">}</span>
+            <span class="s1">videosInPost</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">videoUrl </span><span class="s2">-&gt;</span>
+                <span class="s1">ReelItem</span><span class="s2">(</span>
+                    <span class="s1">postId </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">id</span><span class="s2">,</span>
+                    <span class="s1">videoUrl </span><span class="s2">= </span><span class="s1">videoUrl</span><span class="s2">,</span>
+                    <span class="s1">postUrl </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">,</span>
+                    <span class="s1">topicTitle </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">topicTitle</span><span class="s2">,</span>
+                    <span class="s1">author </span><span class="s2">= </span><span class="s1">post</span><span class="s2">.</span><span class="s1">author</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">context </span><span class="s2">= </span><span class="s1">LocalContext</span><span class="s2">.</span><span class="s1">current</span>
+    <span class="s0">val </span><span class="s1">okHttpClient </span><span class="s2">= (</span><span class="s1">context</span><span class="s2">.</span><span class="s1">applicationContext </span><span class="s0">as </span><span class="s1">XsApplication</span><span class="s2">).</span><span class="s1">okHttpClient</span>
+    
+    <span class="s4">// AUTO-CARREGAMENTO: Se abrir os Reels e o feed estiver vazio, carrega agora!</span>
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">videoItems</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">videoItems</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() &amp;&amp; !</span><span class="s1">isRefreshing</span><span class="s2">) {</span>
+            <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">refreshFeed</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">if </span><span class="s2">(</span><span class="s1">videoItems</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() &amp;&amp; !</span><span class="s1">isRefreshing</span><span class="s2">) {</span>
+        <span class="s1">Box</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">().</span><span class="s1">background</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Black</span><span class="s2">), </span><span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">) {</span>
+            <span class="s1">Text</span><span class="s2">(</span><span class="s3">&quot;Nenhum vídeo encontrado.</span><span class="s0">\n</span><span class="s3">Arraste para baixo para atualizar.&quot;</span><span class="s2">, </span>
+                <span class="s1">color </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Gray</span><span class="s2">, </span><span class="s1">textAlign </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">style</span><span class="s2">.</span><span class="s1">TextAlign</span><span class="s2">.</span><span class="s1">Center</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s0">return</span>
+    <span class="s2">}</span>
+
+    <span class="s0">val </span><span class="s1">pagerState </span><span class="s2">= </span><span class="s1">rememberPagerState</span><span class="s2">(</span><span class="s1">pageCount </span><span class="s2">= { </span><span class="s1">videoItems</span><span class="s2">.</span><span class="s1">size </span><span class="s2">})</span>
+
+    <span class="s4">// GATILHO DE PAGINAÇÃO: Detecta quando está chegando no fim e carrega páginas anteriores do fórum</span>
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">pagerState</span><span class="s2">.</span><span class="s1">currentPage</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">videoItems</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">() &amp;&amp; </span><span class="s1">pagerState</span><span class="s2">.</span><span class="s1">currentPage </span><span class="s2">&gt;= </span><span class="s1">videoItems</span><span class="s2">.</span><span class="s1">size </span><span class="s2">- </span><span class="s5">5</span><span class="s2">) {</span>
+            <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">loadMore</span><span class="s2">() </span><span class="s4">// Chama a função que já temos no ViewModel para carregar páginas passadas</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Lógica de Preload de Fundo (Sem pesar o player)</span>
+    <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">pagerState</span><span class="s2">.</span><span class="s1">currentPage</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">preloadRange </span><span class="s2">= (</span><span class="s1">pagerState</span><span class="s2">.</span><span class="s1">currentPage </span><span class="s2">+ </span><span class="s5">1</span><span class="s2">)..(</span><span class="s1">pagerState</span><span class="s2">.</span><span class="s1">currentPage </span><span class="s2">+ </span><span class="s5">5</span><span class="s2">)</span>
+        <span class="s1">preloadRange</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">index </span><span class="s2">-&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">index </span><span class="s2">&lt; </span><span class="s1">videoItems</span><span class="s2">.</span><span class="s1">size</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">nextUrl </span><span class="s2">= </span><span class="s1">videoItems</span><span class="s2">[</span><span class="s1">index</span><span class="s2">].</span><span class="s1">videoUrl</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">nextUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;turbo&quot;</span><span class="s2">)) {</span>
+                    <span class="s1">launch </span><span class="s2">{ </span><span class="s1">VideoDownloaderManager</span><span class="s2">.</span><span class="s1">downloadToTempFile</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">nextUrl</span><span class="s2">, </span><span class="s1">okHttpClient</span><span class="s2">) }</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">PullToRefreshBox</span><span class="s2">(</span>
+        <span class="s1">isRefreshing </span><span class="s2">= </span><span class="s1">isRefreshing</span><span class="s2">,</span>
+        <span class="s1">onRefresh </span><span class="s2">= { </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">refreshFeed</span><span class="s2">() },</span>
+        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">().</span><span class="s1">background</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Black</span><span class="s2">)</span>
+    <span class="s2">) {</span>
+        <span class="s1">VerticalPager</span><span class="s2">(</span>
+            <span class="s1">state </span><span class="s2">= </span><span class="s1">pagerState</span><span class="s2">,</span>
+            <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+            <span class="s1">beyondViewportPageCount </span><span class="s2">= </span><span class="s5">2</span><span class="s2">,</span>
+            <span class="s1">key </span><span class="s2">= { </span><span class="s1">index </span><span class="s2">-&gt; </span><span class="s1">videoItems</span><span class="s2">[</span><span class="s1">index</span><span class="s2">].</span><span class="s1">videoUrl </span><span class="s2">+ </span><span class="s1">videoItems</span><span class="s2">[</span><span class="s1">index</span><span class="s2">].</span><span class="s1">postId </span><span class="s2">} </span><span class="s4">// CHAVE ESTÁVEL</span>
+        <span class="s2">) { </span><span class="s1">page </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">item </span><span class="s2">= </span><span class="s1">videoItems</span><span class="s2">[</span><span class="s1">page</span><span class="s2">]</span>
+            
+            <span class="s1">LaunchedEffect</span><span class="s2">(</span><span class="s1">item</span><span class="s2">.</span><span class="s1">postId</span><span class="s2">, </span><span class="s1">item</span><span class="s2">.</span><span class="s1">videoUrl</span><span class="s2">) {</span>
+                <span class="s0">if </span><span class="s2">(!</span><span class="s1">MediaUtils</span><span class="s2">.</span><span class="s1">isDirectVideo</span><span class="s2">(</span><span class="s1">item</span><span class="s2">.</span><span class="s1">videoUrl</span><span class="s2">) &amp;&amp; </span><span class="s1">item</span><span class="s2">.</span><span class="s1">videoUrl</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;turbo&quot;</span><span class="s2">)) {</span>
+                    <span class="s1">viewModel</span><span class="s2">.</span><span class="s1">refreshSavedPost</span><span class="s2">(</span><span class="s1">item</span><span class="s2">.</span><span class="s1">postId</span><span class="s2">, </span><span class="s1">item</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">, </span><span class="s1">item</span><span class="s2">.</span><span class="s1">topicTitle</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s1">Box</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">()) {</span>
+                <span class="s1">VideoPlayer</span><span class="s2">(</span>
+                    <span class="s1">url </span><span class="s2">= </span><span class="s1">item</span><span class="s2">.</span><span class="s1">videoUrl</span><span class="s2">,</span>
+                    <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+                    <span class="s1">shouldPlay </span><span class="s2">= </span><span class="s1">pagerState</span><span class="s2">.</span><span class="s1">currentPage </span><span class="s2">== </span><span class="s1">page</span><span class="s2">,</span>
+                    <span class="s1">isMuted </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+                    <span class="s1">showControls </span><span class="s2">= </span><span class="s0">true</span><span class="s2">,</span>
+                    <span class="s1">onRefreshRequest </span><span class="s2">= { </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">refreshSavedPost</span><span class="s2">(</span><span class="s1">item</span><span class="s2">.</span><span class="s1">postId</span><span class="s2">, </span><span class="s1">item</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">, </span><span class="s1">item</span><span class="s2">.</span><span class="s1">topicTitle</span><span class="s2">) }</span>
+                <span class="s2">)</span>
+
+                <span class="s4">// UI LIMPA MAS COM IDENTIDADE DO BLOG (Opcional, mas atende o pedido de uniformidade)</span>
+                <span class="s0">val </span><span class="s1">blogInfo </span><span class="s2">= </span><span class="s1">viewModel</span><span class="s2">.</span><span class="s1">getFavoriteTopic</span><span class="s2">(</span><span class="s1">item</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">blogAvatar </span><span class="s2">= </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">avatarUrl</span>
+                <span class="s0">val </span><span class="s1">blogName </span><span class="s2">= </span><span class="s1">blogInfo?</span><span class="s2">.</span><span class="s1">title ?: item</span><span class="s2">.</span><span class="s1">topicTitle</span>
+
+                <span class="s1">androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">foundation</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Row</span><span class="s2">(</span>
+                    <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                        <span class="s2">.</span><span class="s1">align</span><span class="s2">(</span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">BottomStart</span><span class="s2">)</span>
+                        <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s5">16</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                        <span class="s2">.</span><span class="s1">padding</span><span class="s2">(</span><span class="s1">bottom </span><span class="s2">= </span><span class="s5">64</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                        <span class="s2">.</span><span class="s1">clickable </span><span class="s2">{ </span><span class="s1">onProfileClick</span><span class="s2">(</span><span class="s1">item</span><span class="s2">.</span><span class="s1">postUrl</span><span class="s2">, </span><span class="s1">blogName</span><span class="s2">) },</span>
+                    <span class="s1">verticalAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">CenterVertically</span>
+                <span class="s2">) {</span>
+                    <span class="s1">Box</span><span class="s2">(</span>
+                        <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span>
+                            <span class="s2">.</span><span class="s1">size</span><span class="s2">(</span><span class="s5">36</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">)</span>
+                            <span class="s2">.</span><span class="s1">clip</span><span class="s2">(</span><span class="s1">CircleShape</span><span class="s2">)</span>
+                            <span class="s2">.</span><span class="s1">background</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">White</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">alpha </span><span class="s2">= </span><span class="s5">0.2f</span><span class="s2">)),</span>
+                        <span class="s1">contentAlignment </span><span class="s2">= </span><span class="s1">Alignment</span><span class="s2">.</span><span class="s1">Center</span>
+                    <span class="s2">) {</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">blogAvatar </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                            <span class="s1">coil</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">AsyncImage</span><span class="s2">(</span>
+                                <span class="s1">model </span><span class="s2">= </span><span class="s1">blogAvatar</span><span class="s2">,</span>
+                                <span class="s1">contentDescription </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+                                <span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">fillMaxSize</span><span class="s2">(),</span>
+                                <span class="s1">contentScale </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">ContentScale</span><span class="s2">.</span><span class="s1">Crop</span>
+                            <span class="s2">)</span>
+                        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                            <span class="s1">Text</span><span class="s2">(</span><span class="s1">blogName</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s5">1</span><span class="s2">).</span><span class="s1">uppercase</span><span class="s2">(), </span><span class="s1">color </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">White</span><span class="s2">, </span><span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">Bold</span><span class="s2">)</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                    <span class="s1">Spacer</span><span class="s2">(</span><span class="s1">modifier </span><span class="s2">= </span><span class="s1">Modifier</span><span class="s2">.</span><span class="s1">width</span><span class="s2">(</span><span class="s5">12</span><span class="s2">.</span><span class="s1">dp</span><span class="s2">))</span>
+                    <span class="s1">Text</span><span class="s2">(</span>
+                        <span class="s1">text </span><span class="s2">= </span><span class="s1">blogName</span><span class="s2">,</span>
+                        <span class="s1">style </span><span class="s2">= </span><span class="s1">MaterialTheme</span><span class="s2">.</span><span class="s1">typography</span><span class="s2">.</span><span class="s1">titleMedium</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span>
+                            <span class="s1">shadow </span><span class="s2">= </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">compose</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Shadow</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">Black</span><span class="s2">, </span><span class="s1">Offset</span><span class="s2">(</span><span class="s5">2f</span><span class="s2">, </span><span class="s5">2f</span><span class="s2">), </span><span class="s5">4f</span><span class="s2">)</span>
+                        <span class="s2">),</span>
+                        <span class="s1">color </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">White</span><span class="s2">,</span>
+                        <span class="s1">fontWeight </span><span class="s2">= </span><span class="s1">FontWeight</span><span class="s2">.</span><span class="s1">Bold</span>
+                    <span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">ReelItem</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">postId: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">videoUrl: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">postUrl: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">topicTitle: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">author: String</span>
+<span class="s2">)</span>
+</pre>
+</body>
+</html>
